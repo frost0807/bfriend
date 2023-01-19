@@ -1,0 +1,32 @@
+#DB
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bfriend?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: ENC(Vli88LkV5vfJDlL4StYMXw==)
+
+    #JPA
+    jpa:
+      hibernate:
+        ddl-auto: none
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+      generate-ddl: false
+      properties:
+        hibernate:
+          show_sql: false
+          format_sql: true
+          use_sql_comments: true
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+      database: mysql
+
+  #Jasypt ??
+  config:
+    import: jasypt.yml
+
+#LOG
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: info
