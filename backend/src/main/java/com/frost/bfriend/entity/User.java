@@ -2,14 +2,11 @@ package com.frost.bfriend.entity;
 
 import com.frost.bfriend.constants.Region;
 import com.frost.bfriend.constants.Sex;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
 
 @Getter
@@ -22,7 +19,7 @@ public class User extends UserBase {
 
     private String phone;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Region region;
 
     @Enumerated(EnumType.STRING)

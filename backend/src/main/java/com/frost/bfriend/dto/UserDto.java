@@ -1,24 +1,34 @@
 package com.frost.bfriend.dto;
 
-import com.frost.bfriend.entity.User;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import static com.frost.bfriend.constants.RegexConstants.PASSWORD;
-import static com.frost.bfriend.constants.RegexConstants.PHONE;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import static com.frost.bfriend.constants.RegexConstants.*;
 
 public class UserDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public static class CreateRequest {
+    public static class EmailCertificationRequest {
+        @NotBlank(message = "이메일 주소를 입력해주세요")
+        @Email(message = "이메일 주소 형식에 맞게 입력해주세요")
+        private String email;
+        
+        @NotBlank(message = "이메일 인증 코드를 입력해주세요")
+        @Pattern(regexp = EMAIL_CERTIFICATION, message = "올바른 이메일 인증 코드를 입력해주세요")
+        private String certificationCode;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class SaveRequest {
         @NotBlank(message = "이메일 주소를 입력해주세요")
         @Email(message = "이메일 주소 형식에 맞게 입력해주세요")
         private String email;
@@ -44,6 +54,5 @@ public class UserDto {
         
         @NotBlank(message = "성별을 입력해주세요")
         private String sex;
-
     }
 }

@@ -7,5 +7,5 @@ package com.frost.bfriend.constants;
  */
 
 public enum UserLevel {
-    UNCERTIFIED, NORMAL, ADMIN
+    NORMAL, ADMIN
 }

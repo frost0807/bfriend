@@ -1,8 +1,9 @@
 package com.frost.bfriend.entity;
 
 import com.frost.bfriend.constants.UserLevel;
-import jakarta.persistence.*;
 import lombok.Getter;
+
+import javax.persistence.*;
 
 @Getter
 @Entity
