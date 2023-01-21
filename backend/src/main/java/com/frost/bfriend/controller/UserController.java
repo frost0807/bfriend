@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.frost.bfriend.constants.ResponseConstants.OK;
-import static com.frost.bfriend.dto.UserDto.*;
-import static com.frost.bfriend.dto.UserDto.SaveRequest;
+import static com.frost.bfriend.dto.UserDto.EmailCertificationRequest;
+import static com.frost.bfriend.dto.UserDto.SmsCertificationRequest;
 
 @Slf4j
 @RestController
@@ -36,6 +36,18 @@ public class UserController {
     @PostMapping("/email/certification")
     public ResponseEntity<Void> checkEmailCertificationCode(@RequestBody EmailCertificationRequest request) {
         userService.checkEmailCertificationCode(request);
+        return OK;
+    }
+
+    @GetMapping("/phone/certification/{phone}")
+    public ResponseEntity<Void> sendCertificationSms(@PathVariable String phone) {
+        userService.sendCertificationSms(phone);
+        return OK;
+    }
+
+    @PostMapping("/phone/certification")
+    public ResponseEntity<Void> checkSmsCertificationCode(@RequestBody SmsCertificationRequest request) {
+        userService.checkSmsCertificationCode(request);
         return OK;
     }
 }

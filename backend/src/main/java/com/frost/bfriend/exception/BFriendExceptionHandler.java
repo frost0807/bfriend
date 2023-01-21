@@ -1,9 +1,6 @@
 package com.frost.bfriend.exception;
 
-import com.frost.bfriend.exception.user.CertificationCodeNotFoundException;
-import com.frost.bfriend.exception.user.DuplicatedEmailException;
-import com.frost.bfriend.exception.user.DuplicatedPhoneException;
-import com.frost.bfriend.exception.user.IncorrectCertificationCodeException;
+import com.frost.bfriend.exception.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,6 +43,13 @@ public class BFriendExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(IncorrectCertificationCodeException.class)
     public ErrorMsg handleIncorrectCertificationCodeException(IncorrectCertificationCodeException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(FailedToSendSmsException.class)
+    public ErrorMsg handleFailedToSendSmsException(FailedToSendSmsException e) {
         writeErrorLog(e);
         return getErrorMessage(e);
     }

@@ -25,6 +25,19 @@ public class UserDto {
     }
 
     @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class SmsCertificationRequest {
+        @NotBlank(message = "이메일 주소를 입력해주세요")
+        @Pattern(regexp = PHONE, message = "휴대폰 번호 형식에 맞게 입력해주세요")
+        private String phone;
+
+        @NotBlank(message = "SMS 인증 코드를 입력해주세요")
+        @Pattern(regexp = SMS_CERTIFICATION, message = "올바른 SMS 인증 코드를 입력해주세요")
+        private String certificationCode;
+    }
+
+    @Getter
     @Builder
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor

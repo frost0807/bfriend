@@ -25,7 +25,7 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: junesuck99
+    username: ENC(G1kNgTy+v8VD/M6zRJVCdVJ+LCx1hGd4)
     password: ENC(KBLWys7mkKM3UpxGr+nWCNibYvf8RnpWHxpnNwhh6wM=)
     properties:
       mail:
@@ -37,6 +37,12 @@ spring:
   #Jasypt ??
   config:
     import: jasypt.yml
+
+sms:
+  api:
+    key: ENC(ae9vbblwl6e19rRqjJzFsymv6hPG335Qoz8komP40Gk=)
+    secretkey: ENC(s5Q72woTJdcYuOKnmZfjpOpYG3OzUyr3PSK7L2Yek0jfDryTchdnD43IvF+/fUCt)
+    domain: https://api.coolsms.co.kr
 
 #LOG
 logging:
