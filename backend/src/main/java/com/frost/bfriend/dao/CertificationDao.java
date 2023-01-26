@@ -6,4 +6,10 @@ public interface CertificationDao {
     String getCertificationCode(String key);
 
     void removeCertificationCode(String key);
+
+    void saveCertificationIdentifier(String key, String value);
+
+    String getCertificationIdentifier(String key);
+
+    void removeCertificationIdentifier(String key);
 }

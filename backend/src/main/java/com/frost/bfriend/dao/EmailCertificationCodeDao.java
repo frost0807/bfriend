@@ -1,7 +1,5 @@
 package com.frost.bfriend.dao;
 
-import com.frost.bfriend.constants.EmailConstants;
-import kotlin.OverloadResolutionByLambdaReturnType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,27 +10,48 @@ import static com.frost.bfriend.constants.EmailConstants.*;
 
 @Repository
 @RequiredArgsConstructor
-public class EmailCertificationCodeDao implements CertificationDao{
+public class EmailCertificationCodeDao implements CertificationDao {
     private final StringRedisTemplate redisTemplate;
 
     @Override
     public void saveCertificationCode(String email, String certificationCode) {
         redisTemplate.opsForValue()
-                .set(CERTIFICATION_KEY + email, certificationCode,
-                        Duration.ofMinutes(CERTIFICATION_DURATION));
+                .set(CERTIFICATION_CODE + email, certificationCode,
+                        Duration.ofSeconds(CERTIFICATION_CODE_DURATION));
     }
 
-    public boolean existByEmail(String email) {
-        return redisTemplate.hasKey(CERTIFICATION_KEY + email);
+    public boolean existCertificationCodeByEmail(String email) {
+        return redisTemplate.hasKey(CERTIFICATION_CODE + email);
     }
 
     @Override
     public String getCertificationCode(String email) {
-        return redisTemplate.opsForValue().get(CERTIFICATION_KEY + email);
+        return redisTemplate.opsForValue().get(CERTIFICATION_CODE + email);
     }
 
     @Override
     public void removeCertificationCode(String email) {
-        redisTemplate.delete(CERTIFICATION_KEY + email);
+        redisTemplate.delete(CERTIFICATION_CODE + email);
+    }
+
+    @Override
+    public void saveCertificationIdentifier(String email, String identifier) {
+        redisTemplate.opsForValue()
+                .set(CERTIFICATION_IDENTIFIER + email, identifier,
+                        Duration.ofSeconds(EMAIL_CERTIFICATION_IDENTIFIER_DURATION));
+    }
+
+    public boolean existCertificationIdentifierByEmail(String email) {
+        return redisTemplate.hasKey(CERTIFICATION_IDENTIFIER + email);
+    }
+
+    @Override
+    public String getCertificationIdentifier(String email) {
+        return redisTemplate.opsForValue().get(CERTIFICATION_IDENTIFIER + email);
+    }
+
+    @Override
+    public void removeCertificationIdentifier(String email) {
+        redisTemplate.delete(CERTIFICATION_IDENTIFIER + email);
     }
 }

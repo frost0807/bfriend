@@ -53,4 +53,32 @@ public class BFriendExceptionHandler {
         writeErrorLog(e);
         return getErrorMessage(e);
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CertificationIdentifierNotFoundException.class)
+    public ErrorMsg handleCertificationIdentifierNotFoundException(CertificationIdentifierNotFoundException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(CertificationIdentifierMismatchException.class)
+    public ErrorMsg handleCertificationIdentifierMismatchException(CertificationIdentifierMismatchException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(NotLoggedInException.class)
+    public ErrorMsg handleNotLoggedInException(NotLoggedInException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public ErrorMsg handleUserNotFoundException(UserNotFoundException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
 }

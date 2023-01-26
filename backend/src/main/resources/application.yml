@@ -34,7 +34,7 @@ spring:
           starttls:
             enable: true
 
-  #Jasypt ??
+  #Jasypt
   config:
     import: jasypt.yml
 
@@ -43,6 +43,10 @@ sms:
     key: ENC(ae9vbblwl6e19rRqjJzFsymv6hPG335Qoz8komP40Gk=)
     secretkey: ENC(s5Q72woTJdcYuOKnmZfjpOpYG3OzUyr3PSK7L2Yek0jfDryTchdnD43IvF+/fUCt)
     domain: https://api.coolsms.co.kr
+
+jwt:
+  access-token:
+    secretkey: ENC(BqjTSmHKi3Rg3/BxFINWV7uJF68DeHvwZoUjr4cxMIB2iW4c8QmpB2RrE6gdQIFPgkgayByy0IhXS86pVrYuDQ==)
 
 #LOG
 logging:

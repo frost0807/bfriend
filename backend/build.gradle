@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.8'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-    //QueryDsl 추가
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
@@ -24,7 +23,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
@@ -47,6 +45,10 @@ dependencies {
     //Sms
     implementation 'net.nurigo:sdk:4.2.7'
 
+    //jBcrypt
+    implementation 'de.svenkubiak:jBCrypt:0.4.3'
+
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -55,14 +57,12 @@ dependencies {
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-//querydsl 추가 시작
 def querydslDir = "$buildDir/generated/querydsl"
 querydsl {
     jpa = true
@@ -77,4 +77,3 @@ configurations {
 compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
-//querydsl 추가 끝

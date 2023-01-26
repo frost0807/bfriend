@@ -1,6 +1,5 @@
 package com.frost.bfriend.dao;
 
-import com.frost.bfriend.constants.SmsConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -18,21 +17,42 @@ public class SmsCertificationDao implements CertificationDao {
     @Override
     public void saveCertificationCode(String phone, String certificationCode) {
         redisTemplate.opsForValue()
-                .set(CERTIFICATION_KEY + phone, certificationCode,
-                        Duration.ofMinutes(CERTIFICATION_DURATION));
+                .set(CERTIFICATION_CODE + phone, certificationCode,
+                        Duration.ofSeconds(CERTIFICATION_CODE_DURATION));
     }
 
-    public boolean existByPhone(String phone) {
-        return redisTemplate.hasKey(CERTIFICATION_KEY + phone);
+    public boolean existCertificationCodeByPhone(String phone) {
+        return redisTemplate.hasKey(CERTIFICATION_CODE + phone);
     }
 
     @Override
     public String getCertificationCode(String phone) {
-        return redisTemplate.opsForValue().get(CERTIFICATION_KEY + phone);
+        return redisTemplate.opsForValue().get(CERTIFICATION_CODE + phone);
     }
 
     @Override
     public void removeCertificationCode(String phone) {
-        redisTemplate.delete(CERTIFICATION_KEY + phone);
+        redisTemplate.delete(CERTIFICATION_CODE + phone);
+    }
+
+    @Override
+    public void saveCertificationIdentifier(String phone, String identifier) {
+        redisTemplate.opsForValue()
+                .set(CERTIFICATION_IDENTIFIER + phone, identifier,
+                        Duration.ofSeconds(SMS_CERTIFICATION_IDENTIFIER_DURATION));
+    }
+
+    public boolean existCertificationIdentifierByPhone(String phone) {
+        return redisTemplate.hasKey(CERTIFICATION_IDENTIFIER + phone);
+    }
+
+    @Override
+    public String getCertificationIdentifier(String phone) {
+        return redisTemplate.opsForValue().get(CERTIFICATION_IDENTIFIER + phone);
+    }
+
+    @Override
+    public void removeCertificationIdentifier(String key) {
+
     }
 }

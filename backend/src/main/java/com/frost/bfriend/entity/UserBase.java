@@ -1,7 +1,9 @@
 package com.frost.bfriend.entity;
 
 import com.frost.bfriend.constants.UserLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -9,6 +11,8 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorColumn
 @Inheritance(strategy = InheritanceType.JOINED)
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class UserBase extends BaseTimeEntity {
 
     @Id

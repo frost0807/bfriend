@@ -11,9 +11,13 @@ public class EmailConstants {
     public static final String CERTIFICATION_CONTENT =
             "아래 인증코드를 회원가입 인증코드 입력창에 입력해주세요\n\n";
 
-    public static final String CERTIFICATION_KEY = "email certification:";
+    public static final String CERTIFICATION_CODE = "email certification code:";
 
-    public static final long CERTIFICATION_DURATION = 5;
+    public static final String CERTIFICATION_IDENTIFIER = "email certification identifier:";
+
+    public static final long CERTIFICATION_CODE_DURATION = 60 * 5;
+
+    public static final long EMAIL_CERTIFICATION_IDENTIFIER_DURATION = 60 * 60;
 
     public static final String NEW_PASSWORD_TITLE =
             "BFriend 새로운 비밀번호 안내를 위한 메일입니다.";

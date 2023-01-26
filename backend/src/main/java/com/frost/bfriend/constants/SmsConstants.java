@@ -8,7 +8,11 @@ public class SmsConstants {
 
     public static final String STATUS_ACCEPTED = "2000";
 
-    public static final String CERTIFICATION_KEY = "sms certification:";
+    public static final String CERTIFICATION_CODE = "sms certification:";
 
-    public static final long CERTIFICATION_DURATION = 5;
+    public static final String CERTIFICATION_IDENTIFIER = "sms certification identifier:";
+
+    public static final long CERTIFICATION_CODE_DURATION = 60 * 5;
+
+    public static final long SMS_CERTIFICATION_IDENTIFIER_DURATION = 60 * 60;
 }
