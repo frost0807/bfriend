@@ -1,10 +1,10 @@
-package com.frost.bfriend.util.certification;
+package com.frost.bfriend.common.util.certification;
 
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
 
-import static com.frost.bfriend.constants.EmailConstants.SPECIAL_SYMBOL_LIST;
+import static com.frost.bfriend.common.constants.EmailConstants.SPECIAL_SYMBOL_LIST;
 
 @Component
 public class CertificationGenerator {

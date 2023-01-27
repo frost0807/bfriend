@@ -1,10 +1,10 @@
 package com.frost.bfriend.dto;
 
-import com.frost.bfriend.constants.Region;
-import com.frost.bfriend.constants.Sex;
-import com.frost.bfriend.constants.UserLevel;
+import com.frost.bfriend.common.constants.Region;
+import com.frost.bfriend.common.constants.Sex;
+import com.frost.bfriend.common.constants.UserLevel;
 import com.frost.bfriend.entity.User;
-import com.frost.bfriend.util.encryption.EncryptionService;
+import com.frost.bfriend.common.util.encryption.EncryptionService;
 import lombok.*;
 
 import javax.validation.constraints.Email;
@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-import static com.frost.bfriend.constants.RegexConstants.*;
+import static com.frost.bfriend.common.constants.RegexConstants.*;
 
 public class UserDto {
 
@@ -84,17 +84,18 @@ public class UserDto {
                     .email(this.email)
                     .password(this.password)
                     .level(UserLevel.NORMAL)
-                    .isDeleted(false)
                     .name(this.name)
                     .phone(this.phone)
                     .region(Region.valueOf(this.region))
                     .birthday(this.birthday)
                     .sex(this.sex)
-                    .isActivated(false)
+                    .activityPoint(0)
                     .isSuspended(false)
+                    .isDeleted(false)
                     .build();
         }
     }
+
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
@@ -108,6 +109,18 @@ public class UserDto {
 
         public boolean isPasswordCorrect(EncryptionService encryptionService, String encryptedPassword) {
             return encryptionService.isSamePassword(this.password, encryptedPassword);
+        }
+    }
+
+    @Getter
+    public static class LoginResponse {
+        private String name;
+
+        private int activityPoint;
+
+        public LoginResponse(User user) {
+            this.name = user.getName();
+            this.activityPoint = user.getActivityPoint();
         }
     }
 }

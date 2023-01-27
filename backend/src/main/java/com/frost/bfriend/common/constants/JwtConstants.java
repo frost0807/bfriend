@@ -1,4 +1,4 @@
-package com.frost.bfriend.constants;
+package com.frost.bfriend.common.constants;
 
 public class JwtConstants {
     public static final long ACCESS_TOKEN_EXPIRY_MINUTES = 15;

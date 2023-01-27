@@ -1,4 +1,4 @@
-package com.frost.bfriend.util.jwt;
+package com.frost.bfriend.common.util.jwt;
 
 import com.frost.bfriend.entity.User;
 import io.jsonwebtoken.Jwts;
@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import static com.frost.bfriend.constants.JwtConstants.*;
+import static com.frost.bfriend.common.constants.JwtConstants.*;
 
 @Slf4j
 @Component

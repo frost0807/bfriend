@@ -1,4 +1,4 @@
-package com.frost.bfriend.util.certification;
+package com.frost.bfriend.common.util.certification;
 
 import com.frost.bfriend.exception.user.FailedToSendSmsException;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import static com.frost.bfriend.constants.SmsConstants.*;
+import static com.frost.bfriend.common.constants.SmsConstants.*;
 
 @Slf4j
 @Service

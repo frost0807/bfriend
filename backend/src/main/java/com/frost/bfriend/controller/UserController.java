@@ -1,7 +1,8 @@
 package com.frost.bfriend.controller;
 
+import com.frost.bfriend.common.util.cookie.CookieHandler;
+import com.frost.bfriend.dto.QuestionCategoryDto;
 import com.frost.bfriend.service.UserService;
-import com.frost.bfriend.util.cookie.CookieHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -10,10 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import java.util.List;
+import java.util.Map;
 
-import static com.frost.bfriend.constants.CookieConstants.*;
-import static com.frost.bfriend.constants.ResponseConstants.CREATED;
-import static com.frost.bfriend.constants.ResponseConstants.OK;
+import static com.frost.bfriend.common.constants.CookieConstants.EMAIL_CERTIFICATION_IDENTIFIER;
+import static com.frost.bfriend.common.constants.CookieConstants.SMS_CERTIFICATION_IDENTIFIER;
+import static com.frost.bfriend.common.constants.MapKeyConstants.ACCESS_TOKEN;
+import static com.frost.bfriend.common.constants.MapKeyConstants.NAME;
 import static com.frost.bfriend.dto.UserDto.*;
 
 @Slf4j
@@ -39,7 +43,7 @@ public class UserController {
     public ResponseEntity<Void> sendCertificationEmail(@PathVariable String email) {
         userService.sendCertificationEmail(email);
 
-        return OK;
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/email/certification")
@@ -54,7 +58,7 @@ public class UserController {
     public ResponseEntity<Void> sendCertificationSms(@PathVariable String phone) {
         userService.sendCertificationSms(phone);
 
-        return OK;
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/phone/certification")
@@ -71,17 +75,24 @@ public class UserController {
             @CookieValue(value = EMAIL_CERTIFICATION_IDENTIFIER) Cookie emailIdentifierCookie,
             @CookieValue(value = SMS_CERTIFICATION_IDENTIFIER) Cookie smsIdentifierCookie) {
         userService.createUser(request, emailIdentifierCookie.getValue(), smsIdentifierCookie.getValue());
-        cookieHandler.deleteCookie(EMAIL_CERTIFICATION_IDENTIFIER);
-        cookieHandler.deleteCookie(SMS_CERTIFICATION_IDENTIFIER);
+        ResponseCookie deletedEmailCookie = cookieHandler.deleteCookie(EMAIL_CERTIFICATION_IDENTIFIER);
+        ResponseCookie deletedSmsCookie = cookieHandler.deleteCookie(SMS_CERTIFICATION_IDENTIFIER);
 
-        return CREATED;
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
+                deletedEmailCookie.toString(), deletedSmsCookie.toString()).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest request) {
-        String accessToken = userService.login(request);
-        ResponseCookie accessTokenCookie = cookieHandler.createAccessTokenCookie(accessToken);
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+        Map<String, String> tokenAndName = userService.login(request);
+        ResponseCookie accessTokenCookie = cookieHandler.createAccessTokenCookie(tokenAndName.get(ACCESS_TOKEN));
+        String name = tokenAndName.get(NAME);
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString()).build();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString()).body(name);
+    }
+
+    @GetMapping("/questions")
+    public ResponseEntity<List<QuestionCategoryDto>> getQuestionCategories() {
+        return ResponseEntity.ok(userService.getQuestionCategories());
     }
 }

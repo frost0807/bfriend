@@ -1,4 +1,4 @@
-package com.frost.bfriend.constants;
+package com.frost.bfriend.common.constants;
 
 public enum Sex {
     MALE("남자"), FEMALE("여자");

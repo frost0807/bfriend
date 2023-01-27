@@ -1,4 +1,4 @@
-package com.frost.bfriend.config;
+package com.frost.bfriend.common.config;
 
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;

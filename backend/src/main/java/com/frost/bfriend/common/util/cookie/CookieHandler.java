@@ -1,12 +1,18 @@
-package com.frost.bfriend.util.cookie;
+package com.frost.bfriend.common.util.cookie;
 
-import com.frost.bfriend.constants.EmailConstants;
-import com.frost.bfriend.constants.JwtConstants;
-import com.frost.bfriend.constants.SmsConstants;
+import com.frost.bfriend.common.constants.EmailConstants;
+import com.frost.bfriend.common.constants.JwtConstants;
+import com.frost.bfriend.common.constants.SmsConstants;
+import com.frost.bfriend.exception.user.NotLoggedInException;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
-import static com.frost.bfriend.constants.CookieConstants.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.Arrays;
+
+import static com.frost.bfriend.common.constants.CookieConstants.*;
 
 @Component
 public class CookieHandler {
@@ -36,6 +42,13 @@ public class CookieHandler {
                 .path("/")
                 .maxAge(JwtConstants.ACCESS_TOKEN_EXPIRY_MINUTES)
                 .build();
+    }
+
+    public Cookie parseAccessTokenCookie(HttpServletRequest request) {
+        return Arrays.stream(request.getCookies())
+                .filter(c -> c.getName().equals("bfriend-access-token"))
+                .findFirst()
+                .orElseThrow(() -> new NotLoggedInException("로그인이 되지 않았습니다."));
     }
 
     public ResponseCookie deleteCookie(String cookieName) {

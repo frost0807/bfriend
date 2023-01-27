@@ -1,8 +1,8 @@
 package com.frost.bfriend.entity;
 
-import com.frost.bfriend.constants.Region;
-import com.frost.bfriend.constants.Sex;
-import com.frost.bfriend.constants.UserLevel;
+import com.frost.bfriend.common.constants.Region;
+import com.frost.bfriend.common.constants.Sex;
+import com.frost.bfriend.common.constants.UserLevel;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,21 +30,25 @@ public class User extends UserBase {
 
     private LocalDate birthday;
 
-    private Boolean isActivated;
+    private Integer activityPoint;
 
     private Boolean isSuspended;
 
+    private Boolean isDeleted;
+
+
     @Builder
-    public User(Long id, String email, String password, UserLevel level, Boolean isDeleted,
-                String name, String phone, Region region, Sex sex, LocalDate birthday,
-                Boolean isActivated, Boolean isSuspended) {
-        super(id, email, password, level, isDeleted);
+    public User(Long id, String email, String password, UserLevel level, String name,
+                String phone, Region region, Sex sex, LocalDate birthday,
+                Integer activityPoint, Boolean isSuspended, Boolean isDeleted) {
+        super(id, email, password, level);
         this.name = name;
         this.phone = phone;
         this.region = region;
         this.sex = sex;
         this.birthday = birthday;
-        this.isActivated = isActivated;
+        this.activityPoint = activityPoint;
         this.isSuspended = isSuspended;
+        this.isDeleted = isDeleted;
     }
 }

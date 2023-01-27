@@ -1,4 +1,4 @@
-package com.frost.bfriend.util.encryption;
+package com.frost.bfriend.common.util.encryption;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.frost.bfriend.util.encryption;
+package com.frost.bfriend.common.util.encryption;
 
 public interface EncryptionService {
     public String encrypt(String rawPassword);

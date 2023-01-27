@@ -1,4 +1,4 @@
-package com.frost.bfriend.constants;
+package com.frost.bfriend.common.constants;
 
 /**
  * UNCERTIFIED : 이메일 & 휴대폰 인증 전(로그인 불가)

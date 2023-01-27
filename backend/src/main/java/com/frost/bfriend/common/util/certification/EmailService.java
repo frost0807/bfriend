@@ -1,14 +1,11 @@
-package com.frost.bfriend.util.certification;
+package com.frost.bfriend.common.util.certification;
 
-import com.frost.bfriend.constants.EmailConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.util.Random;
-
-import static com.frost.bfriend.constants.EmailConstants.*;
+import static com.frost.bfriend.common.constants.EmailConstants.*;
 
 @Service
 @RequiredArgsConstructor

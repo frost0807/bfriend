@@ -1,6 +1,6 @@
 package com.frost.bfriend.entity;
 
-import com.frost.bfriend.constants.UserLevel;
+import com.frost.bfriend.common.constants.UserLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +27,4 @@ public abstract class UserBase extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private UserLevel level;
 
-    private Boolean isDeleted;
 }

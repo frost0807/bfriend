@@ -1,4 +1,4 @@
-package com.frost.bfriend.config;
+package com.frost.bfriend.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

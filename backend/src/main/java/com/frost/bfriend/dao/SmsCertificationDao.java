@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Duration;
 
-import static com.frost.bfriend.constants.SmsConstants.*;
+import static com.frost.bfriend.common.constants.SmsConstants.*;
 
 @Repository
 @RequiredArgsConstructor

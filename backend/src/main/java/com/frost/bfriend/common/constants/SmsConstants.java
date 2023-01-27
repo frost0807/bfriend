@@ -1,4 +1,4 @@
-package com.frost.bfriend.constants;
+package com.frost.bfriend.common.constants;
 
 public class SmsConstants {
     public static final String SMS_FROM = "01097059896";
