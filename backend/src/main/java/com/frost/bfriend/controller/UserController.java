@@ -91,8 +91,5 @@ public class UserController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString()).body(name);
     }
 
-    @GetMapping("/questions")
-    public ResponseEntity<List<QuestionCategoryDto>> getQuestionCategories() {
-        return ResponseEntity.ok(userService.getQuestionCategories());
-    }
+
 }

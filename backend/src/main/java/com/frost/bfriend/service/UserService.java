@@ -168,12 +168,4 @@ public class UserService {
             throw new UserNotFoundException("정지된 회원입니다.");
         }
     }
-
-    public List<QuestionCategoryDto> getQuestionCategories() {
-        List<QuestionCategory> questionCategories = questionCategoryRepository.findAll();
-
-        return questionCategories.stream()
-                .map(questionCategory -> new QuestionCategoryDto(questionCategory))
-                .collect(Collectors.toList());
-    }
 }
