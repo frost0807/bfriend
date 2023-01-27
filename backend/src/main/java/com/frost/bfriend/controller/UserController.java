@@ -1,7 +1,6 @@
 package com.frost.bfriend.controller;
 
 import com.frost.bfriend.common.util.cookie.CookieHandler;
-import com.frost.bfriend.dto.QuestionCategoryDto;
 import com.frost.bfriend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,13 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
-import java.util.List;
-import java.util.Map;
 
 import static com.frost.bfriend.common.constants.CookieConstants.EMAIL_CERTIFICATION_IDENTIFIER;
 import static com.frost.bfriend.common.constants.CookieConstants.SMS_CERTIFICATION_IDENTIFIER;
-import static com.frost.bfriend.common.constants.MapKeyConstants.ACCESS_TOKEN;
-import static com.frost.bfriend.common.constants.MapKeyConstants.NAME;
 import static com.frost.bfriend.dto.UserDto.*;
 
 @Slf4j
@@ -25,8 +20,8 @@ import static com.frost.bfriend.dto.UserDto.*;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
 
+    private final UserService userService;
     private final CookieHandler cookieHandler;
 
     @GetMapping("/email/{email}")
@@ -75,8 +70,8 @@ public class UserController {
             @CookieValue(value = EMAIL_CERTIFICATION_IDENTIFIER) Cookie emailIdentifierCookie,
             @CookieValue(value = SMS_CERTIFICATION_IDENTIFIER) Cookie smsIdentifierCookie) {
         userService.createUser(request, emailIdentifierCookie.getValue(), smsIdentifierCookie.getValue());
-        ResponseCookie deletedEmailCookie = cookieHandler.deleteCookie(EMAIL_CERTIFICATION_IDENTIFIER);
-        ResponseCookie deletedSmsCookie = cookieHandler.deleteCookie(SMS_CERTIFICATION_IDENTIFIER);
+        ResponseCookie deletedEmailCookie = cookieHandler.expireCookie(EMAIL_CERTIFICATION_IDENTIFIER);
+        ResponseCookie deletedSmsCookie = cookieHandler.expireCookie(SMS_CERTIFICATION_IDENTIFIER);
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
                 deletedEmailCookie.toString(), deletedSmsCookie.toString()).build();
@@ -84,12 +79,11 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest request) {
-        Map<String, String> tokenAndName = userService.login(request);
-        ResponseCookie accessTokenCookie = cookieHandler.createAccessTokenCookie(tokenAndName.get(ACCESS_TOKEN));
-        String name = tokenAndName.get(NAME);
+        TokenAndName tokenAndName = userService.login(request);
+        ResponseCookie accessTokenCookie = cookieHandler.createAccessTokenCookie(tokenAndName.getToken());
+        String name = tokenAndName.getName();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString()).body(name);
     }
-
 
 }

@@ -51,7 +51,7 @@ public class CookieHandler {
                 .orElseThrow(() -> new NotLoggedInException("로그인이 되지 않았습니다."));
     }
 
-    public ResponseCookie deleteCookie(String cookieName) {
+    public ResponseCookie expireCookie(String cookieName) {
         return ResponseCookie.from(cookieName, null)
                 .maxAge(0)
                 .build();

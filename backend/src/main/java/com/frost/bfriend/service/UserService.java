@@ -1,31 +1,24 @@
 package com.frost.bfriend.service;
 
-import com.frost.bfriend.common.constants.MapKeyConstants;
-import com.frost.bfriend.dao.EmailCertificationCodeDao;
-import com.frost.bfriend.dao.SmsCertificationDao;
-import com.frost.bfriend.dto.QuestionCategoryDto;
-import com.frost.bfriend.dto.UserDto.EmailCertificationRequest;
-import com.frost.bfriend.dto.UserDto.SaveRequest;
-import com.frost.bfriend.entity.QuestionCategory;
-import com.frost.bfriend.entity.User;
-import com.frost.bfriend.exception.user.*;
-import com.frost.bfriend.repository.QuestionCategoryRepository;
-import com.frost.bfriend.repository.UserRepository;
 import com.frost.bfriend.common.util.certification.EmailService;
 import com.frost.bfriend.common.util.certification.SmsService;
 import com.frost.bfriend.common.util.encryption.EncryptionService;
 import com.frost.bfriend.common.util.jwt.TokenProvider;
+import com.frost.bfriend.dao.EmailCertificationCodeDao;
+import com.frost.bfriend.dao.SmsCertificationDao;
+import com.frost.bfriend.dto.UserDto.*;
+import com.frost.bfriend.entity.User;
+import com.frost.bfriend.exception.user.*;
+import com.frost.bfriend.repository.QuestionCategoryRepository;
+import com.frost.bfriend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
-import static com.frost.bfriend.common.constants.MapKeyConstants.*;
 import static com.frost.bfriend.dto.UserDto.*;
-import static com.frost.bfriend.dto.UserDto.SmsCertificationRequest;
 
 @Slf4j
 @Service
@@ -145,16 +138,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Map<String, String> login(LoginRequest requestDto) {
+    public TokenAndName login(LoginRequest requestDto) {
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 이메일입니다."));
         checkValidUser(requestDto, user);
+        String accessToken = tokenProvider.createAccessToken(user);
+        String name = user.getName();
 
-        HashMap<String, String> tokenAndName = new HashMap<>();
-        tokenAndName.put(ACCESS_TOKEN, tokenProvider.createAccessToken(user));
-        tokenAndName.put(NAME, user.getName());
-
-        return tokenAndName;
+        return new TokenAndName(accessToken, name);
     }
 
     private void checkValidUser(LoginRequest requestDto, User user) {

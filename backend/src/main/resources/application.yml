@@ -9,21 +9,21 @@ spring:
     password: ENC(Vli88LkV5vfJDlL4StYMXw==)
 
     #JPA
-    jpa:
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    generate-ddl: false
+    properties:
       hibernate:
-        ddl-auto: none
-        naming:
-          physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-      generate-ddl: false
-      properties:
-        hibernate:
-          show_sql: false
-          format_sql: true
-          use_sql_comments: true
-          jdbc:
-            batch_size: 100
-      database-platform: org.hibernate.dialect.MySQL8Dialect
-      database: mysql
+        show_sql: false
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          batch_size: 100
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database: mysql
 
       #이메일 인증
   mail:

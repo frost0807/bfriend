@@ -123,4 +123,24 @@ public class UserDto {
             this.activityPoint = user.getActivityPoint();
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class TokenAndName {
+        private String token;
+
+        private String name;
+    }
+
+    @Getter
+    public static class UserIdAndLevel {
+        private Long userId;
+
+        private UserLevel userLevel;
+
+        public UserIdAndLevel(String userId, String userLevel) {
+            this.userId = Long.parseLong(userId);
+            this.userLevel = UserLevel.valueOf(userLevel);
+        }
+    }
 }
