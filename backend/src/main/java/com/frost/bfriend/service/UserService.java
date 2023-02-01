@@ -1,17 +1,15 @@
 package com.frost.bfriend.service;
 
+import com.frost.bfriend.common.util.certification.EmailService;
+import com.frost.bfriend.common.util.certification.SmsService;
+import com.frost.bfriend.common.util.encryption.EncryptionService;
+import com.frost.bfriend.common.util.jwt.TokenProvider;
 import com.frost.bfriend.dao.EmailCertificationCodeDao;
 import com.frost.bfriend.dao.SmsCertificationDao;
-import com.frost.bfriend.dto.UserDto;
-import com.frost.bfriend.dto.UserDto.EmailCertificationRequest;
-import com.frost.bfriend.dto.UserDto.SaveRequest;
 import com.frost.bfriend.entity.User;
 import com.frost.bfriend.exception.user.*;
+import com.frost.bfriend.repository.QuestionCategoryRepository;
 import com.frost.bfriend.repository.UserRepository;
-import com.frost.bfriend.util.certification.EmailService;
-import com.frost.bfriend.util.certification.SmsService;
-import com.frost.bfriend.util.encryption.EncryptionService;
-import com.frost.bfriend.util.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
 import static com.frost.bfriend.dto.UserDto.*;
-import static com.frost.bfriend.dto.UserDto.SmsCertificationRequest;
 
 @Slf4j
 @Service
@@ -30,6 +27,8 @@ public class UserService {
     private final EmailService emailService;
     private final SmsService smsService;
     private final UserRepository userRepository;
+
+    private final QuestionCategoryRepository questionCategoryRepository;
     private final EmailCertificationCodeDao emailCertificationCodeDao;
     private final SmsCertificationDao smsCertificationDao;
     private final EncryptionService encryptionService;
@@ -98,7 +97,7 @@ public class UserService {
     }
 
     @Transactional
-    public void createUser(SaveRequest requestDto, String emailIdentifier, String smsIdentifier) {
+    public void saveUser(SaveRequest requestDto, String emailIdentifier, String smsIdentifier) {
         checkDuplicated(requestDto);
         checkEmailCertified(requestDto, emailIdentifier);
         checkSmsCertified(requestDto, smsIdentifier);
@@ -107,7 +106,8 @@ public class UserService {
         userRepository.save(requestDto.toEntity());
     }
 
-    private void checkDuplicated(SaveRequest requestDto) {
+    @Transactional(readOnly = true)
+    protected void checkDuplicated(SaveRequest requestDto) {
         if (isEmailDuplicated(requestDto.getEmail())) {
             throw new DuplicatedEmailException("중복된 이메일입니다.");
         }
@@ -116,35 +116,46 @@ public class UserService {
         }
     }
 
-    private void checkEmailCertified(SaveRequest requestDto, String emailIdentifier) {
+    @Transactional(readOnly = true)
+    protected void checkEmailCertified(SaveRequest requestDto, String emailIdentifier) {
         if (!emailCertificationCodeDao.existCertificationIdentifierByEmail(requestDto.getEmail())) {
             throw new CertificationIdentifierNotFoundException("이메일 인증 기록이 없습니다.");
         }
-        if(!emailCertificationCodeDao.getCertificationIdentifier(requestDto.getEmail()).equals(emailIdentifier)) {
+        if (!emailCertificationCodeDao.getCertificationIdentifier(requestDto.getEmail()).equals(emailIdentifier)) {
             throw new CertificationIdentifierMismatchException("이메일 인증 기록이 유효하지 않습니다.");
         }
     }
 
-    private void checkSmsCertified(SaveRequest requestDto, String smsIdentifier) {
+    @Transactional(readOnly = true)
+    protected void checkSmsCertified(SaveRequest requestDto, String smsIdentifier) {
         if (!smsCertificationDao.existCertificationIdentifierByPhone(requestDto.getPhone())) {
             throw new CertificationIdentifierNotFoundException("휴대폰 인증 기록이 없습니다.");
         }
-        if(!smsCertificationDao.getCertificationIdentifier(requestDto.getPhone()).equals(smsIdentifier)) {
+        if (!smsCertificationDao.getCertificationIdentifier(requestDto.getPhone()).equals(smsIdentifier)) {
             throw new CertificationIdentifierMismatchException("휴대폰 인증 기록이 유효하지 않습니다.");
         }
     }
 
-    public String login(LoginRequest requestDto) {
+    @Transactional(readOnly = true)
+    public TokenAndName login(LoginRequest requestDto) {
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 이메일입니다."));
+        checkValidUser(requestDto, user);
+        String accessToken = tokenProvider.createAccessToken(user);
+        String name = user.getName();
 
-        if(!requestDto.isPasswordCorrect(encryptionService, user.getPassword())) {
+        return new TokenAndName(accessToken, name);
+    }
+
+    private void checkValidUser(LoginRequest requestDto, User user) {
+        if (!requestDto.isPasswordCorrect(encryptionService, user.getPassword())) {
             throw new UserNotFoundException("잘못된 비밀번호 입니다.");
         }
-        if(user.getIsDeleted()) {
-            throw new UserNotFoundException("탈퇴한 사용자 입니다.");
+        if (user.getIsDeleted()) {
+            throw new UserNotFoundException("탈퇴한 회원입니다.");
         }
-
-        return tokenProvider.createAccessToken(user);
+        if (user.getIsSuspended()) {
+            throw new UserNotFoundException("정지된 회원입니다.");
+        }
     }
 }

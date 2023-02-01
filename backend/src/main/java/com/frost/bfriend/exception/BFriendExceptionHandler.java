@@ -1,6 +1,7 @@
 package com.frost.bfriend.exception;
 
 import com.frost.bfriend.exception.user.*;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -78,6 +79,13 @@ public class BFriendExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
     public ErrorMsg handleUserNotFoundException(UserNotFoundException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ErrorMsg handleExpiredJwtException(ExpiredJwtException e) {
         writeErrorLog(e);
         return getErrorMessage(e);
     }
