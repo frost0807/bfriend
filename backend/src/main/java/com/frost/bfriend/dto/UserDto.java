@@ -67,7 +67,7 @@ public class UserDto {
         private String phone;
 
         @NotBlank(message = "거주지역을 입력해주세요")
-        private String region;
+        private Region region;
 
         @NotBlank(message = "출생년월일을 입력해주세요")
         private LocalDate birthday;
@@ -86,7 +86,7 @@ public class UserDto {
                     .level(UserLevel.NORMAL)
                     .name(this.name)
                     .phone(this.phone)
-                    .region(Region.valueOf(this.region))
+                    .region(this.region)
                     .birthday(this.birthday)
                     .sex(this.sex)
                     .activityPoint(0)

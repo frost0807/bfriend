@@ -11,7 +11,7 @@ spring:
     #JPA
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
     generate-ddl: false
@@ -56,4 +56,4 @@ jwt:
 logging:
   level:
     org.hibernate.SQL: debug
-    org.hibernate.type: info
+    org.hibernate.type: trace

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -25,6 +26,6 @@ public class Question {
 
     private String content;
 
-//    @OneToMany(mappedBy = "question")
-//    private List<Answer> answers;
+    @OneToMany(mappedBy = "question")
+    private List<Answer> answers = new ArrayList<>();
 }

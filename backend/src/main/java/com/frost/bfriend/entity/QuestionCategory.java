@@ -1,9 +1,13 @@
 package com.frost.bfriend.entity;
 
 import com.frost.bfriend.common.constants.QuestionCategoryName;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -20,6 +24,6 @@ public class QuestionCategory {
     @Enumerated(EnumType.STRING)
     private QuestionCategoryName name;
 
-//    @OneToMany(mappedBy = "question_category")
-//    private List<Question> questions;
+    @OneToMany(mappedBy = "questionCategory")
+    private List<Question> questions = new ArrayList<>();
 }

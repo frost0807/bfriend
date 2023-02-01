@@ -11,7 +11,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -35,6 +38,9 @@ public class User extends UserBase {
     private Boolean isSuspended;
 
     private Boolean isDeleted;
+
+    @OneToMany(mappedBy = "user")
+    private List<QuestionAnswer> questionAnswers = new ArrayList<>();
 
 
     @Builder

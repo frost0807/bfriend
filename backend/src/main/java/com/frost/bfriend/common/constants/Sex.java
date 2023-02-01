@@ -1,7 +1,7 @@
 package com.frost.bfriend.common.constants;
 
 public enum Sex {
-    MALE("남자"), FEMALE("여자");
+    MALE("남성"), FEMALE("여성");
     private String name;
 
     Sex(String name) {

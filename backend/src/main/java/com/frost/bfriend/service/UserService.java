@@ -6,7 +6,6 @@ import com.frost.bfriend.common.util.encryption.EncryptionService;
 import com.frost.bfriend.common.util.jwt.TokenProvider;
 import com.frost.bfriend.dao.EmailCertificationCodeDao;
 import com.frost.bfriend.dao.SmsCertificationDao;
-import com.frost.bfriend.dto.UserDto.*;
 import com.frost.bfriend.entity.User;
 import com.frost.bfriend.exception.user.*;
 import com.frost.bfriend.repository.QuestionCategoryRepository;
@@ -98,7 +97,7 @@ public class UserService {
     }
 
     @Transactional
-    public void createUser(SaveRequest requestDto, String emailIdentifier, String smsIdentifier) {
+    public void saveUser(SaveRequest requestDto, String emailIdentifier, String smsIdentifier) {
         checkDuplicated(requestDto);
         checkEmailCertified(requestDto, emailIdentifier);
         checkSmsCertified(requestDto, smsIdentifier);

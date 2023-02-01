@@ -20,8 +20,7 @@ public class CookieHandler {
     public ResponseCookie createEmailIdentifierCookie(String identifier) {
         return ResponseCookie.from(EMAIL_CERTIFICATION_IDENTIFIER, identifier)
                 .httpOnly(true)
-                .secure(true)
-                .path("/users/certification")
+                .path("/")
                 .maxAge(EmailConstants.EMAIL_CERTIFICATION_IDENTIFIER_DURATION)
                 .build();
     }
@@ -29,8 +28,7 @@ public class CookieHandler {
     public ResponseCookie createSmsIdentifierCookie(String identifier) {
         return ResponseCookie.from(SMS_CERTIFICATION_IDENTIFIER, identifier)
                 .httpOnly(true)
-                .secure(true)
-                .path("/users/certification")
+                .path("/")
                 .maxAge(SmsConstants.SMS_CERTIFICATION_IDENTIFIER_DURATION)
                 .build();
     }
@@ -38,7 +36,6 @@ public class CookieHandler {
     public ResponseCookie createAccessTokenCookie(String accessToken) {
         return ResponseCookie.from(ACCESS_TOKEN, accessToken)
                 .httpOnly(true)
-                .secure(true)
                 .path("/")
                 .maxAge(JwtConstants.ACCESS_TOKEN_EXPIRY_MINUTES)
                 .build();

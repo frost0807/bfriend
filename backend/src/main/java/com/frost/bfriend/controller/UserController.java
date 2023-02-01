@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import static com.frost.bfriend.common.constants.CookieConstants.EMAIL_CERTIFICATION_IDENTIFIER;
 import static com.frost.bfriend.common.constants.CookieConstants.SMS_CERTIFICATION_IDENTIFIER;
@@ -25,7 +27,8 @@ public class UserController {
     private final CookieHandler cookieHandler;
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Boolean> isEmailDuplicated(@PathVariable String email) {
+    public ResponseEntity<Boolean> isEmailDuplicated(@PathVariable String email, HttpServletResponse response) {
+        log.info("dup");
         return ResponseEntity.ok(userService.isEmailDuplicated(email));
     }
 
@@ -65,16 +68,16 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createUser(
+    public ResponseEntity<Void> saveUser(
             @RequestBody SaveRequest request,
             @CookieValue(value = EMAIL_CERTIFICATION_IDENTIFIER) Cookie emailIdentifierCookie,
             @CookieValue(value = SMS_CERTIFICATION_IDENTIFIER) Cookie smsIdentifierCookie) {
-        userService.createUser(request, emailIdentifierCookie.getValue(), smsIdentifierCookie.getValue());
+        userService.saveUser(request, emailIdentifierCookie.getValue(), smsIdentifierCookie.getValue());
         ResponseCookie deletedEmailCookie = cookieHandler.expireCookie(EMAIL_CERTIFICATION_IDENTIFIER);
         ResponseCookie deletedSmsCookie = cookieHandler.expireCookie(SMS_CERTIFICATION_IDENTIFIER);
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,
-                deletedEmailCookie.toString(), deletedSmsCookie.toString()).build();
+        return ResponseEntity.ok().header(
+                HttpHeaders.SET_COOKIE, deletedEmailCookie.toString(), deletedSmsCookie.toString()).build();
     }
 
     @PostMapping("/login")
@@ -85,5 +88,4 @@ public class UserController {
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString()).body(name);
     }
-
 }
