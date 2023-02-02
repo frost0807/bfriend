@@ -39,7 +39,7 @@ public class SmsCertificationDao implements CertificationDao {
     public void saveCertificationIdentifier(String phone, String identifier) {
         redisTemplate.opsForValue()
                 .set(CERTIFICATION_IDENTIFIER + phone, identifier,
-                        Duration.ofSeconds(SMS_CERTIFICATION_IDENTIFIER_DURATION));
+                        Duration.ofSeconds(SMS_CERTIFICATION_IDENTIFIER_EXPIRY_SECONDS));
     }
 
     public boolean existCertificationIdentifierByPhone(String phone) {

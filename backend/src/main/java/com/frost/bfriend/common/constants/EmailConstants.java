@@ -17,7 +17,7 @@ public class EmailConstants {
 
     public static final long CERTIFICATION_CODE_DURATION = 60 * 5;
 
-    public static final long EMAIL_CERTIFICATION_IDENTIFIER_DURATION = 60 * 60;
+    public static final long EMAIL_CERTIFICATION_IDENTIFIER_EXPIRY_SECONDS = 60 * 60;
 
     public static final String NEW_PASSWORD_TITLE =
             "BFriend 새로운 비밀번호 안내를 위한 메일입니다.";

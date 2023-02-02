@@ -12,4 +12,4 @@
 
 # 사용 기술
 
-SpringBoot, Gradle, Java11, SpringDataJpa, SpringWebSocket, QueryDSL, MySQL, Redis, AWS
+SpringBoot, Gradle, Java11, SpringDataJpa, SpringWebSocket, QueryDSL, MySQL, Redis, AWS, Vue3

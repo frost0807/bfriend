@@ -38,7 +38,7 @@ public class EmailCertificationCodeDao implements CertificationDao {
     public void saveCertificationIdentifier(String email, String identifier) {
         redisTemplate.opsForValue()
                 .set(CERTIFICATION_IDENTIFIER + email, identifier,
-                        Duration.ofSeconds(EMAIL_CERTIFICATION_IDENTIFIER_DURATION));
+                        Duration.ofSeconds(EMAIL_CERTIFICATION_IDENTIFIER_EXPIRY_SECONDS));
     }
 
     public boolean existCertificationIdentifierByEmail(String email) {

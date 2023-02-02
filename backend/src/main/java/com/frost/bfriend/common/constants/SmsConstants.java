@@ -14,5 +14,5 @@ public class SmsConstants {
 
     public static final long CERTIFICATION_CODE_DURATION = 60 * 5;
 
-    public static final long SMS_CERTIFICATION_IDENTIFIER_DURATION = 60 * 60;
+    public static final long SMS_CERTIFICATION_IDENTIFIER_EXPIRY_SECONDS = 60 * 60;
 }
