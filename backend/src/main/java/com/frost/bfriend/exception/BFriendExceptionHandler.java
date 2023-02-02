@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 @Slf4j
 @RestControllerAdvice
 public class BFriendExceptionHandler {
@@ -18,6 +20,13 @@ public class BFriendExceptionHandler {
 
     public ErrorMsg getErrorMessage(Exception e) {
         return new ErrorMsg(e.getClass().getSimpleName(), e.getLocalizedMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ErrorMsg handleConstraintViolationException(ConstraintViolationException e) {
+        writeErrorLog(e);
+        return new ErrorMsg(e.getClass().getSimpleName(), e.getLocalizedMessage().split(":")[1]);
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -86,6 +95,13 @@ public class BFriendExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ExpiredJwtException.class)
     public ErrorMsg handleExpiredJwtException(ExpiredJwtException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(CookieNotFoundException.class)
+    public ErrorMsg handleCookieNotFoundException(CookieNotFoundException e) {
         writeErrorLog(e);
         return getErrorMessage(e);
     }

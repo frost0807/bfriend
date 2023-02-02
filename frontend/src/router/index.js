@@ -21,6 +21,32 @@ const routes = [
     name: 'signup',
     component: () =>
       import(/* webpackChunkName: "signup" */ '../views/SignUpView.vue')
+  },
+  {
+    path: '/signup-success',
+    name: 'signup-success',
+    component: () =>
+      import(/* webpackChunkName: "signup" */ '../views/SignUpSuccessView.vue')
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () =>
+      import(/* webpackChunkName: "login" */ '../views/LoginView.vue')
+  },
+  {
+    path: '/mypage',
+    name: 'mypage',
+    component: () =>
+      import(/* webpackChunkName: "mypage" */ '../views/MyPageView.vue')
+  },
+  {
+    path: '/question-answer-input',
+    name: 'question-answer-input',
+    component: () =>
+      import(
+        /* webpackChunkName: "question-answer" */ '../views/QuestionAnswerInputView.vue'
+      )
   }
 ]
 

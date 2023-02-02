@@ -1,5 +1,8 @@
 package com.frost.bfriend.controller;
 
+import com.frost.bfriend.common.constants.CookieConstants;
+import com.frost.bfriend.common.constants.JwtConstants;
+import com.frost.bfriend.common.constants.RegexConstants;
 import com.frost.bfriend.common.util.cookie.CookieHandler;
 import com.frost.bfriend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -7,38 +10,47 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 
 import static com.frost.bfriend.common.constants.CookieConstants.EMAIL_CERTIFICATION_IDENTIFIER;
 import static com.frost.bfriend.common.constants.CookieConstants.SMS_CERTIFICATION_IDENTIFIER;
+import static com.frost.bfriend.common.constants.RegexConstants.*;
 import static com.frost.bfriend.dto.UserDto.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
+@Validated
 public class UserController {
 
     private final UserService userService;
     private final CookieHandler cookieHandler;
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Boolean> isEmailDuplicated(@PathVariable String email, HttpServletResponse response) {
-        log.info("dup");
+    public ResponseEntity<Boolean> isEmailDuplicated(
+            @PathVariable @Email(message = EMAIL_REGEX_FAIL) String email) {
+        log.info(email);
         return ResponseEntity.ok(userService.isEmailDuplicated(email));
     }
 
     @GetMapping("/phone/{phone}")
-    public ResponseEntity<Boolean> isPhoneDuplicated(@PathVariable String phone) {
+    public ResponseEntity<Boolean> isPhoneDuplicated(
+            @PathVariable @Pattern(regexp = PHONE, message = PHONE_REGEX_FAIL) String phone) {
         return ResponseEntity.ok(userService.isPhoneDuplicated(phone));
     }
 
     @GetMapping("/email/certification/{email}")
-    public ResponseEntity<Void> sendCertificationEmail(@PathVariable String email) {
+    public ResponseEntity<Void> sendCertificationEmail(
+            @PathVariable @Email(message = EMAIL_REGEX_FAIL) String email) {
         userService.sendCertificationEmail(email);
 
         return ResponseEntity.ok().build();
@@ -53,7 +65,8 @@ public class UserController {
     }
 
     @GetMapping("/phone/certification/{phone}")
-    public ResponseEntity<Void> sendCertificationSms(@PathVariable String phone) {
+    public ResponseEntity<Void> sendCertificationSms(
+            @PathVariable @Pattern(regexp = PHONE, message = PHONE_REGEX_FAIL) String phone) {
         userService.sendCertificationSms(phone);
 
         return ResponseEntity.ok().build();
@@ -87,5 +100,12 @@ public class UserController {
         String name = tokenAndName.getName();
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString()).body(name);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        ResponseCookie expireAccessTokenCookie = cookieHandler.expireCookie(CookieConstants.ACCESS_TOKEN);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, expireAccessTokenCookie.toString()).build();
     }
 }

@@ -1,6 +1,5 @@
 package com.frost.bfriend.common.util.jwt;
 
-import com.frost.bfriend.dto.UserDto;
 import com.frost.bfriend.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -30,8 +29,9 @@ public class TokenProvider {
 
     public String createAccessToken(User user) {
         Key key = Keys.hmacShaKeyFor(ACCESS_TOKEN_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
-        Date expiryTime = Date.from(Instant.now().plus(ACCESS_TOKEN_EXPIRY_MINUTES, ChronoUnit.MINUTES));
+        Date expiryTime = Date.from(Instant.now().plus(ACCESS_TOKEN_EXPIRY_SECONDS, ChronoUnit.MINUTES));
         HashMap<String, String> authClaim = new HashMap<>();
+        authClaim.put(USER_ID, String.valueOf(user.getId()));
         authClaim.put(USER_LEVEL, user.getLevel().name());
 
         return Jwts.builder()
@@ -50,6 +50,6 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return new UserIdAndLevel(claims.getSubject(), claims.get(USER_LEVEL, String.class));
+        return new UserIdAndLevel(claims.get(USER_ID, String.class), claims.get(USER_LEVEL, String.class));
     }
 }

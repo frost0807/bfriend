@@ -1,34 +1,68 @@
 <template>
   <v-app :theme="theme">
     <v-app-bar>
+      <router-link to="/">Home</router-link>
       <v-spacer></v-spacer>
 
-      <v-btn
+      <!-- <v-btn
         :prepend-icon="
           theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'
         "
         @click="onClick"
         >Toggle Theme</v-btn
-      >
-      <router-link to="/signup">회원가입</router-link>
-      <router-link to="/login">로그인</router-link>
+      > -->
+      <p v-if="username">{{ username }}님 환영합니다.</p>
+      <p v-if="!username">로그인이 필요합니다</p>
+      <v-spacer></v-spacer>
+      <router-link v-if="username" to="/mypage">마이 페이지</router-link>
+      <v-btn v-if="username" @click="logout">로그아웃</v-btn>
+      <router-link v-if="!username" to="/signup">회원가입</router-link>
+      <router-link v-if="!username" to="/login">로그인</router-link>
     </v-app-bar>
 
     <v-main>
       <v-container>
-        <router-view/>
+        <router-view />
       </v-container>
     </v-main>
   </v-app>
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script>
+import axios from 'axios'
 
-const theme = ref('light')
-
-function onClick() {
-  theme.value = theme.value === 'light' ? 'dark' : 'light'
+export default {
+  data() {
+    return {
+      theme: 'light',
+      username: ''
+    }
+  },
+  mounted() {
+    window.addEventListener('login-event', (event) => {
+      this.username = event.detail.storage
+    })
+    window.addEventListener('logout-event', () => {
+      this.username = ''
+    })
+  },
+  methods: {
+    onClick() {
+      this.theme = this.theme === 'light' ? 'dark' : 'light'
+    },
+    logout() {
+      axios
+        .get(axios.defaults.baseURL + '/users/logout')
+        .then((res) => console.log(res))
+        .catch((err) => {
+          console.log(err.response)
+          alert(err.response.data.message)
+        })
+      localStorage.removeItem('username')
+      window.dispatchEvent(new CustomEvent('logout-event'))
+      this.$router.replace({ name: 'login' })
+    }
+  }
 }
 </script>
 

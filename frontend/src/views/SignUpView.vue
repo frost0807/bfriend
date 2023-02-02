@@ -117,17 +117,7 @@
       placeholder="생년월일을 선택해주세요"
     ></Datepicker>
 
-    <v-checkbox
-      v-model="checkbox.value.value"
-      :error-messages="checkbox.errorMessage.value"
-      value="1"
-      label="Option"
-      type="checkbox"
-    ></v-checkbox>
-
     <v-btn type="submit"> 가입하기 </v-btn>
-
-    <v-btn @click="handleReset"> clear </v-btn>
   </form>
 </template>
 <script>
@@ -148,7 +138,6 @@ export default {
     }
   },
   setup() {
-    // const date = ref()
     const format = (date) => {
       const day = date.getDate() + 1
       const month = date.getMonth() + 1
@@ -163,7 +152,7 @@ export default {
     const isEmailCertified = ref(false)
     const isPhoneCertified = ref(false)
 
-    const { handleSubmit, handleReset } = useForm({
+    const { handleSubmit } = useForm({
       validationSchema: {
         email(value) {
           if (!/^[a-z0-9._+-]+@[a-z.-]+\.[a-z]{2,}$/i.test(value)) {
@@ -272,12 +261,12 @@ export default {
       }
       const userData = JSON.stringify(values, null, 2)
       axios
-        .post(axios.defaults.baseURL + 'users', userData, {
+        .post(axios.defaults.baseURL + '/users', userData, {
           headers: { 'Content-Type': 'application/json' }
         })
         .then((res) => {
           if (res.status === 200) {
-            console.log(res)
+            this.$router.replace({ name: 'signup-success' })
           }
         })
         .catch((err) => {
@@ -298,7 +287,6 @@ export default {
       checkbox,
       sexItems,
       regionItems,
-      handleReset,
       submit,
       date,
       format,
@@ -313,8 +301,10 @@ export default {
   methods: {
     // 이메일 중복 확인
     checkEmailDuplicated() {
+      console.log(this.email.errorMessage)
+      console.log(this.email.errorMessage.value)
       axios
-        .get(axios.defaults.baseURL + 'users/email/' + this.email.value.value)
+        .get(axios.defaults.baseURL + '/users/email/' + this.email.value.value)
         .then((res) => {
           this.isEmailDuplicated = res.status !== 200
         })
@@ -332,7 +322,7 @@ export default {
       axios
         .get(
           axios.defaults.baseURL +
-            'users/email/certification/' +
+            '/users/email/certification/' +
             this.email.value.value
         )
         .then((res) => {
@@ -351,7 +341,7 @@ export default {
       }
       axios
         .post(
-          axios.defaults.baseURL + 'users/email/certification',
+          axios.defaults.baseURL + '/users/email/certification',
           this.emailCertificationRequest
         )
         .then((res) => {
@@ -365,7 +355,7 @@ export default {
     },
     checkPhoneDuplicated() {
       axios
-        .get(axios.defaults.baseURL + 'users/phone/' + this.phone.value.value)
+        .get(axios.defaults.baseURL + '/users/phone/' + this.phone.value.value)
         .then((res) => {
           this.isPhoneDuplicated = res.status !== 200
         })
@@ -382,7 +372,7 @@ export default {
       axios
         .get(
           axios.defaults.baseURL +
-            'users/phone/certification/' +
+            '/users/phone/certification/' +
             this.phone.value.value
         )
         .then((res) => {
@@ -401,7 +391,7 @@ export default {
       }
       axios
         .post(
-          axios.defaults.baseURL + 'users/phone/certification',
+          axios.defaults.baseURL + '/users/phone/certification',
           this.phoneCertificationRequest
         )
         .then((res) => {

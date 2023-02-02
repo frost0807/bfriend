@@ -23,7 +23,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        log.info("cors");
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:8081")
                 .allowCredentials(true)
@@ -33,9 +32,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        log.info("inter123");
         registry.addInterceptor(loginCheckInterceptor)
-                .excludePathPatterns("/*", "/**")
+                .addPathPatterns("/question-answers")
                 .order(1);
     }
 
