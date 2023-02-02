@@ -29,11 +29,6 @@ public class QuestionAnswerController {
         return ResponseEntity.ok(questionAnswerService.getQuestionsByCategoryId(categoryId));
     }
 
-    @GetMapping("/answers")
-    public ResponseEntity<List<AnswerDto>> getAnswers(@RequestParam Integer questionId) {
-        return ResponseEntity.ok(questionAnswerService.getAnswersByQuestionId(questionId));
-    }
-
     @PostMapping("/question-answers")
     public ResponseEntity<Void> saveQuestionAnswer(@LoginUser Long userId, SaveRequest request) {
         questionAnswerService.saveQuestionAnswer(userId, request);

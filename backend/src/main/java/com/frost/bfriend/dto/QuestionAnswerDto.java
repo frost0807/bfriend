@@ -32,31 +32,19 @@ public class QuestionAnswerDto {
     }
 
     @Getter
-    public static class AnswerDto {
-        private Integer answerId;
-
-        private String content;
-
-        public AnswerDto(Answer answer) {
-            this.answerId = answer.getId();
-            this.content = answer.getContent();
-        }
-    }
-
-    @Getter
     @NoArgsConstructor
     public static class SaveRequest {
         @NotBlank
         private Integer questionId;
 
         @NotBlank
-        private Integer answerId;
+        private String answer;
 
-        public QuestionAnswer toEntity(User user, Question question, Answer answer) {
+        public QuestionAnswer toEntity(User user, Question question) {
             return QuestionAnswer.builder()
                     .user(user)
                     .question(question)
-                    .answer(answer)
+                    .answer(this.answer)
                     .build();
         }
     }
@@ -73,7 +61,7 @@ public class QuestionAnswerDto {
         public QuestionAnswerResponse(QuestionAnswer questionAnswer) {
             this.questionAnswerId = questionAnswer.getId();
             this.question = questionAnswer.getQuestion().getContent();
-            this.answer = questionAnswer.getAnswer().getContent();
+            this.answer = questionAnswer.getAnswer();
         }
     }
 }

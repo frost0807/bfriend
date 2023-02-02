@@ -25,7 +25,6 @@ public class QuestionAnswerService {
     private final UserRepository userRepository;
     private final QuestionCategoryRepository questionCategoryRepository;
     private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
     private final QuestionAnswerRepository questionAnswerRepository;
 
     @Transactional(readOnly = true)
@@ -48,21 +47,9 @@ public class QuestionAnswerService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public List<AnswerDto> getAnswersByQuestionId(Integer questionId) {
-        Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new QuestionNotFoundException());
-
-        return question.getAnswers()
-                .stream()
-                .map(answer -> new AnswerDto(answer))
-                .collect(Collectors.toList());
-    }
-
     @Transactional
-    public void saveQuestionAnswer(Long userId, SaveRequest request) {
-        QuestionAnswer questionAnswer =
-                createQuestionAnswer(getUserById(userId), getQuestionById(request), getAnswerById(request));
+    public void saveQuestionAnswer(Long userId, SaveRequest requestDto) {
+        QuestionAnswer questionAnswer = requestDto.toEntity(getUserById(userId), getQuestionById(requestDto));
         questionAnswerRepository.save(questionAnswer);
     }
 
@@ -85,17 +72,4 @@ public class QuestionAnswerService {
     private Question getQuestionById(SaveRequest request) {
         return questionRepository.findById(request.getQuestionId()).orElseThrow(() -> new QuestionNotFoundException());
     }
-
-    private Answer getAnswerById(SaveRequest request) {
-        return answerRepository.findById(request.getAnswerId()).orElseThrow(() -> new AnswerNotFoundException());
-    }
-
-    private QuestionAnswer createQuestionAnswer(User user, Question question, Answer answer) {
-        return QuestionAnswer.builder()
-                .user(user)
-                .question(question)
-                .answer(answer)
-                .build();
-    }
-
 }

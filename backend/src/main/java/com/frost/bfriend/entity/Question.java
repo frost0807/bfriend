@@ -26,6 +26,4 @@ public class Question {
 
     private String content;
 
-    @OneToMany(mappedBy = "question")
-    private List<Answer> answers = new ArrayList<>();
 }
