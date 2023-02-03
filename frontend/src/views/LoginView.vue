@@ -1,3 +1,5 @@
+//로그인 권한 필요
+
 <template>
   <v-form @submit.prevent="login">
     <v-text-field v-model="loginData.email" label="이메일"> </v-text-field>
@@ -31,9 +33,7 @@ export default {
     login() {
       const userData = JSON.stringify(this.loginData, null, 2)
       axios
-        .post(axios.defaults.baseURL + '/users/login', userData, {
-          headers: { 'Content-Type': 'application/json' }
-        })
+        .post(axios.defaults.baseURL + '/users/login', userData)
         .then((res) => {
           if (res.status === 200) {
             console.log(res)
@@ -47,10 +47,6 @@ export default {
             )
             this.$router.replace({ name: 'home' })
           }
-        })
-        .catch((err) => {
-          console.log(err.response)
-          alert(err.response.data.message)
         })
     }
   }

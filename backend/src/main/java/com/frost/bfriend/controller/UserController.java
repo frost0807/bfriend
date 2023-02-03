@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @PostMapping("/email/certification")
-    public ResponseEntity<Void> checkEmailCertificationCode(@RequestBody EmailCertificationRequest request) {
+    public ResponseEntity<Void> checkEmailCertificationCode(@RequestBody @Valid EmailCertificationRequest request) {
         String identifier = userService.checkEmailCertificationCode(request);
         ResponseCookie emailIdentifierCookie = cookieHandler.createEmailIdentifierCookie(identifier);
 
@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @PostMapping("/phone/certification")
-    public ResponseEntity<Void> checkSmsCertificationCode(@RequestBody SmsCertificationRequest request) {
+    public ResponseEntity<Void> checkSmsCertificationCode(@RequestBody @Valid SmsCertificationRequest request) {
         String identifier = userService.checkSmsCertificationCode(request);
         ResponseCookie smsIdentifierCookie = cookieHandler.createSmsIdentifierCookie(identifier);
 
@@ -82,7 +82,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Void> saveUser(
-            @RequestBody SaveRequest request,
+            @RequestBody @Valid SaveRequest request,
             @CookieValue(value = EMAIL_CERTIFICATION_IDENTIFIER) Cookie emailIdentifierCookie,
             @CookieValue(value = SMS_CERTIFICATION_IDENTIFIER) Cookie smsIdentifierCookie) {
         userService.saveUser(request, emailIdentifierCookie.getValue(), smsIdentifierCookie.getValue());
@@ -94,7 +94,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<String> login(@RequestBody @Valid LoginRequest request) {
         TokenAndName tokenAndName = userService.login(request);
         ResponseCookie accessTokenCookie = cookieHandler.createAccessTokenCookie(tokenAndName.getToken());
         String name = tokenAndName.getName();

@@ -41,11 +41,19 @@ const routes = [
       import(/* webpackChunkName: "mypage" */ '../views/MyPageView.vue')
   },
   {
-    path: '/question-answer-input',
-    name: 'question-answer-input',
+    path: '/question-answer-create',
+    name: 'question-answer-create',
     component: () =>
       import(
-        /* webpackChunkName: "question-answer" */ '../views/QuestionAnswerInputView.vue'
+        /* webpackChunkName: "mypage" */ '../views/QuestionAnswerCreateView.vue'
+      )
+  },
+  {
+    path: '/question-answer-update',
+    name: 'question-answer-update',
+    component: () =>
+      import(
+        /* webpackChunkName: "mypage" */ '../views/QuestionAnswerUpdateView.vue'
       )
   }
 ]
