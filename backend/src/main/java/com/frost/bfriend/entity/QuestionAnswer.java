@@ -23,7 +23,5 @@ public class QuestionAnswer extends BaseTimeEntity {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "answer_id")
-    private Answer answer;
+    private String answer;
 }

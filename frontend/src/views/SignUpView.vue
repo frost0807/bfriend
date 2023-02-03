@@ -1,3 +1,5 @@
+//로그인 권한 필요 X
+
 <template>
   <form @submit.prevent="submit">
     <!-- 이하 이메일 -->
@@ -260,19 +262,11 @@ export default {
         return
       }
       const userData = JSON.stringify(values, null, 2)
-      axios
-        .post(axios.defaults.baseURL + '/users', userData, {
-          headers: { 'Content-Type': 'application/json' }
-        })
-        .then((res) => {
-          if (res.status === 200) {
-            this.$router.replace({ name: 'signup-success' })
-          }
-        })
-        .catch((err) => {
-          console.log(err.response)
-          alert(err.response.data.message)
-        })
+      axios.post(axios.defaults.baseURL + '/users', userData).then((res) => {
+        if (res.status === 200) {
+          this.$router.replace({ name: 'signup-success' })
+        }
+      })
       return userData
     })
 
@@ -308,10 +302,6 @@ export default {
         .then((res) => {
           this.isEmailDuplicated = res.status !== 200
         })
-        .catch((err) => {
-          console.log(err.response)
-          alert(err.response.data.message)
-        })
     },
     // 이메일 인증 메일 전송
     sendEmailCertification() {
@@ -327,10 +317,6 @@ export default {
         )
         .then((res) => {
           this.isEmailCodeSent = res.status === 200
-        })
-        .catch((err) => {
-          console.log(err.response)
-          alert(err.response.data.message)
         })
     },
     // 이메일 인증 코드 전송
@@ -348,20 +334,12 @@ export default {
           console.log(res.data)
           this.isEmailCertified = res.status === 200
         })
-        .catch((err) => {
-          console.log(err.response)
-          alert(err.response.data.message)
-        })
     },
     checkPhoneDuplicated() {
       axios
         .get(axios.defaults.baseURL + '/users/phone/' + this.phone.value.value)
         .then((res) => {
           this.isPhoneDuplicated = res.status !== 200
-        })
-        .catch((err) => {
-          console.log(err.response)
-          alert(err.response.data.message)
         })
     },
     sendPhoneCertification() {
@@ -379,10 +357,6 @@ export default {
           this.isPhoneCodeSent = res.status === 200
           console.log(this.isPhoneCodeSent)
         })
-        .catch((err) => {
-          console.log(err.response)
-          alert(err.response.data.message)
-        })
     },
     sendPhoneCertificationCode() {
       this.phoneCertificationRequest = {
@@ -396,10 +370,6 @@ export default {
         )
         .then((res) => {
           this.isPhoneCertified = res.status === 200
-        })
-        .catch((err) => {
-          console.log(err.response)
-          alert(err.response.data.message)
         })
     }
   }

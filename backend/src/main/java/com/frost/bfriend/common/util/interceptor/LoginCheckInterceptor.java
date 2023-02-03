@@ -28,8 +28,10 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         log.info("JwtAuthenticationInterceptor preHandle");
+        if(request.getMethod().equals("OPTIONS")) {
+            return true;
+        }
         String accessToken = cookieHandler.parseAccessTokenCookie(request).getValue();
-
         if(accessToken == null || accessToken.equalsIgnoreCase("null")) {
             throw new NotLoggedInException("토큰이 존재하지 않습니다.");
         }

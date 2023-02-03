@@ -3,14 +3,13 @@ package com.frost.bfriend.common;
 import com.frost.bfriend.common.constants.QuestionCategoryName;
 import com.frost.bfriend.common.constants.Region;
 import com.frost.bfriend.common.constants.Sex;
-import com.frost.bfriend.common.constants.UserLevel;
 import com.frost.bfriend.common.util.encryption.EncryptionService;
-import com.frost.bfriend.dto.UserDto;
-import com.frost.bfriend.entity.Answer;
 import com.frost.bfriend.entity.Question;
+import com.frost.bfriend.entity.QuestionAnswer;
 import com.frost.bfriend.entity.QuestionCategory;
 import com.frost.bfriend.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +21,9 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.frost.bfriend.dto.UserDto.*;
+import static com.frost.bfriend.dto.UserDto.SaveRequest;
 
+@Slf4j
 @Profile("local")
 @Component
 @RequiredArgsConstructor
@@ -34,8 +34,8 @@ public class init {
 
     @PostConstruct
     public void init() {
-        initService.initQuestionAnswer();
         initService.initUser();
+        initService.initQuestionAnswer();
     }
 
     @RequiredArgsConstructor
@@ -76,6 +76,8 @@ public class init {
             em.persist(hobby);
             em.persist(etc);
 
+            em.flush();
+            em.clear();
             for (int i = 0; i < 5; i++) {
                 for (int j = 1; j < 6; j++) {
                     Question question = Question.builder()
@@ -83,14 +85,19 @@ public class init {
                             .content(questionCategories.get(i).getName().getName() + "질문 " + j)
                             .build();
                     em.persist(question);
-                    for (int k = 1; k < 11; k++) {
-                        Answer answer = Answer.builder()
-                                .question(question)
-                                .content(question.getContent() + " 답변 " + k)
-                                .build();
-                        em.persist(answer);
-                    }
                 }
+            }
+            em.flush();
+            em.clear();
+
+            for (int i = 1; i < 25; i += 2) {
+                log.info("i = {}", i);
+                QuestionAnswer questionAnswer = QuestionAnswer.builder()
+                        .user(em.find(User.class, 1L))
+                        .question(em.find(Question.class, i))
+                        .answer("답변 " + i)
+                        .build();
+                em.persist(questionAnswer);
             }
         }
     }

@@ -19,6 +19,26 @@ const vuetify = createVuetify({
 
 axios.defaults.baseURL = 'http://localhost:8080'
 axios.defaults.withCredentials = true
+axios.defaults.headers.post['Content-Type'] = 'application/json'
+axios.defaults.headers.put['Content-Type'] = 'application/json'
+axios.defaults.headers.patch['Content-Type'] = 'application/json'
+axios.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    console.log(err.response)
+    alert(err.response.data.message)
+    if (err.response.status === 401) {
+      window.dispatchEvent(
+        new CustomEvent('unauthorized-event', {
+          detail: {
+            storage: localStorage.removeItem('username')
+          }
+        })
+      )
+    }
+    return Promise.reject(err)
+  }
+)
 
 createApp(App)
   .use(vuetify)

@@ -5,6 +5,7 @@ import com.frost.bfriend.common.constants.JwtConstants;
 import com.frost.bfriend.common.constants.SmsConstants;
 import com.frost.bfriend.exception.user.CookieNotFoundException;
 import com.frost.bfriend.exception.user.NotLoggedInException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.Arrays;
 
 import static com.frost.bfriend.common.constants.CookieConstants.*;
 
+@Slf4j
 @Component
 public class CookieHandler {
 

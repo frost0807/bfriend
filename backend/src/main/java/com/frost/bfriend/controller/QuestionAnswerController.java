@@ -4,45 +4,52 @@ import com.frost.bfriend.common.annotation.LoginUser;
 import com.frost.bfriend.service.QuestionAnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static com.frost.bfriend.dto.QuestionAnswerDto.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/question-answers")
 public class QuestionAnswerController {
 
     private final QuestionAnswerService questionAnswerService;
 
-    @GetMapping("/question-categories")
-    public ResponseEntity<List<QuestionCategoryDto>> getQuestionCategories() {
-        return ResponseEntity.ok(questionAnswerService.getQuestionCategories());
+    @GetMapping("/categories-and-questions")
+    public ResponseEntity<CategoryAndQuestionResponse> getCategoriesAndQuestions() {
+        return ResponseEntity.ok(questionAnswerService.getCategoriesAndQuestions());
     }
 
-    @GetMapping("/questions")
-    public ResponseEntity<List<QuestionDto>> getQuestions(@RequestParam Integer categoryId) {
-        return ResponseEntity.ok(questionAnswerService.getQuestionsByCategoryId(categoryId));
-    }
-
-    @GetMapping("/answers")
-    public ResponseEntity<List<AnswerDto>> getAnswers(@RequestParam Integer questionId) {
-        return ResponseEntity.ok(questionAnswerService.getAnswersByQuestionId(questionId));
-    }
-
-    @PostMapping("/question-answers")
-    public ResponseEntity<Void> saveQuestionAnswer(@LoginUser Long userId, SaveRequest request) {
-        questionAnswerService.saveQuestionAnswer(userId, request);
+    @PostMapping
+    public ResponseEntity<Void> saveQuestionAnswer(
+            @LoginUser Long userId,
+            @RequestBody @Valid List<SaveRequest> requests) {
+        questionAnswerService.saveQuestionAnswer(userId, requests);
 
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/question-answers")
-    public ResponseEntity<List<QuestionAnswerResponse>> getQuestionAnswers(@LoginUser Long userId) {
-        return ResponseEntity.ok(questionAnswerService.getQuestionAnswers(userId));
+    @PatchMapping
+    public ResponseEntity<Void> updateQuestionAnswer(
+            @LoginUser Long userId,
+            @RequestBody @Valid List<UpdateRequest> requests) {
+        questionAnswerService.updateQuestionAnswer(userId, requests);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ResponseForUpdate>> getQuestionAnswersForUpdate(
+            @LoginUser Long userId) {
+        return ResponseEntity.ok(questionAnswerService.getQuestionAnswersForUpdateByUserId(userId));
+    }
+
+    @GetMapping("/mypage")
+    public ResponseEntity<List<ResponseForMyPage>> getQuestionAnswersForMyPage(
+            @LoginUser Long userId) {
+        return ResponseEntity.ok(questionAnswerService.getQuestionAnswersForMyPageByUserId(userId));
     }
 }

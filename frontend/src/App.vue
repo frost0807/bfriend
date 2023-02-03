@@ -39,11 +39,16 @@ export default {
     }
   },
   mounted() {
+    this.username = localStorage.getItem('username')
     window.addEventListener('login-event', (event) => {
       this.username = event.detail.storage
     })
     window.addEventListener('logout-event', () => {
       this.username = ''
+    })
+    window.addEventListener('unauthorized-event', () => {
+      this.username = ''
+      this.$router.push({ name: 'login' })
     })
   },
   methods: {
@@ -54,10 +59,7 @@ export default {
       axios
         .get(axios.defaults.baseURL + '/users/logout')
         .then((res) => console.log(res))
-        .catch((err) => {
-          console.log(err.response)
-          alert(err.response.data.message)
-        })
+
       localStorage.removeItem('username')
       window.dispatchEvent(new CustomEvent('logout-event'))
       this.$router.replace({ name: 'login' })

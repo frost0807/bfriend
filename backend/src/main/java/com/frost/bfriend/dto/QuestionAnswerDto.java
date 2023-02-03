@@ -1,19 +1,21 @@
 package com.frost.bfriend.dto;
 
 import com.frost.bfriend.entity.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 public class QuestionAnswerDto {
     @Getter
-    public static class QuestionCategoryDto {
+    public static class CategoryDto {
         private Integer questionCategoryId;
 
         private String name;
 
-        public QuestionCategoryDto(QuestionCategory questionCategory) {
+        public CategoryDto(QuestionCategory questionCategory) {
             this.questionCategoryId = questionCategory.getId();
             this.name = questionCategory.getName().getName();
         }
@@ -23,23 +25,26 @@ public class QuestionAnswerDto {
     public static class QuestionDto {
         private Integer questionId;
 
+        private Integer categoryId;
+
         private String content;
 
         public QuestionDto(Question question) {
+            this.categoryId = question.getQuestionCategory().getId();
             this.questionId = question.getId();
             this.content = question.getContent();
         }
     }
 
     @Getter
-    public static class AnswerDto {
-        private Integer answerId;
+    public static class CategoryAndQuestionResponse {
+        private List<CategoryDto> categories;
 
-        private String content;
+        private List<QuestionDto> questions;
 
-        public AnswerDto(Answer answer) {
-            this.answerId = answer.getId();
-            this.content = answer.getContent();
+        public CategoryAndQuestionResponse(List<CategoryDto> categories, List<QuestionDto> questions) {
+            this.categories = categories;
+            this.questions = questions;
         }
     }
 
@@ -50,30 +55,66 @@ public class QuestionAnswerDto {
         private Integer questionId;
 
         @NotBlank
-        private Integer answerId;
+        private String answer;
 
-        public QuestionAnswer toEntity(User user, Question question, Answer answer) {
+        public QuestionAnswer toEntity(User user, Question question) {
             return QuestionAnswer.builder()
                     .user(user)
                     .question(question)
-                    .answer(answer)
+                    .answer(this.answer)
                     .build();
         }
     }
 
     @Getter
-    public static class QuestionAnswerResponse {
-
-        private Long questionAnswerId;
-
+    public static class ResponseForMyPage {
         private String question;
 
         private String answer;
 
-        public QuestionAnswerResponse(QuestionAnswer questionAnswer) {
-            this.questionAnswerId = questionAnswer.getId();
+        public ResponseForMyPage(QuestionAnswer questionAnswer) {
             this.question = questionAnswer.getQuestion().getContent();
-            this.answer = questionAnswer.getAnswer().getContent();
+            this.answer = questionAnswer.getAnswer();
+        }
+    }
+
+    @Getter
+    public static class ResponseForUpdate {
+        private Long questionAnswerId;
+
+        private Integer categoryId;
+
+        private Integer questionId;
+
+        private String answer;
+
+        public ResponseForUpdate(QuestionAnswer questionAnswer) {
+            this.questionAnswerId = questionAnswer.getId();
+            this.categoryId = questionAnswer.getQuestion().getQuestionCategory().getId();
+            this.questionId = questionAnswer.getQuestion().getId();
+            this.answer = questionAnswer.getAnswer();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class UpdateRequest {
+        @NotBlank
+        private Long questionAnswerId;
+
+        @NotBlank
+        private Integer questionId;
+
+        @NotBlank(message = "답변을 입력하지 않으셨습니다.")
+        private String answer;
+
+        public QuestionAnswer toEntity(User user, Question question) {
+            return QuestionAnswer.builder()
+                    .id(this.questionAnswerId)
+                    .user(user)
+                    .question(question)
+                    .answer(this.answer)
+                    .build();
         }
     }
 }
