@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import ForgotPasswordView from '../views/user/ForgotPasswordView.vue'
 
 const routes = [
   {
@@ -20,32 +21,34 @@ const routes = [
     path: '/signup',
     name: 'signup',
     component: () =>
-      import(/* webpackChunkName: "signup" */ '../views/SignUpView.vue')
+      import(/* webpackChunkName: "signup" */ '../views/user/SignUpView.vue')
   },
   {
     path: '/signup-success',
     name: 'signup-success',
     component: () =>
-      import(/* webpackChunkName: "signup" */ '../views/SignUpSuccessView.vue')
+      import(
+        /* webpackChunkName: "signup" */ '../views/user/SignUpSuccessView.vue'
+      )
   },
   {
     path: '/login',
     name: 'login',
     component: () =>
-      import(/* webpackChunkName: "login" */ '../views/LoginView.vue')
+      import(/* webpackChunkName: "login" */ '../views/user/LoginView.vue')
   },
   {
     path: '/mypage',
     name: 'mypage',
     component: () =>
-      import(/* webpackChunkName: "mypage" */ '../views/MyPageView.vue')
+      import(/* webpackChunkName: "mypage" */ '../views/user/MyPageView.vue')
   },
   {
     path: '/question-answer-create',
     name: 'question-answer-create',
     component: () =>
       import(
-        /* webpackChunkName: "mypage" */ '../views/QuestionAnswerCreateView.vue'
+        /* webpackChunkName: "mypage" */ '../views/user/QuestionAnswerCreateView.vue'
       )
   },
   {
@@ -53,8 +56,13 @@ const routes = [
     name: 'question-answer-update',
     component: () =>
       import(
-        /* webpackChunkName: "mypage" */ '../views/QuestionAnswerUpdateView.vue'
+        /* webpackChunkName: "mypage" */ '../views/user/QuestionAnswerUpdateView.vue'
       )
+  },
+  {
+    path: '/forgot-password',
+    name: 'forgot-password',
+    component: ForgotPasswordView
   }
 ]
 

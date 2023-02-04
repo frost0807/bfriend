@@ -3,6 +3,7 @@ package com.frost.bfriend.entity;
 import com.frost.bfriend.common.constants.Region;
 import com.frost.bfriend.common.constants.Sex;
 import com.frost.bfriend.common.constants.UserLevel;
+import com.frost.bfriend.common.util.encryption.EncryptionService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

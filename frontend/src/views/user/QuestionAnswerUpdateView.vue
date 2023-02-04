@@ -97,7 +97,6 @@ export default {
     },
     submit() {
       const questionAnswerData = JSON.stringify(this.questionAndAnswer, null, 2)
-      console.log(questionAnswerData)
       axios
         .patch(axios.defaults.baseURL + '/question-answers', questionAnswerData)
         .then((res) => {

@@ -47,7 +47,7 @@ public class UserControllerTest {
     @DisplayName("중복 이메일 검증 실패")
     void isDuplicatedEmailExceptionBeingThrownCorrectly() throws Exception {
         doThrow(new DuplicatedEmailException("중복된 이메일입니다."))
-                .when(userService).isEmailDuplicated(anyString());
+                .when(userService).existByEmail(anyString());
 
         mockMvc.perform(
                         get("/users/email/{email}", "frost@email.com"))
@@ -56,27 +56,27 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.code").value("DuplicatedEmailException"))
                 .andExpect(jsonPath("$.message").value("중복된 이메일입니다."));
 
-        verify(userService).isEmailDuplicated(anyString());
+        verify(userService).existByEmail(anyString());
     }
 
     @Test
     @DisplayName("중복 이메일 검증 성공")
     void isDuplicatedEmailCheckSucceed() throws Exception {
-        given(userService.isEmailDuplicated(anyString())).willReturn(true);
+        given(userService.existByEmail(anyString())).willReturn(true);
 
         mockMvc.perform(
                         get("/users/email/{email}", "frost@email.com"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(userService).isEmailDuplicated(anyString());
+        verify(userService).existByEmail(anyString());
     }
 
     @Test
     @DisplayName("중복 휴대폰 번호 검증 실패")
     void isDuplicatedPhoneExceptionBeingThrownCorrectly() throws Exception {
         doThrow(new DuplicatedPhoneException("중복된 휴대폰 번호입니다."))
-                .when(userService).isPhoneDuplicated(anyString());
+                .when(userService).existsByPhone(anyString());
 
         mockMvc.perform(
                         get("/users/phone/{phone}", "01012345678"))
@@ -85,20 +85,20 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.code").value("DuplicatedPhoneException"))
                 .andExpect(jsonPath("$.message").value("중복된 휴대폰 번호입니다."));
 
-        verify(userService).isPhoneDuplicated(anyString());
+        verify(userService).existsByPhone(anyString());
     }
 
     @Test
     @DisplayName("중복 휴대폰 번호 검증 성공")
     void isDuplicatedPhoneCheckSucceed() throws Exception {
-        given(userService.isPhoneDuplicated(anyString())).willReturn(true);
+        given(userService.existsByPhone(anyString())).willReturn(true);
 
         mockMvc.perform(
                         get("/users/phone/{phone}", "01012345678"))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(userService).isPhoneDuplicated(anyString());
+        verify(userService).existsByPhone(anyString());
     }
 
     @Test

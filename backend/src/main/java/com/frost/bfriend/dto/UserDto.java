@@ -143,4 +143,15 @@ public class UserDto {
             this.userLevel = UserLevel.valueOf(userLevel);
         }
     }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class TemporaryPasswordRequest {
+
+        @NotBlank(message = "이메일을 입력해주세요")
+        private String email;
+
+        @NotBlank(message = "이름을 입력해주세요")
+        private String name;
+    }
 }

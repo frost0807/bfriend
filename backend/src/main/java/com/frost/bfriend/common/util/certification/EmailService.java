@@ -35,7 +35,7 @@ public class EmailService {
 
 
 
-    public String sendNewPasswordEmail(String email) {
+    public String sendTemporaryPasswordEmail(String email) {
         String newPassword = certificationGenerator.createRandomPassword();
 
         SimpleMailMessage mailMessage = createMailMessage(
