@@ -105,4 +105,18 @@ public class BFriendExceptionHandler {
         writeErrorLog(e);
         return getErrorMessage(e);
     }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(WrongPasswordException.class)
+    public ErrorMsg handleWrongPasswordException(WrongPasswordException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(AlreadyMyPasswordException.class)
+    public ErrorMsg handleAlreadyMyPasswordException(AlreadyMyPasswordException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
 }

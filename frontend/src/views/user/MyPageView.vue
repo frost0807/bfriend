@@ -8,7 +8,7 @@
     질문 : {{ item.question }} / 답변 : {{ item.answer }}
   </p>
   <br />
-  <v-btn>비밀번호 변경</v-btn>
+  <router-link to="update-password">비밀번호 변경</router-link>
   <router-link to="question-answer-update">자문자답 수정</router-link>
   <v-btn>회원정보 변경</v-btn>
   <br />

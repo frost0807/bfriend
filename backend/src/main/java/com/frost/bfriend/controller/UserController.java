@@ -1,5 +1,7 @@
 package com.frost.bfriend.controller;
 
+import com.frost.bfriend.common.annotation.CheckUser;
+import com.frost.bfriend.common.annotation.LoginUser;
 import com.frost.bfriend.common.constants.CookieConstants;
 import com.frost.bfriend.common.util.cookie.CookieHandler;
 import com.frost.bfriend.service.UserService;
@@ -97,6 +99,7 @@ public class UserController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString()).body(name);
     }
 
+    @CheckUser
     @GetMapping("/logout")
     public ResponseEntity<Void> logout() {
         ResponseCookie expireAccessTokenCookie = cookieHandler.expireCookie(CookieConstants.ACCESS_TOKEN);
@@ -107,6 +110,14 @@ public class UserController {
     @PatchMapping("/temporary-password")
     public ResponseEntity<Void> issueTemporaryPassword(@RequestBody @Valid TemporaryPasswordRequest request) {
         userService.issueTemporaryPassword(request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @CheckUser
+    @PatchMapping("/password")
+    public ResponseEntity<Void> updatePassword(@LoginUser Long userId, @RequestBody @Valid UpdatePasswordRequest request) {
+        userService.updatePassword(userId, request);
 
         return ResponseEntity.ok().build();
     }

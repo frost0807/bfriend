@@ -1,5 +1,6 @@
 package com.frost.bfriend.common.util.interceptor;
 
+import com.frost.bfriend.common.annotation.CheckUser;
 import com.frost.bfriend.common.util.cookie.CookieHandler;
 import com.frost.bfriend.common.util.jwt.TokenProvider;
 import com.frost.bfriend.dto.UserDto;
@@ -7,7 +8,9 @@ import com.frost.bfriend.dto.UserDto.UserIdAndLevel;
 import com.frost.bfriend.exception.user.NotLoggedInException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Check;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,11 +31,19 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         log.info("JwtAuthenticationInterceptor preHandle");
-        if(request.getMethod().equals("OPTIONS")) {
+        if (request.getMethod().equals("OPTIONS")) {
             return true;
         }
+        if (handler instanceof HandlerMethod) {
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            CheckUser checkUser = handlerMethod.getMethodAnnotation(CheckUser.class);
+
+            if (checkUser == null) {
+                return true;
+            }
+        }
         String accessToken = cookieHandler.parseAccessTokenCookie(request).getValue();
-        if(accessToken == null || accessToken.equalsIgnoreCase("null")) {
+        if (accessToken == null || accessToken.equalsIgnoreCase("null")) {
             throw new NotLoggedInException("토큰이 존재하지 않습니다.");
         }
         UserIdAndLevel userIdAndLevel = tokenProvider.validateAndGetUserIdAndLevel(accessToken);

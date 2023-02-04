@@ -147,11 +147,34 @@ public class UserDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class TemporaryPasswordRequest {
-
         @NotBlank(message = "이메일을 입력해주세요")
         private String email;
 
         @NotBlank(message = "이름을 입력해주세요")
         private String name;
+    }
+    
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class UpdatePasswordRequest {
+        @NotBlank(message = "기존 비밀번호를 입력해주세요")
+        private String originalPassword;
+        
+        @NotBlank(message = "새 비밀번호를 입력해주세요")
+        @Size(min = 8, max = 20, message = "비밀번호는 8자 이상 20자 이하로 입력해주세요")
+        @Pattern(regexp = PASSWORD, message = "숫자, 문자, 특수문자 3가지를 조합해 입력해주세요")
+        private String newPassword;
+
+        public boolean checkPassword(EncryptionService encryptionService, String encryptedPassword) {
+            return encryptionService.isSamePassword(this.originalPassword, encryptedPassword);
+        }
+
+        public boolean isAlreadyMyPassword() {
+            return originalPassword.equals(newPassword);
+        }
+
+        public void encryptPassword(EncryptionService encryptionService) {
+            this.newPassword = encryptionService.encrypt(newPassword);
+        }
     }
 }
