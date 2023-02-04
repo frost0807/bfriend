@@ -1,8 +1,10 @@
+// 로그인 권한 필요
+
 <template>
   <v-form @submit.prevent="changePassword">
     <v-text-field
       v-model="userData.originalPassword"
-      :type="password"
+      :type="'password'"
       label="기존 비밀번호"
     >
     </v-text-field>

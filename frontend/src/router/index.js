@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ForgotPasswordView from '../views/user/ForgotPasswordView.vue'
 import UpdatePasswordView from '../views/user/UpdatePasswordView.vue'
+import WithdrawalView from '../views/user/WithdrawalView.vue'
 
 const routes = [
   {
@@ -69,6 +70,11 @@ const routes = [
     path: '/update-password',
     name: 'update-password',
     component: UpdatePasswordView
+  },
+  {
+    path: '/withdrawal',
+    name: 'withdrawal',
+    component: WithdrawalView
   }
 ]
 

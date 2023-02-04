@@ -70,7 +70,8 @@ public class UserController {
     }
 
     @PostMapping("/phone/certification")
-    public ResponseEntity<Void> checkSmsCertificationCode(@RequestBody @Valid SmsCertificationRequest request) {
+    public ResponseEntity<Void> checkSmsCertificationCode(
+            @RequestBody @Valid SmsCertificationRequest request) {
         String identifier = userService.checkSmsCertificationCode(request);
         ResponseCookie smsIdentifierCookie = cookieHandler.createSmsIdentifierCookie(identifier);
 
@@ -108,7 +109,8 @@ public class UserController {
     }
 
     @PatchMapping("/temporary-password")
-    public ResponseEntity<Void> issueTemporaryPassword(@RequestBody @Valid TemporaryPasswordRequest request) {
+    public ResponseEntity<Void> issueTemporaryPassword(
+            @RequestBody @Valid TemporaryPasswordRequest request) {
         userService.issueTemporaryPassword(request);
 
         return ResponseEntity.ok().build();
@@ -116,8 +118,18 @@ public class UserController {
 
     @CheckUser
     @PatchMapping("/password")
-    public ResponseEntity<Void> updatePassword(@LoginUser Long userId, @RequestBody @Valid UpdatePasswordRequest request) {
+    public ResponseEntity<Void> updatePassword(
+            @LoginUser Long userId, @RequestBody @Valid UpdatePasswordRequest request) {
         userService.updatePassword(userId, request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @CheckUser
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(
+            @LoginUser Long userId, @RequestBody @Valid DeleteRequest request) {
+        userService.deleteUser(userId, request);
 
         return ResponseEntity.ok().build();
     }
