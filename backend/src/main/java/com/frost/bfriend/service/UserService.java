@@ -12,9 +12,11 @@ import com.frost.bfriend.repository.QuestionCategoryRepository;
 import com.frost.bfriend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.frost.bfriend.dto.UserDto.*;
@@ -35,12 +37,12 @@ public class UserService {
     private final TokenProvider tokenProvider;
 
     @Transactional(readOnly = true)
-    public boolean isEmailDuplicated(String email) {
+    public boolean existByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
     @Transactional(readOnly = true)
-    public boolean isPhoneDuplicated(String phone) {
+    public boolean existsByPhone(String phone) {
         return userRepository.existsByPhone(phone);
     }
 
@@ -108,10 +110,10 @@ public class UserService {
 
     @Transactional(readOnly = true)
     protected void checkDuplicated(SaveRequest requestDto) {
-        if (isEmailDuplicated(requestDto.getEmail())) {
+        if (existByEmail(requestDto.getEmail())) {
             throw new DuplicatedEmailException("중복된 이메일입니다.");
         }
-        if (isPhoneDuplicated(requestDto.getPhone())) {
+        if (existsByPhone(requestDto.getPhone())) {
             throw new DuplicatedPhoneException("중복된 휴대폰 번호입니다.");
         }
     }
@@ -138,13 +140,18 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public TokenAndName login(LoginRequest requestDto) {
-        User user = userRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 이메일입니다."));
+        User user = getUserByEmail(requestDto.getEmail());
         checkValidUser(requestDto, user);
         String accessToken = tokenProvider.createAccessToken(user);
         String name = user.getName();
 
         return new TokenAndName(accessToken, name);
+    }
+
+    private User getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 이메일입니다."));
+        return user;
     }
 
     private void checkValidUser(LoginRequest requestDto, User user) {
@@ -157,5 +164,19 @@ public class UserService {
         if (user.getIsSuspended()) {
             throw new UserNotFoundException("정지된 회원입니다.");
         }
+    }
+
+    @Transactional
+    public void issueTemporaryPassword(TemporaryPasswordRequest requestDto) {
+        String email = requestDto.getEmail();
+        String name = requestDto.getName();
+
+        if(!userRepository.existsByEmailAndName(email, name)) {
+            throw new UserNotFoundException("이메일 혹은 이름을 잘못 입력하셨습니다.");
+        }
+        User user = getUserByEmail(email);
+        String newPassword = emailService.sendTemporaryPasswordEmail(requestDto.getEmail());
+        user.updatePassword(encryptionService.encrypt(newPassword));
+        userRepository.save(user);
     }
 }
