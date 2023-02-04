@@ -1,3 +1,5 @@
+// 로그인 권한 필요
+
 <template>
   <h2>임시 비밀번호 발급</h2>
   <v-form @submit.prevent="sendTempPassword">

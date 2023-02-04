@@ -8,15 +8,16 @@
     질문 : {{ item.question }} / 답변 : {{ item.answer }}
   </p>
   <br />
-  <router-link to="update-password">비밀번호 변경</router-link>
-  <router-link to="question-answer-update">자문자답 수정</router-link>
-  <v-btn>회원정보 변경</v-btn>
-  <br />
   <v-btn>내가 작성한 매칭글 보기</v-btn>
   <v-btn>내가 댓글 단 매칭글 보기</v-btn>
   <v-btn>내가 참여중인 채팅방 보기</v-btn>
   <br />
-  <v-btn>회원 탈퇴</v-btn>
+  <br />
+  <router-link to="question-answer-update">자문자답 수정</router-link>
+  |
+  <router-link to="update-password">비밀번호 변경</router-link>
+  |
+  <router-link to="withdrawal">회원 탈퇴</router-link>
 </template>
 <script>
 import axios from 'axios'

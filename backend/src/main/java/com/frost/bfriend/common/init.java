@@ -33,6 +33,7 @@ public class init {
 
 
     @PostConstruct
+    @Transactional
     public void init() {
         initService.initUser();
         initService.initQuestionAnswer();

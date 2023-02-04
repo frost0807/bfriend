@@ -8,15 +8,12 @@ import com.frost.bfriend.dao.EmailCertificationCodeDao;
 import com.frost.bfriend.dao.SmsCertificationDao;
 import com.frost.bfriend.entity.User;
 import com.frost.bfriend.exception.user.*;
-import com.frost.bfriend.repository.QuestionCategoryRepository;
 import com.frost.bfriend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.frost.bfriend.dto.UserDto.*;
@@ -147,17 +144,14 @@ public class UserService {
     }
 
     private User getUserByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 이메일입니다."));
+        User user = userRepository.findByEmailAndIsDeletedFalse(email)
+                .orElseThrow(() -> new UserNotFoundException("이메일 혹은 비밀번호를 잘못 입력하셨습니다."));
         return user;
     }
 
     private void checkValidUser(LoginRequest requestDto, User user) {
         if (!requestDto.isPasswordCorrect(encryptionService, user.getPassword())) {
-            throw new UserNotFoundException("잘못된 비밀번호 입니다.");
-        }
-        if (user.getIsDeleted()) {
-            throw new UserNotFoundException("탈퇴한 회원입니다.");
+            throw new UserNotFoundException("이메일 혹은 비밀번호를 잘못 입력하셨습니다.");
         }
         if (user.getIsSuspended()) {
             throw new UserNotFoundException("정지된 회원입니다.");
@@ -169,7 +163,7 @@ public class UserService {
         String email = requestDto.getEmail();
         String name = requestDto.getName();
 
-        if(!userRepository.existsByEmailAndName(email, name)) {
+        if (!userRepository.existsByEmailAndName(email, name)) {
             throw new UserNotFoundException("이메일 혹은 이름을 잘못 입력하셨습니다.");
         }
         User user = getUserByEmail(email);
@@ -179,18 +173,30 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePassword(Long userId, UpdatePasswordRequest updatePasswordRequest) {
-        User user = userRepository.findById(userId)
+    public void updatePassword(Long userId, UpdatePasswordRequest requestDto) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
 
-        if (!updatePasswordRequest.checkPassword(encryptionService, user.getPassword())) {
+        if (!requestDto.checkPassword(encryptionService, user.getPassword())) {
             throw new WrongPasswordException("기존 비밀번호를 잘못 입력하셨습니다.");
         }
-        if (updatePasswordRequest.isAlreadyMyPassword()) {
+        if (requestDto.isAlreadyMyPassword()) {
             throw new AlreadyMyPasswordException("새 비밀번호가 기존 비밀번호와 동일합니다.");
         }
-        updatePasswordRequest.encryptPassword(encryptionService);
-        user.updatePassword(updatePasswordRequest.getNewPassword());
+        requestDto.encryptPassword(encryptionService);
+        user.updatePassword(requestDto.getNewPassword());
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(Long userId, DeleteRequest requestDto) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+
+        if (!requestDto.checkPassword(encryptionService, user.getPassword())) {
+            throw new WrongPasswordException("비밀번호를 잘못 입력하셨습니다.");
+        }
+        user.deleteUser();
         userRepository.save(user);
     }
 }
