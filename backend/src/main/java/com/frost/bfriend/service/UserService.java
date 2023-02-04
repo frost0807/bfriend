@@ -29,8 +29,6 @@ public class UserService {
     private final EmailService emailService;
     private final SmsService smsService;
     private final UserRepository userRepository;
-
-    private final QuestionCategoryRepository questionCategoryRepository;
     private final EmailCertificationCodeDao emailCertificationCodeDao;
     private final SmsCertificationDao smsCertificationDao;
     private final EncryptionService encryptionService;
@@ -177,6 +175,22 @@ public class UserService {
         User user = getUserByEmail(email);
         String newPassword = emailService.sendTemporaryPasswordEmail(requestDto.getEmail());
         user.updatePassword(encryptionService.encrypt(newPassword));
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updatePassword(Long userId, UpdatePasswordRequest updatePasswordRequest) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+
+        if (!updatePasswordRequest.checkPassword(encryptionService, user.getPassword())) {
+            throw new WrongPasswordException("기존 비밀번호를 잘못 입력하셨습니다.");
+        }
+        if (updatePasswordRequest.isAlreadyMyPassword()) {
+            throw new AlreadyMyPasswordException("새 비밀번호가 기존 비밀번호와 동일합니다.");
+        }
+        updatePasswordRequest.encryptPassword(encryptionService);
+        user.updatePassword(updatePasswordRequest.getNewPassword());
         userRepository.save(user);
     }
 }

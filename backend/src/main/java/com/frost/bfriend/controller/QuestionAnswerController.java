@@ -1,5 +1,6 @@
 package com.frost.bfriend.controller;
 
+import com.frost.bfriend.common.annotation.CheckUser;
 import com.frost.bfriend.common.annotation.LoginUser;
 import com.frost.bfriend.service.QuestionAnswerService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class QuestionAnswerController {
         return ResponseEntity.ok(questionAnswerService.getCategoriesAndQuestions());
     }
 
+    @CheckUser
     @PostMapping
     public ResponseEntity<Void> saveQuestionAnswer(
             @LoginUser Long userId,
@@ -32,6 +34,7 @@ public class QuestionAnswerController {
         return ResponseEntity.ok().build();
     }
 
+    @CheckUser
     @PatchMapping
     public ResponseEntity<Void> updateQuestionAnswer(
             @LoginUser Long userId,
@@ -41,12 +44,14 @@ public class QuestionAnswerController {
         return ResponseEntity.ok().build();
     }
 
+    @CheckUser
     @GetMapping
     public ResponseEntity<List<ResponseForUpdate>> getQuestionAnswersForUpdate(
             @LoginUser Long userId) {
         return ResponseEntity.ok(questionAnswerService.getQuestionAnswersForUpdateByUserId(userId));
     }
 
+    @CheckUser
     @GetMapping("/mypage")
     public ResponseEntity<List<ResponseForMyPage>> getQuestionAnswersForMyPage(
             @LoginUser Long userId) {
