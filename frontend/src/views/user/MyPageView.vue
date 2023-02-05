@@ -13,11 +13,9 @@
   <v-btn>내가 참여중인 채팅방 보기</v-btn>
   <br />
   <br />
-  <router-link to="question-answer-update">자문자답 수정</router-link>
-  |
-  <router-link to="update-password">비밀번호 변경</router-link>
-  |
-  <router-link to="withdrawal">회원 탈퇴</router-link>
+  <v-btn to="question-answer-update">자문자답 수정</v-btn>
+  <v-btn to="update-password">비밀번호 변경</v-btn>
+  <v-btn to="withdrawal">회원 탈퇴</v-btn>
 </template>
 <script>
 import axios from 'axios'

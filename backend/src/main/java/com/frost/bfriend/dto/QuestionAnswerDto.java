@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 public class QuestionAnswerDto {
@@ -54,7 +55,8 @@ public class QuestionAnswerDto {
         @NotBlank
         private Integer questionId;
 
-        @NotBlank
+        @NotBlank(message = "답변을 입력해주세요")
+        @Size(max = 100, message = "최대 50자까지만 입력해주세요")
         private String answer;
 
         public QuestionAnswer toEntity(User user, Question question) {
@@ -105,7 +107,8 @@ public class QuestionAnswerDto {
         @NotBlank
         private Integer questionId;
 
-        @NotBlank(message = "답변을 입력하지 않으셨습니다.")
+        @NotBlank(message = "답변을 입력해주세요")
+        @Size(max = 100, message = "최대 50자까지만 입력해주세요")
         private String answer;
 
         public QuestionAnswer toEntity(User user, Question question) {

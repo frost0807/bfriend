@@ -1,6 +1,4 @@
-<template>
-  <div></div>
-</template>
+<template><div>matchlist</div></template>
 <script>
 export default {
   components: {},

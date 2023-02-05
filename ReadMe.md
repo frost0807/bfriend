@@ -13,3 +13,7 @@
 # 사용 기술
 
 SpringBoot, Gradle, Java11, SpringDataJpa, SpringWebSocket, QueryDSL, MySQL, Redis, AWS, Vue3
+
+<br/>
+
+- 그외 자세한 사항은 [Wiki](https://github.com/frost0807/bfriend/wiki)를 참고해주세요
