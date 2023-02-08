@@ -37,7 +37,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public boolean existsByPhone(String phone) {
+    public boolean existByPhone(String phone) {
         return userRepository.existsByPhone(phone);
     }
 
@@ -108,7 +108,7 @@ public class UserService {
         if (existByEmail(requestDto.getEmail())) {
             throw new DuplicatedEmailException("중복된 이메일입니다.");
         }
-        if (existsByPhone(requestDto.getPhone())) {
+        if (existByPhone(requestDto.getPhone())) {
             throw new DuplicatedPhoneException("중복된 휴대폰 번호입니다.");
         }
     }

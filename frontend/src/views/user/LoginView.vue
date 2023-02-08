@@ -11,7 +11,7 @@
     </v-text-field>
     <v-btn type="submit">로그인</v-btn>
   </v-form>
-  <router-link to="/forgot-password">비밀번호 찾기</router-link>
+  <v-btn to="/forgot-password">비밀번호 찾기</v-btn>
 </template>
 <script>
 import axios from 'axios'

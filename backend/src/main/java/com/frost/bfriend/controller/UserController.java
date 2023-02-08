@@ -42,7 +42,7 @@ public class UserController {
     @GetMapping("/phone/{phone}")
     public ResponseEntity<Boolean> isPhoneDuplicated(
             @PathVariable @Pattern(regexp = PHONE, message = PHONE_REGEX_FAIL) String phone) {
-        return ResponseEntity.ok(userService.existsByPhone(phone));
+        return ResponseEntity.ok(userService.existByPhone(phone));
     }
 
     @GetMapping("/email/certification/{email}")

@@ -37,7 +37,6 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             CheckUser checkUser = handlerMethod.getMethodAnnotation(CheckUser.class);
-
             if (checkUser == null) {
                 return true;
             }

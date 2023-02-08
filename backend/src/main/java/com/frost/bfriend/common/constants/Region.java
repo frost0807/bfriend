@@ -2,7 +2,7 @@ package com.frost.bfriend.common.constants;
 
 public enum Region {
     SEOUL("서울"),
-    KYUNGGI("경기"),
+    GYEONGGI("경기"),
     BUSAN("부산"),
     DAEGU("대구"),
     INCHEON("인천"),
