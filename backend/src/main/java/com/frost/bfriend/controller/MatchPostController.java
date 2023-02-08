@@ -35,4 +35,6 @@ public class MatchPostController {
 
         return ResponseEntity.ok(matchPostService.getMatchPostListAll(pageable, condition));
     }
+
+
 }

@@ -27,7 +27,7 @@ public class MatchPostDto {
 
     @Getter
     public static class ListResponse {
-        private long matchPostId;
+        private Long matchPostId;
 
         private Activity activity;
 

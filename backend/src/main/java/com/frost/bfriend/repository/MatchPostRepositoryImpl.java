@@ -4,9 +4,11 @@ import com.frost.bfriend.common.constants.Activity;
 import com.frost.bfriend.common.constants.Duration;
 import com.frost.bfriend.common.constants.Location;
 import com.frost.bfriend.dto.QMatchPostDto_ListResponse;
+import com.frost.bfriend.entity.MatchPost;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -19,6 +21,7 @@ import static com.frost.bfriend.dto.MatchPostDto.ListResponse;
 import static com.frost.bfriend.entity.QMatchPost.matchPost;
 import static com.frost.bfriend.entity.QReply.reply;
 
+@Slf4j
 public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
@@ -38,7 +41,7 @@ public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
                         matchPost.location,
                         matchPost.comment,
                         matchPost.startAt,
-                        reply.count().intValue()
+                        matchPost.replies.size()
                 ))
                 .from(matchPost)
                 .leftJoin(matchPost.replies, reply)
