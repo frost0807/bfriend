@@ -1,126 +1,126 @@
 //로그인 권한 필요 X
 
 <template>
-  <form @submit.prevent="submit">
-    <!-- 이하 이메일 -->
-    <v-text-field
-      v-model="email.value.value"
-      :error-messages="email.errorMessage.value"
-      label="이메일"
-      :readonly="!isEmailDuplicated"
-    ></v-text-field>
+    <form @submit.prevent="submit">
+      <!-- 이하 이메일 -->
+      <v-text-field
+        v-model="email.value.value"
+        :error-messages="email.errorMessage.value"
+        label="이메일"
+        :readonly="!isEmailDuplicated"
+      ></v-text-field>
 
-    <v-btn @click="checkEmailDuplicated" :disabled="!isEmailDuplicated">
-      <p v-if="isEmailDuplicated">이메일 중복 확인</p>
-      <p v-if="!isEmailDuplicated">유효한 이메일입니다.</p>
-    </v-btn>
-    <v-text-field
-      v-if="isEmailCodeSent && !isEmailCertified"
-      v-model="emailCertificationCode"
-      label="이메일 인증코드를 입력해주세요(제한시간 5분)"
-    >
-    </v-text-field>
-    <v-btn
-      v-if="isEmailCodeSent"
-      @click="sendEmailCertificationCode"
-      :disabled="isEmailCertified"
-    >
-      <p v-if="!isEmailCertified">인증 코드 입력</p>
-      <p v-if="isEmailCertified">이메일 인증이 완료되었습니다.</p>
-    </v-btn>
-    <v-btn
-      v-if="!isEmailCodeSent"
-      @click="sendEmailCertification"
-      :disabled="isEmailCertified"
-    >
-      이메일 인증
-    </v-btn>
+      <v-btn @click="checkEmailDuplicated" :disabled="!isEmailDuplicated">
+        <p v-if="isEmailDuplicated">이메일 중복 확인</p>
+        <p v-if="!isEmailDuplicated">유효한 이메일입니다.</p>
+      </v-btn>
+      <v-text-field
+        v-if="isEmailCodeSent && !isEmailCertified"
+        v-model="emailCertificationCode"
+        label="이메일 인증코드를 입력해주세요(제한시간 5분)"
+      >
+      </v-text-field>
+      <v-btn
+        v-if="isEmailCodeSent"
+        @click="sendEmailCertificationCode"
+        :disabled="isEmailCertified"
+      >
+        <p v-if="!isEmailCertified">인증 코드 입력</p>
+        <p v-if="isEmailCertified">이메일 인증이 완료되었습니다.</p>
+      </v-btn>
+      <v-btn
+        v-if="!isEmailCodeSent"
+        @click="sendEmailCertification"
+        :disabled="isEmailCertified"
+      >
+        이메일 인증
+      </v-btn>
 
-    <!-- 이하 휴대폰 -->
+      <!-- 이하 휴대폰 -->
 
-    <v-text-field
-      v-model="phone.value.value"
-      :error-messages="phone.errorMessage.value"
-      label="휴대폰 번호"
-      :readonly="!isPhoneDuplicated"
-    ></v-text-field>
+      <v-text-field
+        v-model="phone.value.value"
+        :error-messages="phone.errorMessage.value"
+        label="휴대폰 번호"
+        :readonly="!isPhoneDuplicated"
+      ></v-text-field>
 
-    <v-btn @click="checkPhoneDuplicated" :disabled="!isPhoneDuplicated">
-      <p v-if="isPhoneDuplicated">휴대폰 중복 확인</p>
-      <p v-if="!isPhoneDuplicated">유효한 휴대폰 번호입니다.</p>
-    </v-btn>
-    <v-text-field
-      v-if="isPhoneCodeSent && !isPhoneCertified"
-      v-model="phoneCertificationCode"
-      label="휴대폰 인증코드를 입력해주세요(제한시간 5분)"
-    >
-    </v-text-field>
-    <v-btn
-      v-if="isPhoneCodeSent"
-      @click="sendPhoneCertificationCode"
-      :disabled="isPhoneCertified"
-    >
-      <p v-if="!isPhoneCertified">인증 코드 입력</p>
-      <p v-if="isPhoneCertified">휴대폰 인증이 완료되었습니다.</p>
-    </v-btn>
-    <v-btn
-      v-if="!isPhoneCodeSent"
-      @click="sendPhoneCertification"
-      :disabled="isPhoneCertified"
-    >
-      휴대폰 인증
-    </v-btn>
+      <v-btn @click="checkPhoneDuplicated" :disabled="!isPhoneDuplicated">
+        <p v-if="isPhoneDuplicated">휴대폰 중복 확인</p>
+        <p v-if="!isPhoneDuplicated">유효한 휴대폰 번호입니다.</p>
+      </v-btn>
+      <v-text-field
+        v-if="isPhoneCodeSent && !isPhoneCertified"
+        v-model="phoneCertificationCode"
+        label="휴대폰 인증코드를 입력해주세요(제한시간 5분)"
+      >
+      </v-text-field>
+      <v-btn
+        v-if="isPhoneCodeSent"
+        @click="sendPhoneCertificationCode"
+        :disabled="isPhoneCertified"
+      >
+        <p v-if="!isPhoneCertified">인증 코드 입력</p>
+        <p v-if="isPhoneCertified">휴대폰 인증이 완료되었습니다.</p>
+      </v-btn>
+      <v-btn
+        v-if="!isPhoneCodeSent"
+        @click="sendPhoneCertification"
+        :disabled="isPhoneCertified"
+      >
+        휴대폰 인증
+      </v-btn>
 
-    <v-text-field
-      v-model="password.value.value"
-      :type="'password'"
-      :counter="8"
-      :error-messages="password.errorMessage.value"
-      label="비밀번호"
-    ></v-text-field>
+      <v-text-field
+        v-model="password.value.value"
+        :type="'password'"
+        :counter="8"
+        :error-messages="password.errorMessage.value"
+        label="비밀번호"
+      ></v-text-field>
 
-    <v-text-field
-      v-model="passwordCheck.value.value"
-      :type="'password'"
-      :counter="8"
-      :error-messages="passwordCheck.errorMessage.value"
-      label="비밀번호 확인"
-    ></v-text-field>
+      <v-text-field
+        v-model="passwordCheck.value.value"
+        :type="'password'"
+        :counter="8"
+        :error-messages="passwordCheck.errorMessage.value"
+        label="비밀번호 확인"
+      ></v-text-field>
 
-    <v-text-field
-      v-model="name.value.value"
-      :error-messages="name.errorMessage.value"
-      label="이름"
-    ></v-text-field>
-    <v-row>
-      <v-col cols="12" sm="6">
-        <v-select
-          v-model="sex.value.value"
-          :items="sexItems"
-          :error-messages="sex.errorMessage.value"
-          label="성별"
-        ></v-select>
-      </v-col>
-      <v-col cols="12" sm="6">
-        <v-select
-          v-model="region.value.value"
-          :items="regionItems"
-          :error-messages="region.errorMessage.value"
-          label="지역"
-        >
-        </v-select>
-      </v-col>
-    </v-row>
-    <Datepicker
-      v-model="date.value.value"
-      :enable-time-picker="false"
-      :format="format"
-      :clearable="true"
-      placeholder="생년월일을 선택해주세요"
-    ></Datepicker>
+      <v-text-field
+        v-model="name.value.value"
+        :error-messages="name.errorMessage.value"
+        label="이름"
+      ></v-text-field>
+      <v-row>
+        <v-col cols="12" sm="6">
+          <v-select
+            v-model="sex.value.value"
+            :items="sexItems"
+            :error-messages="sex.errorMessage.value"
+            label="성별"
+          ></v-select>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-select
+            v-model="region.value.value"
+            :items="regionItems"
+            :error-messages="region.errorMessage.value"
+            label="지역"
+          >
+          </v-select>
+        </v-col>
+      </v-row>
+      <Datepicker
+        v-model="date.value.value"
+        :enable-time-picker="false"
+        :format="format"
+        :clearable="true"
+        placeholder="생년월일을 선택해주세요"
+      ></Datepicker>
 
-    <v-btn type="submit"> 가입하기 </v-btn>
-  </form>
+      <v-btn type="submit"> 가입하기 </v-btn>
+    </form>
 </template>
 <script>
 import { ref } from 'vue'

@@ -8,7 +8,7 @@
       src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/logo.png"
       class="logo-img"
     ></v-img>
-    <p class="text">
+    <p align="left" class="text">
       진지하게 대화할 대화 친구를 만날 수 있는 곳. 남녀만남에 치우친 어플이
       아닌, 대화의 즐거움을 원하는 사람들끼리 만날 수 있는 장입니다.
     </p>
@@ -17,9 +17,8 @@
       variant="text"
       height="60"
       width="100%"
-      rounded="lg"
       class="signup-button"
-      >시작하기</v-btn
+      >회원가입하기</v-btn
     >
     <br />
     <v-btn
@@ -55,6 +54,7 @@ export default {
 
 <style scoped>
 .signup-button {
+  border-radius: 15px;
   background-color: black;
   color: white;
   font-size: 16px;

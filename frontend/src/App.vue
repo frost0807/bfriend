@@ -21,10 +21,31 @@
     </v-app-bar> -->
 
     <v-main>
-      <router-view />
+      <v-container
+        v-if="
+          $route.path !== '/' &&
+          $route.path !== '/login' &&
+          $route.path !== '/signup'
+        "
+      >
+        <router-view />
+      </v-container>
+      <router-view
+        v-if="
+          $route.path === '/' ||
+          $route.path === '/login' ||
+          $route.path === '/signup'
+        "
+      />
     </v-main>
 
-    <v-bottom-navigation v-if="$route.path !== '/'">
+    <v-bottom-navigation
+      v-if="
+        $route.path !== '/' &&
+        $route.path !== '/login' &&
+        $route.path !== '/signup'
+      "
+    >
       <v-btn to="/match/list"> 매칭 게시판 </v-btn>
       <v-btn>채팅</v-btn>
       <v-btn to="/mypage">마이페이지</v-btn>
