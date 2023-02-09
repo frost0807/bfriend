@@ -1,4 +1,4 @@
-package com.frost.bfriend.repository;
+package com.frost.bfriend.repository.matchpost;
 
 import com.frost.bfriend.common.constants.Activity;
 import com.frost.bfriend.common.constants.Duration;
@@ -15,6 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static com.frost.bfriend.dto.MatchPostDto.ListRequestCondition;
 import static com.frost.bfriend.dto.MatchPostDto.ListResponse;
@@ -67,7 +68,6 @@ public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
         return PageableExecutionUtils.getPage(matchPosts, pageable, countQuery::fetchOne);
     }
 
-
     private BooleanExpression activityEq(Activity activity) {
         return activity != null ? matchPost.activity.eq(activity) : null;
     }
@@ -78,5 +78,16 @@ public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
 
     private BooleanExpression locationEq(Location location) {
         return location != null ? matchPost.location.eq(location) : null;
+    }
+
+    public Optional<MatchPost> searchMatchPostById(Long matchPostId) {
+        MatchPost result = queryFactory
+                .selectFrom(matchPost)
+                .innerJoin(matchPost.writer)
+                .fetchJoin()
+                .where(matchPost.id.eq(matchPostId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }

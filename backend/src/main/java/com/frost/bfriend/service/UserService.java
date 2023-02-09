@@ -8,7 +8,7 @@ import com.frost.bfriend.dao.EmailCertificationCodeDao;
 import com.frost.bfriend.dao.SmsCertificationDao;
 import com.frost.bfriend.entity.User;
 import com.frost.bfriend.exception.user.*;
-import com.frost.bfriend.repository.UserRepository;
+import com.frost.bfriend.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

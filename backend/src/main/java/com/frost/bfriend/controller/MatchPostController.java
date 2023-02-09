@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 import static com.frost.bfriend.dto.MatchPostDto.*;
+import static com.frost.bfriend.dto.ReplyDto.ReplyResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ import static com.frost.bfriend.dto.MatchPostDto.*;
 public class MatchPostController {
 
     private final MatchPostService matchPostService;
+
 
     @GetMapping
     public ResponseEntity<Page<ListResponse>> getMatchPostListAll(
@@ -36,5 +38,13 @@ public class MatchPostController {
         return ResponseEntity.ok(matchPostService.getMatchPostListAll(pageable, condition));
     }
 
+    @GetMapping("/{matchPostId}")
+    public ResponseEntity<Response> getMatchPost(@PathVariable Long matchPostId) {
+        return ResponseEntity.ok(matchPostService.getMatchPost(matchPostId));
+    }
 
+//    @GetMapping("/{matchPostId}/replies")
+//    public ResponseEntity<Page<ReplyResponse>> getRepliesByMatchPostId(@PageableDefault Pageable pageable, @PathVariable Long matchPostId) {
+//        return ResponseEntity.ok(matchPostService.getRepliesByMatchPostId(pageable, matchPostId));
+//    }
 }

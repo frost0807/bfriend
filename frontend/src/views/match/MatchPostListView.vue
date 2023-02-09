@@ -1,4 +1,5 @@
 <template>
+  <v-btn v-if="!isFilterOn" @click="toggleFilter">조건 검색 열기</v-btn>
   <div v-if="isFilterOn">
     <v-row>
       <v-col cols="12" sm="4">
@@ -26,7 +27,6 @@
     <v-btn @click="resetFilter">초기화</v-btn>
     <v-btn @click="toggleFilter">조건 검색 닫기</v-btn>
   </div>
-  <v-btn v-if="!isFilterOn" @click="toggleFilter">조건 검색 열기</v-btn>
 
   <v-col v-for="(item, index) in matchPosts" :key="index" cols="12">
     <v-card :color="blue">

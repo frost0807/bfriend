@@ -1,4 +1,4 @@
-package com.frost.bfriend.repository;
+package com.frost.bfriend.repository.questionanswer;
 
 import com.frost.bfriend.entity.QuestionCategory;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,6 @@
 <template>
   <v-app :theme="theme">
-    <v-app-bar>
+    <!-- <v-app-bar>
       <v-btn to="/">Home</v-btn>
       <v-spacer></v-spacer>
 
@@ -18,19 +18,16 @@
       <v-btn v-if="username" @click="logout">로그아웃</v-btn>
       <v-btn v-if="!username" to="/signup">회원가입</v-btn>
       <v-btn v-if="!username" to="/login">로그인</v-btn>
-    </v-app-bar>
+    </v-app-bar> -->
 
     <v-main>
-      <v-container>
-        <router-view />
-      </v-container>
+      <router-view />
     </v-main>
 
-    <v-bottom-navigation>
-      <v-btn to="/match/list">
-        <v-icon icon="mdi-vuetify"></v-icon>
-        매칭 게시판
-      </v-btn>
+    <v-bottom-navigation v-if="$route.path !== '/'">
+      <v-btn to="/match/list"> 매칭 게시판 </v-btn>
+      <v-btn>채팅</v-btn>
+      <v-btn to="/mypage">마이페이지</v-btn>
     </v-bottom-navigation>
   </v-app>
 </template>

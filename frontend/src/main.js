@@ -16,8 +16,8 @@ const vuetify = createVuetify({
   components,
   directives
 })
-
 axios.defaults.baseURL = 'http://localhost:8080'
+// axios.defaults.baseURL = 'http://43.201.136.225:8080'
 axios.defaults.withCredentials = true
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.put['Content-Type'] = 'application/json'
