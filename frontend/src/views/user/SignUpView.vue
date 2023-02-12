@@ -167,13 +167,9 @@
       density="compact"
     >
     </v-select>
-    <v-row>
-      <v-col cols="12" sm="12">
-        <v-btn type="submit" variant="outlined" width="100%" rounded="pill">
-          가입하기
-        </v-btn></v-col
-      ></v-row
-    >
+    <v-btn type="submit" variant="outlined" width="100%" rounded="pill">
+      가입하기
+    </v-btn>
   </form>
 </template>
 <script>
@@ -190,7 +186,10 @@ export default {
       emailCertificationCode: '',
       phoneCertificationCode: '',
       emailCertificationRequest: [],
-      phoneCertificationRequest: []
+      phoneCertificationRequest: [],
+      sub() {
+        alert('aa')
+      }
     }
   },
   setup() {
@@ -211,11 +210,10 @@ export default {
     const { handleSubmit } = useForm({
       validationSchema: {
         email(value) {
-          if (!/^[a-z0-9._+-]+@[a-z.-]+\.[a-z]{2,}$/i.test(value)) {
-            return '이메일 형식에 맞게 입력해주세요'
+          if (/^[a-z0-9._+-]+@[a-z.-]+\.[a-z]{2,}$/i.test(value)) {
+            return true
           }
-
-          return true
+          return '이메일 형식에 맞게 입력해주세요'
         },
         name(value) {
           if (value?.length >= 2) return true
@@ -223,20 +221,19 @@ export default {
           return '이름을 입력해주세요'
         },
         phone(value) {
-          if (!/^01[016789]\d{3,4}\d{4}$/i.test(value)) {
-            return '휴대폰 번호를 입력해주세요'
+          if (/^01[016789]\d{3,4}\d{4}$/i.test(value)) {
+            return true
           }
-
-          return true
+          return '휴대폰 번호를 입력해주세요'
         },
         password(value) {
           if (
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/i.test(
               value
             )
-          )
-            // eslint-disable-next-line
+          ) {
             return true
+          }
 
           return '영어, 숫자, 특수문자를 섞어서 8자 이상 20자 이하'
         },
@@ -245,13 +242,13 @@ export default {
             !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/i.test(
               value
             )
-          )
-            // eslint-disable-next-line
+          ) {
             return '영어, 숫자, 특수문자를 섞어서 8자 이상 20자 이하'
+          }
 
-          if (password.value.value !== value)
-            // eslint-disable-next-line
+          if (password.value.value !== value) {
             return '비밀번호가 일치하지 않습니다.'
+          }
 
           return true
         },
@@ -265,11 +262,6 @@ export default {
 
           return '거주지역을 선택해주세요'
         },
-        checkbox(value) {
-          if (value === '1') return true
-
-          return 'Must be checked.'
-        },
         date(value) {
           return true
         }
@@ -282,7 +274,6 @@ export default {
     const phone = useField('phone')
     const sex = useField('sex')
     const region = useField('region')
-    const checkbox = useField('checkbox')
     const date = useField('birthday')
 
     const sexItems = ref([
@@ -318,11 +309,11 @@ export default {
       const userData = JSON.stringify(values, null, 2)
       axios.post(axios.defaults.baseURL + '/users', userData).then((res) => {
         if (res.status === 200) {
-          localStorage.setItem('joined-name', this.name)
-          this.$router.replace({ name: 'signup-success' })
+          console.log(values)
+          localStorage.setItem('joined-name', values.name)
         }
       })
-      return userData
+      window.location.href = '/signup-success'
     })
 
     return {
@@ -333,7 +324,6 @@ export default {
       phone,
       sex,
       region,
-      checkbox,
       sexItems,
       regionItems,
       submit,
@@ -350,8 +340,6 @@ export default {
   methods: {
     // 이메일 중복 확인
     checkEmailDuplicated() {
-      console.log(this.email.errorMessage)
-      console.log(this.email.errorMessage.value)
       axios
         .get(axios.defaults.baseURL + '/users/email/' + this.email.value.value)
         .then((res) => {
@@ -410,7 +398,6 @@ export default {
         )
         .then((res) => {
           this.isPhoneCodeSent = res.status === 200
-          console.log(this.isPhoneCodeSent)
         })
     },
     sendPhoneCertificationCode() {

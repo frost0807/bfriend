@@ -7,10 +7,7 @@ import com.frost.bfriend.entity.User;
 import com.frost.bfriend.common.util.encryption.EncryptionService;
 import lombok.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -66,13 +63,13 @@ public class UserDto {
         @Pattern(regexp = PHONE, message = "휴대폰 번호 형식에 맞게 입력해주세요")
         private String phone;
 
-        @NotBlank(message = "거주지역을 입력해주세요")
+        @NotNull(message = "거주지역을 입력해주세요")
         private Region region;
 
-        @NotBlank(message = "출생년월일을 입력해주세요")
+        @NotNull(message = "출생년월일을 입력해주세요")
         private LocalDate birthday;
 
-        @NotBlank(message = "성별을 입력해주세요")
+        @NotNull(message = "성별을 입력해주세요")
         private Sex sex;
 
         public void encryptPassword(EncryptionService encryptionService) {

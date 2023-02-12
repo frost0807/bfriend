@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class QuestionAnswerDto {
     @Getter
     @NoArgsConstructor
     public static class SaveRequest {
-        @NotBlank
+        @NotEmpty
         private Integer questionId;
 
         @NotBlank(message = "답변을 입력해주세요")
@@ -101,10 +102,10 @@ public class QuestionAnswerDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class UpdateRequest {
-        @NotBlank
+        @NotEmpty
         private Long questionAnswerId;
 
-        @NotBlank
+        @NotEmpty
         private Integer questionId;
 
         @NotBlank(message = "답변을 입력해주세요")
