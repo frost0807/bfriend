@@ -1,31 +1,11 @@
 <template>
-  <v-app :theme="theme">
-    <!-- <v-app-bar>
-      <v-btn to="/">Home</v-btn>
-      <v-spacer></v-spacer>
-
-      <v-btn
-        :prepend-icon="
-          theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'
-        "
-        @click="onClick"
-        >Toggle Theme</v-btn
-      >
-      <p v-if="username">{{ username }}님 환영합니다.</p>
-      <p v-if="!username">로그인이 필요합니다</p>
-      <v-spacer></v-spacer>
-      <v-btn v-if="username" to="/mypage">마이 페이지</v-btn>
-      <v-btn v-if="username" @click="logout">로그아웃</v-btn>
-      <v-btn v-if="!username" to="/signup">회원가입</v-btn>
-      <v-btn v-if="!username" to="/login">로그인</v-btn>
-    </v-app-bar> -->
-
+  <v-app>
     <v-main>
       <v-container
         v-if="
           $route.path !== '/' &&
           $route.path !== '/login' &&
-          $route.path !== '/signup'
+          $route.path !== '/signup-success'
         "
       >
         <router-view />
@@ -34,7 +14,7 @@
         v-if="
           $route.path === '/' ||
           $route.path === '/login' ||
-          $route.path === '/signup'
+          $route.path === '/signup-success'
         "
       />
     </v-main>
@@ -43,12 +23,18 @@
       v-if="
         $route.path !== '/' &&
         $route.path !== '/login' &&
-        $route.path !== '/signup'
+        $route.path !== '/signup' &&
+        $route.path !== '/forgot-password' &&
+        $route.path !== '/signup-success'
       "
     >
-      <v-btn to="/match/list"> 매칭 게시판 </v-btn>
-      <v-btn>채팅</v-btn>
-      <v-btn to="/mypage">마이페이지</v-btn>
+      <v-btn to="/match/list"
+        ><v-icon icon="mdi-home" size="x-large"></v-icon> 홈</v-btn
+      >
+      <v-btn><v-icon icon="mdi-chat" size="x-large"></v-icon>채팅</v-btn>
+      <v-btn to="/mypage"
+        ><v-icon icon="mdi-tune" size="x-large"></v-icon>마이페이지</v-btn
+      >
     </v-bottom-navigation>
   </v-app>
 </template>
@@ -73,7 +59,7 @@ export default {
     })
     window.addEventListener('unauthorized-event', () => {
       this.username = ''
-      this.$router.push({ name: 'login' })
+      this.$router.push({ name: 'home' })
     })
   },
   methods: {

@@ -32,13 +32,17 @@ public class UserService {
     private final TokenProvider tokenProvider;
 
     @Transactional(readOnly = true)
-    public boolean existByEmail(String email) {
-        return userRepository.existsByEmail(email);
+    public void isEmailDuplicated(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new DuplicatedEmailException("이미 가입된 이메일입니다.");
+        }
     }
 
     @Transactional(readOnly = true)
-    public boolean existByPhone(String phone) {
-        return userRepository.existsByPhone(phone);
+    public void isPhoneDuplicated(String phone) {
+        if (userRepository.existsByPhone(phone)) {
+            throw new DuplicatedPhoneException("이미 가입된 휴대폰입니다.");
+        }
     }
 
     @Transactional
@@ -105,10 +109,10 @@ public class UserService {
 
     @Transactional(readOnly = true)
     protected void checkDuplicated(SaveRequest requestDto) {
-        if (existByEmail(requestDto.getEmail())) {
+        if (userRepository.existsByEmail(requestDto.getEmail())) {
             throw new DuplicatedEmailException("중복된 이메일입니다.");
         }
-        if (existByPhone(requestDto.getPhone())) {
+        if (userRepository.existsByPhone(requestDto.getPhone())) {
             throw new DuplicatedPhoneException("중복된 휴대폰 번호입니다.");
         }
     }

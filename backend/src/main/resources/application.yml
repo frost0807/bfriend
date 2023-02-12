@@ -8,7 +8,11 @@ spring:
     username: frost
     password: ENC(tUFaEtJ5YuR0DFyLk5UdhGP35UyDaLbA)
 
-    #JPA
+  redis:
+    host: ENC(ALooXJ9NoA96KSzSrtqlPgm/5O1scPJ7OXog0norqPw3Moaen72YGTSqEYBpk5CkOmkJYIwYNMLbLgOz8wh8yAm6vXXmUZgV)
+    port: 6379
+
+  #JPA
   jpa:
     hibernate:
       ddl-auto: none

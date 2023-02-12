@@ -1,19 +1,19 @@
 package com.frost.bfriend.entity;
 
 import com.frost.bfriend.common.constants.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Builder
 @Getter
 @Entity
 @Where(clause = "is_deleted='0'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class MatchPost extends BaseTimeEntity {
 
     @Id
@@ -28,7 +28,7 @@ public class MatchPost extends BaseTimeEntity {
     private Activity activity;
 
     @Enumerated(EnumType.STRING)
-    private Duration duration;
+    private Topic topic;
 
     @Enumerated(EnumType.STRING)
     private Location location;
@@ -39,9 +39,11 @@ public class MatchPost extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private AgeDifference ageDifference;
 
-    private String comment;
+    private String text;
 
     private LocalDateTime startAt;
+
+    private LocalDateTime endAt;
 
     private Boolean isDeleted;
 

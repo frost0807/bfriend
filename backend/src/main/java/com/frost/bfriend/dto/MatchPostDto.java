@@ -8,8 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 public class MatchPostDto {
 
@@ -19,7 +20,7 @@ public class MatchPostDto {
     public static class ListRequestCondition {
         private Activity activity;
 
-        private Duration duration;
+        private Topic topic;
 
         private Location location;
     }
@@ -30,27 +31,43 @@ public class MatchPostDto {
 
         private Activity activity;
 
-        private Duration duration;
+        private Topic topic;
 
         private Location location;
 
-        private String comment;
+        private String text;
 
         private LocalDateTime startAt;
+
+        private LocalDateTime endAt;
+
+        private DayOfWeek dayOfTheWeek;
+
+        private int daysLeft;
+
+        private String timeFromTo;
 
         private int replyCount;
 
         @QueryProjection
-        public ListResponse(Long matchPostId, Activity activity, Duration duration,
-                            Location location, String comment, LocalDateTime startAt,
-                            int replyCount) {
+        public ListResponse(Long matchPostId, Activity activity, Topic topic, Location location,
+                            String text, LocalDateTime startAt, LocalDateTime endAt, int replyCount) {
             this.matchPostId = matchPostId;
             this.activity = activity;
-            this.duration = duration;
+            this.topic = topic;
             this.location = location;
-            this.comment = comment;
+            this.text = text;
             this.startAt = startAt;
+            this.endAt = endAt;
             this.replyCount = replyCount;
+        }
+
+        public ListResponse calculateDayAndTimes() {
+            this.dayOfTheWeek = startAt.getDayOfWeek();
+            this.daysLeft = (int) ChronoUnit.DAYS.between(LocalDateTime.now(), startAt);
+            this.timeFromTo = startAt.getHour() + " - " + endAt.getHour();
+
+            return this;
         }
     }
 
@@ -62,7 +79,7 @@ public class MatchPostDto {
 
         private Activity activity;
 
-        private Duration duration;
+        private Topic topic;
 
         private Location location;
 
@@ -70,9 +87,11 @@ public class MatchPostDto {
 
         private AgeDifference ageDifference;
 
-        private String comment;
+        private String text;
 
         private LocalDateTime startAt;
+
+        private LocalDateTime endAt;
 
         private LocalDateTime createdAt;
 
@@ -82,12 +101,13 @@ public class MatchPostDto {
             this.matchPostId = matchPost.getId();
             this.name = matchPost.getWriter().getName();
             this.activity = matchPost.getActivity();
-            this.duration = matchPost.getDuration();
+            this.topic = matchPost.getTopic();
             this.location = matchPost.getLocation();
             this.budget = matchPost.getBudget();
             this.ageDifference = matchPost.getAgeDifference();
-            this.comment = matchPost.getComment();
+            this.text = matchPost.getText();
             this.startAt = matchPost.getStartAt();
+            this.endAt = matchPost.getEndAt();
             this.createdAt = matchPost.getCreatedAt();
             this.updatedAt = matchPost.getUpdatedAt();
         }

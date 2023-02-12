@@ -1,13 +1,8 @@
 package com.frost.bfriend.common;
 
-import com.frost.bfriend.common.constants.QuestionCategoryName;
-import com.frost.bfriend.common.constants.Region;
-import com.frost.bfriend.common.constants.Sex;
+import com.frost.bfriend.common.constants.*;
 import com.frost.bfriend.common.util.encryption.EncryptionService;
-import com.frost.bfriend.entity.Question;
-import com.frost.bfriend.entity.QuestionAnswer;
-import com.frost.bfriend.entity.QuestionCategory;
-import com.frost.bfriend.entity.User;
+import com.frost.bfriend.entity.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -18,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -106,6 +102,67 @@ public class init {
         @Transactional
         public void initMatchPost() {
 
+            for (int i = 1; i < 31; i++) {
+                MatchPost post1 = MatchPost.builder()
+                        .writer(em.find(User.class, 1L))
+                        .activity(Activity.WALK)
+                        .topic(Topic.COMMON)
+                        .location(Location.CAPITAL_EAST)
+                        .budget(Budget.UNDER_5000)
+                        .ageDifference(AgeDifference.WHATEVER)
+                        .text("포스트 내용 " + i)
+                        .startAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20, 00))
+                        .endAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20 + 3, 00))
+                        .isDeleted(false)
+                        .build();
+
+                MatchPost post2 = MatchPost.builder()
+                        .writer(em.find(User.class, 1L))
+                        .activity(Activity.COFFEE)
+                        .topic(Topic.TRAVEL)
+                        .location(Location.CAPITAL_WEST)
+                        .budget(Budget.UNDER_10000)
+                        .ageDifference(AgeDifference.WHATEVER)
+                        .text("포스트 내용 " + i)
+                        .startAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20, 00))
+                        .endAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20 + 3, 00))
+                        .isDeleted(false)
+                        .build();
+
+                MatchPost post3 = MatchPost.builder()
+                        .writer(em.find(User.class, 1L))
+                        .activity(Activity.MEAL)
+                        .topic(Topic.SPORT)
+                        .location(Location.CAPITAL_SOUTH)
+                        .budget(Budget.UNDER_20000)
+                        .ageDifference(AgeDifference.WHATEVER)
+                        .text("포스트 내용 " + i)
+                        .startAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20, 00))
+                        .endAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20 + 3, 00))
+                        .isDeleted(false)
+                        .build();
+
+                MatchPost post4 = MatchPost.builder()
+                        .writer(em.find(User.class, 1L))
+                        .activity(Activity.ALCOHOL)
+                        .topic(Topic.MOVIE)
+                        .location(Location.CAPITAL_NORTH)
+                        .budget(Budget.UNDER_30000)
+                        .ageDifference(AgeDifference.WHATEVER)
+                        .text("포스트 내용 " + i)
+                        .startAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20, 00))
+                        .endAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20 + 3, 00))
+                        .isDeleted(false)
+                        .build();
+
+                em.persist(post1);
+                em.persist(post2);
+                em.persist(post3);
+                em.persist(post4);
+
+                em.flush();
+                em.clear();
+            }
         }
     }
 }

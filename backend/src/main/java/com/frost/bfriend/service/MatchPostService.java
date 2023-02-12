@@ -8,8 +8,12 @@ import com.frost.bfriend.repository.matchpost.MatchPostRepository;
 import com.frost.bfriend.repository.reply.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.frost.bfriend.dto.MatchPostDto.ListRequestCondition;
 import static com.frost.bfriend.dto.MatchPostDto.ListResponse;
@@ -24,7 +28,14 @@ public class MatchPostService {
     private final ReplyRepository replyRepository;
 
     public Page<ListResponse> getMatchPostListAll(Pageable pageable, ListRequestCondition condition) {
-        return matchPostRepository.searchMatchPostsWithCondition(pageable, condition);
+        Page<ListResponse> listResponseNotCalculated =
+                matchPostRepository.searchMatchPostsWithCondition(pageable, condition);
+        long totalElements = listResponseNotCalculated.getTotalElements();
+        List<ListResponse> listResponsesCalculated = listResponseNotCalculated.getContent().stream()
+                .map(listResponse -> listResponse.calculateDayAndTimes())
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(listResponsesCalculated, pageable, totalElements);
     }
 
     public Response getMatchPost(Long matchPostId) {

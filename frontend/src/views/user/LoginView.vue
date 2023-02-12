@@ -85,9 +85,6 @@ export default {
   font-size: 12px;
   font-weight: bold;
 }
-.text-field {
-  border-color: white;
-}
 .login-button {
   border-radius: 15px;
   background-color: black;
