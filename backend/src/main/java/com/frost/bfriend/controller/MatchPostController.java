@@ -1,8 +1,9 @@
 package com.frost.bfriend.controller;
 
+import com.frost.bfriend.common.annotation.CheckUser;
 import com.frost.bfriend.common.constants.Activity;
-import com.frost.bfriend.common.constants.Duration;
 import com.frost.bfriend.common.constants.Location;
+import com.frost.bfriend.common.constants.Topic;
 import com.frost.bfriend.service.MatchPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,19 +23,29 @@ public class MatchPostController {
 
     private final MatchPostService matchPostService;
 
+    @CheckUser
     @GetMapping
     public ResponseEntity<Page<ListResponse>> getMatchPostListAll(
             @PageableDefault Pageable pageable,
             @RequestParam(required = false) Optional<Activity> activity,
-            @RequestParam(required = false) Optional<Duration> duration,
+            @RequestParam(required = false) Optional<Topic> topic,
             @RequestParam(required = false) Optional<Location> location) {
         ListRequestCondition condition = new ListRequestCondition(
                 activity.orElseGet(() -> null),
-                duration.orElseGet(() -> null),
+                topic.orElseGet(() -> null),
                 location.orElseGet(() -> null));
 
         return ResponseEntity.ok(matchPostService.getMatchPostListAll(pageable, condition));
     }
 
+    @CheckUser
+    @GetMapping("/{matchPostId}")
+    public ResponseEntity<Response> getMatchPost(@PathVariable Long matchPostId) {
+        return ResponseEntity.ok(matchPostService.getMatchPost(matchPostId));
+    }
 
+//    @GetMapping("/{matchPostId}/replies")
+//    public ResponseEntity<Page<ReplyResponse>> getRepliesByMatchPostId(@PageableDefault Pageable pageable, @PathVariable Long matchPostId) {
+//        return ResponseEntity.ok(matchPostService.getRepliesByMatchPostId(pageable, matchPostId));
+//    }
 }

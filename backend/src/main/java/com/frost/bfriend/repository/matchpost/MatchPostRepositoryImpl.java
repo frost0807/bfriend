@@ -1,8 +1,8 @@
-package com.frost.bfriend.repository;
+package com.frost.bfriend.repository.matchpost;
 
 import com.frost.bfriend.common.constants.Activity;
-import com.frost.bfriend.common.constants.Duration;
 import com.frost.bfriend.common.constants.Location;
+import com.frost.bfriend.common.constants.Topic;
 import com.frost.bfriend.dto.QMatchPostDto_ListResponse;
 import com.frost.bfriend.entity.MatchPost;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -15,6 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 import static com.frost.bfriend.dto.MatchPostDto.ListRequestCondition;
 import static com.frost.bfriend.dto.MatchPostDto.ListResponse;
@@ -37,17 +38,18 @@ public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
                 .select(new QMatchPostDto_ListResponse(
                         matchPost.id,
                         matchPost.activity,
-                        matchPost.duration,
+                        matchPost.topic,
                         matchPost.location,
-                        matchPost.comment,
+                        matchPost.text,
                         matchPost.startAt,
+                        matchPost.endAt,
                         matchPost.replies.size()
                 ))
                 .from(matchPost)
-                .leftJoin(matchPost.replies, reply)
+//                .leftJoin(matchPost.replies, reply)
                 .where(
                         activityEq(condition.getActivity()),
-                        durationEq(condition.getDuration()),
+                        topicEq(condition.getTopic()),
                         locationEq(condition.getLocation())
                 )
                 .orderBy(matchPost.id.desc())
@@ -60,23 +62,33 @@ public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
                 .from(matchPost)
                 .where(
                         activityEq(condition.getActivity()),
-                        durationEq(condition.getDuration()),
+                        topicEq(condition.getTopic()),
                         locationEq(condition.getLocation())
                 );
 
         return PageableExecutionUtils.getPage(matchPosts, pageable, countQuery::fetchOne);
     }
 
-
     private BooleanExpression activityEq(Activity activity) {
         return activity != null ? matchPost.activity.eq(activity) : null;
     }
 
-    private BooleanExpression durationEq(Duration duration) {
-        return duration != null ? matchPost.duration.eq(duration) : null;
+    private BooleanExpression topicEq(Topic topic) {
+        return topic != null ? matchPost.topic.eq(topic) : null;
     }
 
     private BooleanExpression locationEq(Location location) {
         return location != null ? matchPost.location.eq(location) : null;
+    }
+
+    public Optional<MatchPost> searchMatchPostById(Long matchPostId) {
+        MatchPost result = queryFactory
+                .selectFrom(matchPost)
+                .innerJoin(matchPost.writer)
+                .fetchJoin()
+                .where(matchPost.id.eq(matchPostId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
     }
 }

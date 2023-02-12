@@ -4,11 +4,15 @@ spring:
     active: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bfriend?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: ENC(Vli88LkV5vfJDlL4StYMXw==)
+    url: jdbc:mysql://bfriend-mysql.cahtqxbh2c1y.ap-northeast-2.rds.amazonaws.com/bfriend?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: frost
+    password: ENC(tUFaEtJ5YuR0DFyLk5UdhGP35UyDaLbA)
 
-    #JPA
+  redis:
+    host: ENC(ALooXJ9NoA96KSzSrtqlPgm/5O1scPJ7OXog0norqPw3Moaen72YGTSqEYBpk5CkOmkJYIwYNMLbLgOz8wh8yAm6vXXmUZgV)
+    port: 6379
+
+  #JPA
   jpa:
     hibernate:
       ddl-auto: none

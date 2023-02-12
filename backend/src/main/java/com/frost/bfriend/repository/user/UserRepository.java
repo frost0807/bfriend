@@ -1,4 +1,4 @@
-package com.frost.bfriend.repository;
+package com.frost.bfriend.repository.user;
 
 import com.frost.bfriend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

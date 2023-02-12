@@ -34,15 +34,19 @@ public class UserController {
     private final CookieHandler cookieHandler;
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Boolean> isEmailDuplicated(
+    public ResponseEntity<Void> isEmailDuplicated(
             @PathVariable @Email(message = EMAIL_REGEX_FAIL) String email) {
-        return ResponseEntity.ok(userService.existByEmail(email));
+        userService.isEmailDuplicated(email);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/phone/{phone}")
-    public ResponseEntity<Boolean> isPhoneDuplicated(
+    public ResponseEntity<Void> isPhoneDuplicated(
             @PathVariable @Pattern(regexp = PHONE, message = PHONE_REGEX_FAIL) String phone) {
-        return ResponseEntity.ok(userService.existByPhone(phone));
+        userService.isPhoneDuplicated(phone);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/email/certification/{email}")

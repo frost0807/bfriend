@@ -1,5 +1,6 @@
 package com.frost.bfriend.exception;
 
+import com.frost.bfriend.exception.matchpost.MatchPostNotFoundException;
 import com.frost.bfriend.exception.user.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
@@ -116,6 +117,13 @@ public class BFriendExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(AlreadyMyPasswordException.class)
     public ErrorMsg handleAlreadyMyPasswordException(AlreadyMyPasswordException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(MatchPostNotFoundException.class)
+    public ErrorMsg handleMatchPostNotFoundException(MatchPostNotFoundException e) {
         writeErrorLog(e);
         return getErrorMessage(e);
     }

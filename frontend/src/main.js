@@ -11,13 +11,15 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import Datepicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import '@mdi/font/css/materialdesignicons.css'
 
 const vuetify = createVuetify({
   components,
   directives
 })
-
 axios.defaults.baseURL = 'http://localhost:8080'
+// axios.defaults.baseURL = 'http://43.201.136.225:8080'
 axios.defaults.withCredentials = true
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.put['Content-Type'] = 'application/json'
