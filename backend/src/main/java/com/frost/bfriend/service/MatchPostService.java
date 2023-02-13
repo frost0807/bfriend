@@ -44,11 +44,15 @@ public class MatchPostService {
         return new Response(matchPost);
     }
 
-//    public Page<ReplyResponse> getRepliesByMatchPostId(Pageable pageable, Long matchPostId) {
+//    /**
+//     * 매칭글 작성자가 작성한 댓글
+//     */
+//    public Page<ReplyResponse> getRepliesByMatchPostId(Long userId, Pageable pageable, Long matchPostId) {
 //        MatchPost matchPost = matchPostRepository.searchMatchPostById(matchPostId)
 //                .orElseThrow(() -> new MatchPostNotFoundException("해당 게시물이 존재하지 않습니다."));
 //        Page<Reply> replies = replyRepository.searchRepliesByMatchPost(pageable, matchPost);
-//        return replies.stream()
-//                .map(reply -> )
+//        List<ReplyResponse> replyResponsesFilteredByUser = replies.stream()
+//                .map(reply -> reply.getUser().getId() == userId ? new ReplyResponse(reply) : null)
+//                .collect(Collectors.toList());
 //    }
 }

@@ -311,9 +311,9 @@ export default {
         if (res.status === 200) {
           console.log(values)
           localStorage.setItem('joined-name', values.name)
+          window.location.href = '/signup-success'
         }
       })
-      window.location.href = '/signup-success'
     })
 
     return {
