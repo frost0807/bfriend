@@ -48,10 +48,10 @@
 //        @Transactional
 //        public void initUser() {
 //            SaveRequest userDto = SaveRequest.builder()
-//                    .email("junesuck99@naver.com")
-//                    .phone("01097059896")
+//                    .email("guest@bfriend.com")
+//                    .phone("01012341234")
 //                    .password("1234qwer!")
-//                    .name("최준석")
+//                    .name("손님")
 //                    .sex(Sex.MALE)
 //                    .region(Region.SEOUL)
 //                    .birthday(LocalDate.now())

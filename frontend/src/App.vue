@@ -1,22 +1,24 @@
 <template>
   <v-app>
     <v-main>
-      <v-container
-        v-if="
-          $route.path !== '/' &&
-          $route.path !== '/login' &&
-          $route.path !== '/signup-success'
-        "
-      >
-        <router-view />
+      <v-container style="max-width: 600px; padding: 0">
+        <v-container
+          v-if="
+            $route.path !== '/' &&
+            $route.path !== '/login' &&
+            $route.path !== '/signup-success'
+          "
+        >
+          <router-view />
+        </v-container>
+        <router-view
+          v-if="
+            $route.path === '/' ||
+            $route.path === '/login' ||
+            $route.path === '/signup-success'
+          "
+        />
       </v-container>
-      <router-view
-        v-if="
-          $route.path === '/' ||
-          $route.path === '/login' ||
-          $route.path === '/signup-success'
-        "
-      />
     </v-main>
 
     <v-bottom-navigation

@@ -65,7 +65,7 @@ public class MatchPostDto {
         public ListResponse calculateDayAndTimes() {
             this.dayOfTheWeek = startAt.getDayOfWeek();
             this.daysLeft = (int) ChronoUnit.DAYS.between(LocalDateTime.now(), startAt);
-            this.timeFromTo = startAt.getHour() + " - " + endAt.getHour();
+            this.timeFromTo = startAt.getHour() + "시 - " + endAt.getHour() + "시";
 
             return this;
         }
@@ -75,7 +75,7 @@ public class MatchPostDto {
     public static class Response {
         private Long matchPostId;
 
-        private String name;
+        private String username;
 
         private Activity activity;
 
@@ -99,7 +99,7 @@ public class MatchPostDto {
 
         public Response(MatchPost matchPost) {
             this.matchPostId = matchPost.getId();
-            this.name = matchPost.getWriter().getName();
+            this.username = matchPost.getWriter().getName();
             this.activity = matchPost.getActivity();
             this.topic = matchPost.getTopic();
             this.location = matchPost.getLocation();

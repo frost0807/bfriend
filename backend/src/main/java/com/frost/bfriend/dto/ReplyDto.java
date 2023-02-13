@@ -13,7 +13,7 @@ public class ReplyDto {
 
         private Long parentReplyId;
 
-        private String name;
+        private String username;
 
         private String comment;
 
@@ -24,7 +24,7 @@ public class ReplyDto {
         public ReplyResponse(Reply reply) {
             this.replyId = reply.getId();
             this.parentReplyId = getParentReplyId(reply);
-            this.name = reply.getUser().getName();
+            this.username = reply.getUser().getName();
             this.comment = reply.getComment();
             this.createdAt = reply.getCreatedAt();
             this.updatedAt = reply.getUpdatedAt();

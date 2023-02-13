@@ -75,8 +75,9 @@
             <p
               v-text="
                 getTitleFromValue(dayOfTheWeek, item.dayOfTheWeek) +
-                '/D- ' +
-                item.daysLeft
+                (item.daysLeft >= 0
+                  ? '/D- ' + item.daysLeft
+                  : '/D+ ' + item.daysLeft)
               "
               class="card-day-dday"
             ></p>
