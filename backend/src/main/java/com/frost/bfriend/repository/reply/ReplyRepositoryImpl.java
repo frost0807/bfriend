@@ -1,16 +1,21 @@
 package com.frost.bfriend.repository.reply;
 
 import com.frost.bfriend.entity.MatchPost;
+import com.frost.bfriend.entity.QMatchPost;
+import com.frost.bfriend.entity.QReply;
 import com.frost.bfriend.entity.Reply;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Coalesce;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
+import java.util.Arrays;
 import java.util.List;
 
+import static com.frost.bfriend.entity.QMatchPost.*;
 import static com.frost.bfriend.entity.QReply.reply;
 import static com.frost.bfriend.entity.QUser.user;
 
@@ -22,22 +27,14 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
-    public Page<Reply> searchRepliesByMatchPost(Pageable pageable, MatchPost matchPost) {
-        List<Reply> replies = queryFactory
+    public List<Reply> searchRepliesByMatchPost(MatchPost matchPost) {
+        return queryFactory
                 .selectFrom(reply)
+                .distinct()
+                .join(reply.matchPost, QMatchPost.matchPost)
                 .join(reply.user, user)
                 .fetchJoin()
-                .where(reply.matchPost.eq(matchPost))
-                .orderBy(reply.id.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .orderBy(reply.id.asc())
                 .fetch();
-
-        JPAQuery<Long> countQuery = queryFactory
-                .select(reply.count())
-                .from(reply)
-                .where(reply.matchPost.eq(matchPost));
-
-        return PageableExecutionUtils.getPage(replies, pageable, countQuery::fetchOne);
     }
 }

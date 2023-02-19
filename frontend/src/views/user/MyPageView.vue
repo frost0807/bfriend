@@ -15,6 +15,7 @@
   <br />
   <v-btn to="question-answer-update">자문자답 수정</v-btn>
   <v-btn to="update-password">비밀번호 변경</v-btn>
+  <v-btn @click="handleLogout">로그아웃</v-btn>
   <v-btn to="withdrawal">회원 탈퇴</v-btn>
 </template>
 <script>
@@ -41,6 +42,17 @@ export default {
       })
   },
   unmounted() {},
-  methods: {}
+  methods: {
+    handleLogout() {
+      axios.get(axios.defaults.baseURL + '/users/logout').then((res) => {
+        if (res.status === 200) {
+          alert('로그아웃 되었습니다.')
+          localStorage.removeItem('username')
+          window.dispatchEvent(new CustomEvent('logout-event'))
+          this.$router.replace({ name: 'login' })
+        }
+      })
+    }
+  }
 }
 </script>

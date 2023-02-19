@@ -46,11 +46,10 @@
         class="reset-button"
       ></v-btn>
     </v-row>
-    <div class="d-flex flex-no-wrap justify-space-between"></div>
   </div>
 
   <v-card v-for="(item, index) in matchPosts" :key="index">
-    <v-row class="card-row">
+    <v-row class="card-row" @click="moveToDetails(item.matchPostId)">
       <v-col cols="2" class="card-image">
         <v-avatar size="50" rounded="0">
           <v-img
@@ -76,8 +75,8 @@
               v-text="
                 getTitleFromValue(dayOfTheWeek, item.dayOfTheWeek) +
                 (item.daysLeft >= 0
-                  ? '/D- ' + item.daysLeft
-                  : '/D+ ' + item.daysLeft)
+                  ? '/D -' + item.daysLeft
+                  : '/D +' + -item.daysLeft)
               "
               class="card-day-dday"
             ></p>
@@ -230,6 +229,13 @@ export default {
     },
     toggleFilter() {
       this.isFilterOn = !this.isFilterOn
+    },
+    moveToDetails(matchPostId) {
+      console.log(matchPostId)
+      this.$router.push({
+        name: 'match-detail',
+        query: { id: matchPostId }
+      })
     }
   }
 }
