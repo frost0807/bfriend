@@ -1,16 +1,18 @@
 package com.frost.bfriend.entity;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@Builder
 @Getter
 @Entity
 @Where(clause = "is_deleted='0'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Reply extends BaseTimeEntity {
 
     @Id
@@ -28,6 +30,9 @@ public class Reply extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id")
     private User user;
+
+    @OneToMany(mappedBy = "parentReply")
+    private List<Reply> childReplies = new ArrayList<>();
 
     private String comment;
 

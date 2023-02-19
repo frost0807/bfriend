@@ -57,6 +57,14 @@ export default {
   unmounted() {},
   methods: {
     login() {
+      if (this.loginData.email === '') {
+        alert('이메일을 입력해주세요')
+        return
+      }
+      if (this.loginData.password === '') {
+        alert('비밀번호를 입력해주세요')
+        return
+      }
       const userData = JSON.stringify(this.loginData, null, 2)
       axios
         .post(axios.defaults.baseURL + '/users/login', userData)

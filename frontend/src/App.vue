@@ -42,8 +42,6 @@
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   data() {
     return {
@@ -67,15 +65,6 @@ export default {
   methods: {
     onClick() {
       this.theme = this.theme === 'light' ? 'dark' : 'light'
-    },
-    logout() {
-      axios
-        .get(axios.defaults.baseURL + '/users/logout')
-        .then((res) => console.log(res))
-
-      localStorage.removeItem('username')
-      window.dispatchEvent(new CustomEvent('logout-event'))
-      this.$router.replace({ name: 'login' })
     }
   }
 }

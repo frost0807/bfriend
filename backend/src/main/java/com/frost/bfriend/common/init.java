@@ -14,8 +14,10 @@
 //import javax.persistence.PersistenceContext;
 //import java.time.LocalDate;
 //import java.time.LocalDateTime;
+//import java.util.ArrayList;
 //import java.util.Arrays;
 //import java.util.List;
+//import java.util.Random;
 //
 //import static com.frost.bfriend.dto.UserDto.SaveRequest;
 //
@@ -34,6 +36,7 @@
 //        initService.initUser();
 //        initService.initQuestionAnswer();
 //        initService.initMatchPost();
+//        initService.initReply();
 //    }
 //
 //    @RequiredArgsConstructor
@@ -41,23 +44,25 @@
 //    static class InitService {
 //        @PersistenceContext
 //        private EntityManager em;
-//
-//
 //        private final EncryptionService encryptionService;
 //
 //        @Transactional
 //        public void initUser() {
-//            SaveRequest userDto = SaveRequest.builder()
-//                    .email("guest@bfriend.com")
-//                    .phone("01012341234")
-//                    .password("1234qwer!")
-//                    .name("손님")
-//                    .sex(Sex.MALE)
-//                    .region(Region.SEOUL)
-//                    .birthday(LocalDate.now())
-//                    .build();
-//            userDto.encryptPassword(encryptionService);
-//            em.persist(userDto.toEntity());
+//            for (int i = 1; i < 6; i++) {
+//                SaveRequest userDto = SaveRequest.builder()
+//                        .email("guest" + i + "@bfriend.com")
+//                        .phone("0100000000" + i)
+//                        .password("1234qwer!")
+//                        .name("유저" + i)
+//                        .sex(Sex.MALE)
+//                        .region(Region.SEOUL)
+//                        .birthday(LocalDate.now())
+//                        .build();
+//                userDto.encryptPassword(encryptionService);
+//                em.persist(userDto.toEntity());
+//            }
+//            em.flush();
+//            em.clear();
 //        }
 //
 //        @Transactional
@@ -76,6 +81,7 @@
 //
 //            em.flush();
 //            em.clear();
+//
 //            for (int i = 0; i < 5; i++) {
 //                for (int j = 1; j < 6; j++) {
 //                    Question question = Question.builder()
@@ -87,6 +93,9 @@
 //            }
 //            em.flush();
 //            em.clear();
+//
+//            log.info(em.find(User.class, 1L).getName());
+//            log.info(em.find(Question.class, 1).getContent());
 //
 //            for (int i = 1; i < 25; i += 2) {
 //                log.info("i = {}", i);
@@ -101,67 +110,94 @@
 //
 //        @Transactional
 //        public void initMatchPost() {
+//            Random random = new Random();
+//            List<Activity> activities = Arrays.asList(Activity.values());
+//            List<Topic> topics = Arrays.asList(Topic.values());
+//            List<Location> locations = Arrays.asList(Location.values());
+//            List<Budget> budgets = Arrays.asList(Budget.values());
+//            List<AgeDifference> ageDifferences = Arrays.asList(AgeDifference.values());
 //
-//            for (int i = 1; i < 31; i++) {
-//                MatchPost post1 = MatchPost.builder()
-//                        .writer(em.find(User.class, 1L))
-//                        .activity(Activity.WALK)
-//                        .topic(Topic.COMMON)
-//                        .location(Location.CAPITAL_EAST)
-//                        .budget(Budget.UNDER_5000)
-//                        .ageDifference(AgeDifference.WHATEVER)
+//
+//            for (int i = 1; i < 500; i++) {
+//                MatchPost post = MatchPost.builder()
+//                        .writer(em.find(User.class, random.nextInt(5) + 1L))
+//                        .activity(activities.get(random.nextInt(5)))
+//                        .topic(topics.get(random.nextInt(9)))
+//                        .location(locations.get(random.nextInt(4)))
+//                        .budget(budgets.get(random.nextInt(7)))
+//                        .ageDifference(ageDifferences.get(random.nextInt(2)))
 //                        .text("포스트 내용 " + i)
-//                        .startAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20, 00))
-//                        .endAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20 + 3, 00))
+//                        .startAt(LocalDateTime.of(2023, 03, (i % 30) + 1, (i * 6) % 20, 00))
+//                        .endAt(LocalDateTime.of(2023, 03, (i % 31) + 1, (i * 6) % 20 + 3, 00))
 //                        .isDeleted(false)
 //                        .build();
 //
-//                MatchPost post2 = MatchPost.builder()
-//                        .writer(em.find(User.class, 1L))
-//                        .activity(Activity.COFFEE)
-//                        .topic(Topic.TRAVEL)
-//                        .location(Location.CAPITAL_WEST)
-//                        .budget(Budget.UNDER_10000)
-//                        .ageDifference(AgeDifference.WHATEVER)
-//                        .text("포스트 내용 " + i)
-//                        .startAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20, 00))
-//                        .endAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20 + 3, 00))
+//                em.persist(post);
+//            }
+//            em.flush();
+//            em.clear();
+//        }
+//
+//        @Transactional
+//        public void initReply() {
+//            Random random = new Random();
+//            List<Activity> activities = Arrays.asList(Activity.values());
+//            List<Topic> topics = Arrays.asList(Topic.values());
+//            List<Location> locations = Arrays.asList(Location.values());
+//            List<Budget> budgets = Arrays.asList(Budget.values());
+//            List<AgeDifference> ageDifferences = Arrays.asList(AgeDifference.values());
+//
+//            MatchPost post = MatchPost.builder()
+//                    .writer(em.find(User.class, 1L))
+//                    .activity(activities.get(random.nextInt(5)))
+//                    .topic(topics.get(random.nextInt(9)))
+//                    .location(locations.get(random.nextInt(4)))
+//                    .budget(budgets.get(random.nextInt(7)))
+//                    .ageDifference(ageDifferences.get(random.nextInt(2)))
+//                    .text("댓글 테스트용 포스트")
+//                    .startAt(LocalDateTime.now())
+//                    .endAt(LocalDateTime.now())
+//                    .isDeleted(false)
+//                    .build();
+//
+//            em.persist(post);
+//            em.flush();
+//            em.clear();
+//
+//            for (long i = 1; i < 5; i++) {
+//                Reply parent = Reply.builder()
+//                        .user(em.find(User.class, i + 1))
+//                        .parentReply(null)
+//                        .matchPost(em.find(MatchPost.class, 500L))
+//                        .comment("부모 댓글입니다." + i)
 //                        .isDeleted(false)
 //                        .build();
+//                em.persist(parent);
+//            }
+//            em.flush();
+//            em.clear();
+//            for (long i = 1; i < 5; i++) {
+//                for (long j = 0; j < 5; j++) {
+//                    Reply child1 = Reply.builder()
+//                            .user(em.find(User.class, 1L))
+//                            .parentReply(em.find(Reply.class, i))
+//                            .matchPost(em.find(MatchPost.class, 500L))
+//                            .comment("자식 댓글입니다." + j)
+//                            .isDeleted(false)
+//                            .build();
 //
-//                MatchPost post3 = MatchPost.builder()
-//                        .writer(em.find(User.class, 1L))
-//                        .activity(Activity.MEAL)
-//                        .topic(Topic.SPORT)
-//                        .location(Location.CAPITAL_SOUTH)
-//                        .budget(Budget.UNDER_20000)
-//                        .ageDifference(AgeDifference.WHATEVER)
-//                        .text("포스트 내용 " + i)
-//                        .startAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20, 00))
-//                        .endAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20 + 3, 00))
-//                        .isDeleted(false)
-//                        .build();
-//
-//                MatchPost post4 = MatchPost.builder()
-//                        .writer(em.find(User.class, 1L))
-//                        .activity(Activity.ALCOHOL)
-//                        .topic(Topic.MOVIE)
-//                        .location(Location.CAPITAL_NORTH)
-//                        .budget(Budget.UNDER_30000)
-//                        .ageDifference(AgeDifference.WHATEVER)
-//                        .text("포스트 내용 " + i)
-//                        .startAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20, 00))
-//                        .endAt(LocalDateTime.of(2023, 03, i, (i * 6) % 20 + 3, 00))
-//                        .isDeleted(false)
-//                        .build();
-//
-//                em.persist(post1);
-//                em.persist(post2);
-//                em.persist(post3);
-//                em.persist(post4);
-//
-//                em.flush();
-//                em.clear();
+//                    Reply child2 = Reply.builder()
+//                            .user(em.find(User.class, i + 1))
+//                            .parentReply(em.find(Reply.class, i))
+//                            .matchPost(em.find(MatchPost.class, 500L))
+//                            .comment("자식 댓글입니다." + j)
+//                            .isDeleted(false)
+//                            .build();
+//                    em.persist(child1);
+//                    em.persist(child2);
+//                    em.flush();
+//                    em.clear();
+//                }
 //            }
 //        }
 //    }
