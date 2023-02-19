@@ -33,7 +33,6 @@
       height="40"
       width="100%"
       class="forgot-password-button"
-      type="submit"
       >비밀번호 찾기</v-btn
     ></v-container
   >
@@ -69,8 +68,8 @@ export default {
       axios
         .post(axios.defaults.baseURL + '/users/login', userData)
         .then((res) => {
+          console.log(res)
           if (res.status === 200) {
-            console.log(res)
             localStorage.setItem('username', res.data)
             window.dispatchEvent(
               new CustomEvent('login-event', {

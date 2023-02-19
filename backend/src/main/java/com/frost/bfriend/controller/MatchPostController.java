@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,8 +44,16 @@ public class MatchPostController {
 
     @CheckUser
     @GetMapping("/{matchPostId}")
-    public ResponseEntity<Response> getMatchPost(@LoginUser Long userId, @PathVariable Long matchPostId) {
+    public ResponseEntity<Response> getMatchPost(
+            @LoginUser Long userId, @PathVariable Long matchPostId) {
         return ResponseEntity.ok(matchPostService.getMatchPost(userId, matchPostId));
+    }
+
+    @CheckUser
+    @PostMapping
+    public ResponseEntity<Long> saveMatchPost(
+            @LoginUser Long userId, @RequestBody @Valid SaveRequest saveRequest) {
+        return ResponseEntity.ok(matchPostService.saveMatchPost(userId, saveRequest));
     }
 
     @CheckUser

@@ -1,6 +1,8 @@
 package com.frost.bfriend.service;
 
+import com.frost.bfriend.dto.MatchPostDto;
 import com.frost.bfriend.dto.MatchPostDto.Response;
+import com.frost.bfriend.dto.MatchPostDto.SaveRequest;
 import com.frost.bfriend.entity.MatchPost;
 import com.frost.bfriend.entity.Reply;
 import com.frost.bfriend.entity.User;
@@ -22,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static com.frost.bfriend.dto.MatchPostDto.ListRequestCondition;
 import static com.frost.bfriend.dto.MatchPostDto.ListResponse;
-import static com.frost.bfriend.dto.ReplyDto.*;
 import static com.frost.bfriend.dto.ReplyDto.ReplyResponse;
 
 @Slf4j
@@ -53,11 +54,6 @@ public class MatchPostService {
         return new Response(user, matchPost);
     }
 
-//    List.of(
-//            new ReplyResponse(parentReply, user),
-//                        parentReply.getChildReplies().stream()
-//                                .map(childReply -> new ReplyResponse(childReply, user)))
-
     /**
      * 로그인한 유저가 매칭글 작성자 -> 모든 댓글을 다 조회가능
      * 로그인한 유저가 매칭글 작성자가 X -> 본인의 댓글 그룹만 조회가능
@@ -83,5 +79,14 @@ public class MatchPostService {
         Collections.reverse(replyGroupResponses);
 
         return replyGroupResponses;
+    }
+
+    public Long saveMatchPost(Long userId, SaveRequest saveRequest) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저입니다."));
+        MatchPost matchPost = saveRequest.toEntity(user);
+        matchPostRepository.save(matchPost);
+
+        return matchPost.getId();
     }
 }
