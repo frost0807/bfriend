@@ -31,9 +31,9 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom {
         return queryFactory
                 .selectFrom(reply)
                 .distinct()
-                .join(reply.matchPost, QMatchPost.matchPost)
                 .join(reply.user, user)
                 .fetchJoin()
+                .where(reply.matchPost.eq(matchPost))
                 .orderBy(reply.id.asc())
                 .fetch();
     }
