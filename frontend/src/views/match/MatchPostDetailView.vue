@@ -31,14 +31,26 @@
         class="update-button"
         >수정</v-btn
       >
-      <v-btn
-        @click="handleDelete"
-        rounded="pill"
-        variant="outlined"
-        density="comfortable"
-        class="delete-button"
-        >삭제</v-btn
-      >
+      <v-dialog v-model="deleteCheck" persistent width="auto">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            rounded="pill"
+            variant="outlined"
+            density="comfortable"
+            class="delete-button"
+            >삭제</v-btn
+          ></template
+        ><v-card>
+          <v-card-text>정말로 삭제하시겠습니까?</v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="handleDelete">네</v-btn>
+            <v-btn @click="deleteCheck = false">아니요</v-btn>
+          </v-card-actions></v-card
+        >
+      </v-dialog>
     </div>
   </div>
   <v-card density="compact" class="text">
@@ -84,6 +96,7 @@ export default {
   },
   data() {
     return {
+      deleteCheck: false,
       dataLoaded: false,
       matchPost: {},
       replies: [],
@@ -168,13 +181,24 @@ export default {
       return yearMonthDay + ' ' + timeFrom + '시~' + timeTo + '시'
     },
     handleUpdate() {
-      console.log(this.matchPost)
       this.$router.push({
         name: 'match-update',
         query: { id: this.matchPost.matchPostId }
       })
     },
-    handleDelete() {}
+    handleDelete() {
+      this.deleteCheck = false
+      axios
+        .delete(
+          axios.defaults.baseURL + '/matchposts/' + this.matchPost.matchPostId
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            alert('삭제되었습니다.')
+            this.$router.replace({ name: 'match-list' })
+          }
+        })
+    }
   }
 }
 </script>

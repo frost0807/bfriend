@@ -77,6 +77,20 @@ public class MatchPostService {
         matchPostRepository.save(requestDto.toEntity(user));
     }
 
+    @Transactional
+    public void deleteMatchPost(Long userId, Long matchPostId) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저입니다."));
+        MatchPost matchPost = matchPostRepository.findById(matchPostId)
+                .orElseThrow(() -> new MatchPostNotFoundException("해당 게시물이 존재하지 않습니다."));
+
+        if (matchPost.getWriter() != user) {
+            throw new ForbiddenMatchPostException("본인의 게시물이 아닙니다.");
+        }
+        matchPost.delete();
+        matchPostRepository.save(matchPost);
+    }
+
     /**
      * 로그인한 유저가 매칭글 작성자 -> 모든 댓글을 다 조회가능
      * 로그인한 유저가 매칭글 작성자가 X -> 본인의 댓글 그룹만 조회가능

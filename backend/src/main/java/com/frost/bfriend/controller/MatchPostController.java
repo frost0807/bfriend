@@ -63,8 +63,15 @@ public class MatchPostController {
     public ResponseEntity<Void> updateMatchPost(
             @LoginUser Long userId, @RequestBody @Valid UpdateRequest updateRequest) {
         matchPostService.updateMatchPost(userId, updateRequest);
-        log.info("in");
 
+        return ResponseEntity.ok().build();
+    }
+
+    @CheckUser
+    @DeleteMapping("/{matchPostId}")
+    public ResponseEntity<Void> deletePost(
+            @LoginUser Long userId, @PathVariable Long matchPostId) {
+        matchPostService.deleteMatchPost(userId, matchPostId);
         return ResponseEntity.ok().build();
     }
 
