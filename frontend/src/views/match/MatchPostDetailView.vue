@@ -3,22 +3,42 @@
     class="logo-img"
     src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/logo.png"
   ></v-img>
-  <div class="d-flex flex-no-wrap justify-start">
-    <div>
-      <v-img
-        class="profile-img"
-        src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/default_profile.png"
-      ></v-img>
+  <div class="d-flex flex-no-wrap justify-space-between">
+    <div class="d-flex flex-no-wrap justify-start">
+      <div>
+        <v-img
+          class="profile-img"
+          src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/default_profile.png"
+        ></v-img>
+      </div>
+      <div class="user-info">
+        <p class="username">
+          {{ matchPost.username }} ({{ matchPost.age }}세/{{
+            getTitleFromValue(sex, matchPost.sex)
+          }})
+        </p>
+        <p class="time-after-create">
+          {{ timeAfterCreateString(matchPost.minutesAfterCreate) }}
+        </p>
+      </div>
     </div>
-    <div class="user-info">
-      <p class="username">
-        {{ matchPost.username }} ({{ matchPost.age }}세/{{
-          getTitleFromValue(sex, matchPost.sex)
-        }})
-      </p>
-      <p class="time-after-create">
-        {{ timeAfterCreateString(matchPost.minutesAfterCreate) }}
-      </p>
+    <div v-if="matchPost.matchPostOfMine">
+      <v-btn
+        @click="handleUpdate"
+        rounded="pill"
+        variant="outlined"
+        density="comfortable"
+        class="update-button"
+        >수정</v-btn
+      >
+      <v-btn
+        @click="handleDelete"
+        rounded="pill"
+        variant="outlined"
+        density="comfortable"
+        class="delete-button"
+        >삭제</v-btn
+      >
     </div>
   </div>
   <v-card density="compact" class="text">
@@ -146,7 +166,15 @@ export default {
       const timeFrom = startAt?.split('T')[1].split(':')[0]
       const timeTo = endAt?.split('T')[1].split(':')[0]
       return yearMonthDay + ' ' + timeFrom + '시~' + timeTo + '시'
-    }
+    },
+    handleUpdate() {
+      console.log(this.matchPost)
+      this.$router.push({
+        name: 'match-update',
+        query: { id: this.matchPost.matchPostId }
+      })
+    },
+    handleDelete() {}
   }
 }
 </script>
@@ -166,6 +194,13 @@ export default {
 .profile-img {
   width: 40px;
   border-radius: 50%;
+}
+.update-button {
+  margin-right: 5px;
+  width: 50px;
+}
+.delete-button {
+  width: 50px;
 }
 .user-info {
   margin-left: 10px;

@@ -208,64 +208,58 @@ export default {
     const isPhoneCertified = ref(false)
 
     const { handleSubmit } = useForm({
-      validationSchema: {
-        email(value) {
-          if (/^[a-z0-9._+-]+@[a-z.-]+\.[a-z]{2,}$/i.test(value)) {
-            return true
-          }
-          return '이메일 형식에 맞게 입력해주세요'
-        },
-        name(value) {
-          if (value?.length >= 2) return true
-
-          return '이름을 입력해주세요'
-        },
-        phone(value) {
-          if (/^01[016789]\d{3,4}\d{4}$/i.test(value)) {
-            return true
-          }
-          return '휴대폰 번호를 입력해주세요'
-        },
-        password(value) {
-          if (
-            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/i.test(
-              value
-            )
-          ) {
-            return true
-          }
-
-          return '영어, 숫자, 특수문자를 섞어서 8자 이상 20자 이하'
-        },
-        passwordCheck(value) {
-          if (
-            !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/i.test(
-              value
-            )
-          ) {
-            return '영어, 숫자, 특수문자를 섞어서 8자 이상 20자 이하'
-          }
-
-          if (password.value.value !== value) {
-            return '비밀번호가 일치하지 않습니다.'
-          }
-
-          return true
-        },
-        sex(value) {
-          if (value) return true
-
-          return '성별을 선택해주세요'
-        },
-        region(value) {
-          if (value) return true
-
-          return '거주지역을 선택해주세요'
-        },
-        date(value) {
-          return true
-        }
-      }
+      // validationSchema: {
+      //   email(value) {
+      //     if (/^[a-z0-9._+-]+@[a-z.-]+\.[a-z]{2,}$/i.test(value)) {
+      //       return true
+      //     }
+      //     return '이메일 형식에 맞게 입력해주세요'
+      //   },
+      //   name(value) {
+      //     if (value?.length >= 2) return true
+      //     return '이름을 입력해주세요'
+      //   },
+      //   phone(value) {
+      //     if (/^01[016789]\d{3,4}\d{4}$/i.test(value)) {
+      //       return true
+      //     }
+      //     return '휴대폰 번호를 입력해주세요'
+      //   },
+      //   password(value) {
+      //     if (
+      //       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/i.test(
+      //         value
+      //       )
+      //     ) {
+      //       return true
+      //     }
+      //     return '영어, 숫자, 특수문자를 섞어서 8자 이상 20자 이하'
+      //   },
+      //   passwordCheck(value) {
+      //     if (
+      //       !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/i.test(
+      //         value
+      //       )
+      //     ) {
+      //       return '영어, 숫자, 특수문자를 섞어서 8자 이상 20자 이하'
+      //     }
+      //     if (password.value.value !== value) {
+      //       return '비밀번호가 일치하지 않습니다.'
+      //     }
+      //     return true
+      //   },
+      //   sex(value) {
+      //     if (value) return true
+      //     return '성별을 선택해주세요'
+      //   },
+      //   region(value) {
+      //     if (value) return true
+      //     return '거주지역을 선택해주세요'
+      //   },
+      //   date(value) {
+      //     return true
+      //   }
+      // }
     })
     const email = useField('email')
     const password = useField('password')
@@ -287,26 +281,28 @@ export default {
     ])
 
     const submit = handleSubmit((values) => {
-      if (isEmailDuplicated.value) {
-        alert('이메일 중복 확인을 해주세요')
-        return
-      } else if (!isEmailCodeSent.value) {
-        alert('이메일 인증하기 버튼을 눌러 인증을 진행해주세요')
-        return
-      } else if (!isEmailCertified.value) {
-        alert('이메일을 인증을 완료해주세요')
-        return
-      } else if (isPhoneDuplicated.value) {
-        alert('휴대폰 번호 중복확인을 해주세요')
-        return
-      } else if (!isPhoneCodeSent.value) {
-        alert('휴대폰 인증하기 버튼을 눌러 인증을 진행해주세요')
-        return
-      } else if (!isPhoneCertified.value) {
-        alert('휴대폰 인증을 완료해주세요')
-        return
-      }
+      // if (isEmailDuplicated.value) {
+      //   alert('이메일 중복 확인을 해주세요')
+      //   return
+      // } else if (!isEmailCodeSent.value) {
+      //   alert('이메일 인증하기 버튼을 눌러 인증을 진행해주세요')
+      //   return
+      // } else if (!isEmailCertified.value) {
+      //   alert('이메일을 인증을 완료해주세요')
+      //   return
+      // } else if (isPhoneDuplicated.value) {
+      //   alert('휴대폰 번호 중복확인을 해주세요')
+      //   return
+      // } else if (!isPhoneCodeSent.value) {
+      //   alert('휴대폰 인증하기 버튼을 눌러 인증을 진행해주세요')
+      //   return
+      // } else if (!isPhoneCertified.value) {
+      //   alert('휴대폰 인증을 완료해주세요')
+      //   return
+      // }
+      values.birthday.setHours(values.birthday.getHours() + 9)
       const userData = JSON.stringify(values, null, 2)
+      console.log(userData)
       axios.post(axios.defaults.baseURL + '/users', userData).then((res) => {
         if (res.status === 200) {
           console.log(values)

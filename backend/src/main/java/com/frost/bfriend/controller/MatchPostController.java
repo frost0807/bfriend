@@ -7,6 +7,7 @@ import com.frost.bfriend.common.constants.Location;
 import com.frost.bfriend.common.constants.Topic;
 import com.frost.bfriend.service.MatchPostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import static com.frost.bfriend.dto.MatchPostDto.*;
 import static com.frost.bfriend.dto.ReplyDto.ReplyResponse;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/matchposts")
@@ -57,9 +59,20 @@ public class MatchPostController {
     }
 
     @CheckUser
+    @PutMapping
+    public ResponseEntity<Void> updateMatchPost(
+            @LoginUser Long userId, @RequestBody @Valid UpdateRequest updateRequest) {
+        matchPostService.updateMatchPost(userId, updateRequest);
+        log.info("in");
+
+        return ResponseEntity.ok().build();
+    }
+
+    @CheckUser
     @GetMapping("/{matchPostId}/replies")
     public ResponseEntity<List<List<ReplyResponse>>> getRepliesByMatchPostId(
             @LoginUser Long userId, @PathVariable Long matchPostId) {
+
         return ResponseEntity.ok(matchPostService.getRepliesByMatchPostId(userId, matchPostId));
     }
 }

@@ -3,41 +3,40 @@
     src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/logo.png"
     class="logo-img"
   ></v-img>
-  <h2 align="left">친구랑 대화하기</h2>
-  <p class="description">좋은 친구를 만날 수 있도록 정성껏 작성해주세요</p>
-  <form @submit.prevent="submitMatchPost">
+  <h2 align="left">매칭글 수정하기</h2>
+  <form @submit.prevent="updateMatchPost">
     <v-select
       v-model="matchPostData.activity"
       :items="activityItems"
-      placeholder="만나서 이런걸 하고싶어요"
+      label="활동"
       variant="outlined"
       density="compact"
     ></v-select>
     <v-select
       v-model="matchPostData.topic"
       :items="topicItems"
-      placeholder="이런 주제에 대해서 얘기하고 싶어요"
+      label="주제"
       variant="outlined"
       density="compact"
     ></v-select>
     <v-select
       v-model="matchPostData.location"
       :items="locationItems"
-      placeholder="여기서 만나고 싶어요"
+      label="지역"
       variant="outlined"
       density="compact"
     ></v-select>
     <v-select
       v-model="matchPostData.ageDifference"
       :items="ageDifferenceItems"
-      placeholder="만날 분의 나이는 이랬으면 좋겠어요"
+      label="나이차 상관여부"
       variant="outlined"
       density="compact"
     ></v-select>
     <v-select
       v-model="matchPostData.budget"
       :items="budgetItems"
-      placeholder="예산은 이 정도로 생각해요"
+      label="예산"
       variant="outlined"
       density="compact"
     ></v-select>
@@ -48,7 +47,6 @@
       teleport-center
       :clearable="true"
       :is-24="false"
-      placeholder="만나고 싶은 시간은 이때에요"
       class="start-time"
     ></Datepicker>
     <Datepicker
@@ -58,21 +56,16 @@
       teleport-center
       :clearable="true"
       :is-24="false"
-      placeholder="헤어지고 싶은 시간은 이때에요"
       class="end-time"
     ></Datepicker>
-    <v-textarea
-      v-model="matchPostData.text"
-      variant="outlined"
-      placeholder="어떤 친구를 만나고 싶나요?(주관식)"
-    ></v-textarea>
+    <v-textarea v-model="matchPostData.text" variant="outlined"></v-textarea>
     <v-btn
       type="submit"
       height="30px"
       width="100%"
       class="write-button"
       variant="outlined"
-      >글 작성하기</v-btn
+      >글 수정하기</v-btn
     >
   </form>
 </template>
@@ -84,7 +77,7 @@ export default {
   components: {},
   data() {
     return {
-      matchPostData: {},
+      matchPostData: { startAt: new Date(), endAt: new Date() },
       activityItems: [
         { title: '만나서 까페에서 대화하고 싶어요', value: 'COFFEE' },
         { title: '만나서 좀 걸으면서 대화하고 싶어요', value: 'WALK' },
@@ -126,21 +119,37 @@ export default {
   },
   setup() {},
   created() {},
-  mounted() {},
+  mounted() {
+    axios
+      .get(axios.defaults.baseURL + '/matchposts/' + this.$route.query.id)
+      .then((res) => {
+        console.log(res)
+        if (res.status === 200) {
+          this.matchPostData = res.data
+          this.matchPostData.startAt = new Date(res.data.startAt)
+          this.matchPostData.endAt = new Date(res.data.endAt)
+          this.dataLoaded = true
+        }
+      })
+  },
   unmounted() {},
   methods: {
-    submitMatchPost() {
+    updateMatchPost() {
+      this.matchPostData.startAt.setHours(
+        this.matchPostData.startAt.getHours() + 9
+      )
+      this.matchPostData.endAt.setHours(this.matchPostData.endAt.getHours() + 9)
       const matchPostData = JSON.stringify(this.matchPostData, null, 2)
+      console.log(matchPostData)
       axios
-        .post(axios.defaults.baseURL + '/matchposts', matchPostData)
+        .put(axios.defaults.baseURL + '/matchposts', matchPostData)
         .then((res) => {
           console.log(res)
           if (res.status === 200) {
-            alert('글 작성이 완료되었습니다.')
-            const createdMatchPostId = res.data
+            alert('글 수정이 완료되었습니다.')
             this.$router.replace({
               name: 'match-detail',
-              query: { id: createdMatchPostId }
+              query: { id: this.matchPostData.matchPostId }
             })
           }
         })

@@ -1,11 +1,9 @@
 package com.frost.bfriend.service;
 
-import com.frost.bfriend.dto.MatchPostDto;
-import com.frost.bfriend.dto.MatchPostDto.Response;
-import com.frost.bfriend.dto.MatchPostDto.SaveRequest;
 import com.frost.bfriend.entity.MatchPost;
 import com.frost.bfriend.entity.Reply;
 import com.frost.bfriend.entity.User;
+import com.frost.bfriend.exception.matchpost.ForbiddenMatchPostException;
 import com.frost.bfriend.exception.matchpost.MatchPostNotFoundException;
 import com.frost.bfriend.exception.user.UserNotFoundException;
 import com.frost.bfriend.repository.matchpost.MatchPostRepository;
@@ -22,8 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.frost.bfriend.dto.MatchPostDto.ListRequestCondition;
-import static com.frost.bfriend.dto.MatchPostDto.ListResponse;
+import static com.frost.bfriend.dto.MatchPostDto.*;
 import static com.frost.bfriend.dto.ReplyDto.ReplyResponse;
 
 @Slf4j
@@ -35,6 +32,7 @@ public class MatchPostService {
     private final MatchPostRepository matchPostRepository;
     private final ReplyRepository replyRepository;
 
+    @Transactional(readOnly = true)
     public Page<ListResponse> getMatchPostListAll(Pageable pageable, ListRequestCondition condition) {
         Page<ListResponse> listResponseNotCalculated =
                 matchPostRepository.searchMatchPostsWithCondition(pageable, condition);
@@ -46,12 +44,37 @@ public class MatchPostService {
         return new PageImpl<>(listResponsesCalculated, pageable, totalElements);
     }
 
+    @Transactional(readOnly = true)
     public Response getMatchPost(Long userId, Long matchPostId) {
         MatchPost matchPost = matchPostRepository.searchMatchPostById(matchPostId)
                 .orElseThrow(() -> new MatchPostNotFoundException("해당 게시물이 존재하지 않습니다."));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
+
         return new Response(user, matchPost);
+    }
+
+    @Transactional
+    public Long saveMatchPost(Long userId, SaveRequest requestDto) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저입니다."));
+        MatchPost matchPost = requestDto.toEntity(user);
+        matchPostRepository.save(matchPost);
+
+        return matchPost.getId();
+    }
+
+    @Transactional
+    public void updateMatchPost(Long userId, UpdateRequest requestDto) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저입니다."));
+        MatchPost matchPost = matchPostRepository.findById(requestDto.getMatchPostId())
+                .orElseThrow(() -> new MatchPostNotFoundException("해당 게시물이 존재하지 않습니다."));
+
+        if (matchPost.getWriter() != user) {
+            throw new ForbiddenMatchPostException("본인의 게시물이 아닙니다.");
+        }
+        matchPostRepository.save(requestDto.toEntity(user));
     }
 
     /**
@@ -79,14 +102,5 @@ public class MatchPostService {
         Collections.reverse(replyGroupResponses);
 
         return replyGroupResponses;
-    }
-
-    public Long saveMatchPost(Long userId, SaveRequest saveRequest) {
-        User user = userRepository.findByIdAndIsDeletedFalse(userId)
-                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저입니다."));
-        MatchPost matchPost = saveRequest.toEntity(user);
-        matchPostRepository.save(matchPost);
-
-        return matchPost.getId();
     }
 }
