@@ -6,6 +6,7 @@
       ></v-img>
     </div>
     <h2 class="font-weight-bold">매칭</h2>
+    <v-btn to="/match/create" rounded="pill" class="write-button">글쓰기</v-btn>
   </div>
   <div class="select-box">
     <v-row>
@@ -249,6 +250,9 @@ h2 {
 }
 .logo-img {
   width: 100px;
+}
+.write-button {
+  margin: auto 0 auto auto;
 }
 .card-row {
   padding: 15px 0px;

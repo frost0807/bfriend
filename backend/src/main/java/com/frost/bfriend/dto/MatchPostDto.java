@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -132,6 +134,98 @@ public class MatchPostDto {
 
         private long calculateMinutesAfterCreate(LocalDateTime createdAt) {
             return ChronoUnit.MINUTES.between(createdAt, LocalDateTime.now());
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class SaveRequest {
+
+        @NotNull(message = "활동을 입력해주세요")
+        private Activity activity;
+
+        @NotNull(message = "주제를 입력해주세요")
+        private Topic topic;
+
+        @NotNull(message = "지역을 입력해주세요")
+        private Location location;
+
+        @NotNull(message = "예산을 입력해주세요")
+        private Budget budget;
+
+        @NotNull(message = "나이차 상관여부를 입력해주세요")
+        private AgeDifference ageDifference;
+
+        @NotBlank(message = "내용을 입력해주세요")
+        private String text;
+
+        @NotNull(message = "시작일시를 입력해주세요")
+        private LocalDateTime startAt;
+
+        @NotNull(message = "종료일시를 입력해주세요")
+        private LocalDateTime endAt;
+
+        public MatchPost toEntity(User user) {
+            return MatchPost.builder()
+                    .writer(user)
+                    .activity(this.activity)
+                    .topic(this.topic)
+                    .location(this.location)
+                    .budget(this.budget)
+                    .ageDifference(this.ageDifference)
+                    .text(this.text)
+                    .startAt(this.startAt)
+                    .endAt(this.endAt)
+                    .isDeleted(false)
+                    .build();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class UpdateRequest {
+
+        @NotNull(message = "게시물 아이디가 없습니다.")
+        private Long matchPostId;
+
+        @NotNull(message = "활동을 입력해주세요")
+        private Activity activity;
+
+        @NotNull(message = "주제를 입력해주세요")
+        private Topic topic;
+
+        @NotNull(message = "지역을 입력해주세요")
+        private Location location;
+
+        @NotNull(message = "예산을 입력해주세요")
+        private Budget budget;
+
+        @NotNull(message = "나이차 상관여부를 입력해주세요")
+        private AgeDifference ageDifference;
+
+        @NotBlank(message = "내용을 입력해주세요")
+        private String text;
+
+        @NotNull(message = "시작일시를 입력해주세요")
+        private LocalDateTime startAt;
+
+        @NotNull(message = "종료일시를 입력해주세요")
+        private LocalDateTime endAt;
+
+        public MatchPost toEntity(User user) {
+            return MatchPost.builder()
+                    .id(this.matchPostId)
+                    .writer(user)
+                    .activity(this.activity)
+                    .topic(this.topic)
+                    .location(this.location)
+                    .budget(this.budget)
+                    .ageDifference(this.ageDifference)
+                    .text(this.text)
+                    .startAt(this.startAt)
+                    .endAt(this.endAt)
+                    .isDeleted(false)
+                    .build();
         }
     }
 }

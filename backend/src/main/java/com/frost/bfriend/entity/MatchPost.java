@@ -49,4 +49,8 @@ public class MatchPost extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "matchPost")
     private List<Reply> replies;
+
+    public void delete() {
+        this.isDeleted = true;
+    }
 }

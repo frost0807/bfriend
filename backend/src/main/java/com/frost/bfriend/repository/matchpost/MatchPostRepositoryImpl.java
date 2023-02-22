@@ -20,7 +20,6 @@ import java.util.Optional;
 import static com.frost.bfriend.dto.MatchPostDto.ListRequestCondition;
 import static com.frost.bfriend.dto.MatchPostDto.ListResponse;
 import static com.frost.bfriend.entity.QMatchPost.matchPost;
-import static com.frost.bfriend.entity.QReply.reply;
 
 @Slf4j
 public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
@@ -46,7 +45,6 @@ public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
                         matchPost.replies.size()
                 ))
                 .from(matchPost)
-//                .leftJoin(matchPost.replies, reply)
                 .where(
                         activityEq(condition.getActivity()),
                         topicEq(condition.getTopic()),

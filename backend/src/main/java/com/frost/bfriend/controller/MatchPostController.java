@@ -7,18 +7,21 @@ import com.frost.bfriend.common.constants.Location;
 import com.frost.bfriend.common.constants.Topic;
 import com.frost.bfriend.service.MatchPostService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 import static com.frost.bfriend.dto.MatchPostDto.*;
 import static com.frost.bfriend.dto.ReplyDto.ReplyResponse;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/matchposts")
@@ -43,14 +46,40 @@ public class MatchPostController {
 
     @CheckUser
     @GetMapping("/{matchPostId}")
-    public ResponseEntity<Response> getMatchPost(@LoginUser Long userId, @PathVariable Long matchPostId) {
+    public ResponseEntity<Response> getMatchPost(
+            @LoginUser Long userId, @PathVariable Long matchPostId) {
         return ResponseEntity.ok(matchPostService.getMatchPost(userId, matchPostId));
+    }
+
+    @CheckUser
+    @PostMapping
+    public ResponseEntity<Long> saveMatchPost(
+            @LoginUser Long userId, @RequestBody @Valid SaveRequest saveRequest) {
+        return ResponseEntity.ok(matchPostService.saveMatchPost(userId, saveRequest));
+    }
+
+    @CheckUser
+    @PutMapping
+    public ResponseEntity<Void> updateMatchPost(
+            @LoginUser Long userId, @RequestBody @Valid UpdateRequest updateRequest) {
+        matchPostService.updateMatchPost(userId, updateRequest);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @CheckUser
+    @DeleteMapping("/{matchPostId}")
+    public ResponseEntity<Void> deletePost(
+            @LoginUser Long userId, @PathVariable Long matchPostId) {
+        matchPostService.deleteMatchPost(userId, matchPostId);
+        return ResponseEntity.ok().build();
     }
 
     @CheckUser
     @GetMapping("/{matchPostId}/replies")
     public ResponseEntity<List<List<ReplyResponse>>> getRepliesByMatchPostId(
             @LoginUser Long userId, @PathVariable Long matchPostId) {
+
         return ResponseEntity.ok(matchPostService.getRepliesByMatchPostId(userId, matchPostId));
     }
 }

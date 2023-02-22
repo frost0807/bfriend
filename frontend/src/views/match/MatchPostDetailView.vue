@@ -3,22 +3,54 @@
     class="logo-img"
     src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/logo.png"
   ></v-img>
-  <div class="d-flex flex-no-wrap justify-start">
-    <div>
-      <v-img
-        class="profile-img"
-        src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/default_profile.png"
-      ></v-img>
+  <div class="d-flex flex-no-wrap justify-space-between">
+    <div class="d-flex flex-no-wrap justify-start">
+      <div>
+        <v-img
+          class="profile-img"
+          src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/default_profile.png"
+        ></v-img>
+      </div>
+      <div class="user-info">
+        <p class="username">
+          {{ matchPost.username }} ({{ matchPost.age }}세/{{
+            getTitleFromValue(sex, matchPost.sex)
+          }})
+        </p>
+        <p class="time-after-create">
+          {{ timeAfterCreateString(matchPost.minutesAfterCreate) }}
+        </p>
+      </div>
     </div>
-    <div class="user-info">
-      <p class="username">
-        {{ matchPost.username }} ({{ matchPost.age }}세/{{
-          getTitleFromValue(sex, matchPost.sex)
-        }})
-      </p>
-      <p class="time-after-create">
-        {{ timeAfterCreateString(matchPost.minutesAfterCreate) }}
-      </p>
+    <div v-if="matchPost.matchPostOfMine">
+      <v-btn
+        @click="handleUpdate"
+        rounded="pill"
+        variant="outlined"
+        density="comfortable"
+        class="update-button"
+        >수정</v-btn
+      >
+      <v-dialog v-model="deleteCheck" persistent width="auto">
+        <template v-slot:activator="{ props }">
+          <v-btn
+            v-bind="props"
+            rounded="pill"
+            variant="outlined"
+            density="comfortable"
+            class="delete-button"
+            >삭제</v-btn
+          ></template
+        ><v-card>
+          <v-card-text>정말로 삭제하시겠습니까?</v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn @click="handleDelete">네</v-btn>
+            <v-btn @click="deleteCheck = false">아니요</v-btn>
+          </v-card-actions></v-card
+        >
+      </v-dialog>
     </div>
   </div>
   <v-card density="compact" class="text">
@@ -64,6 +96,7 @@ export default {
   },
   data() {
     return {
+      deleteCheck: false,
       dataLoaded: false,
       matchPost: {},
       replies: [],
@@ -146,6 +179,25 @@ export default {
       const timeFrom = startAt?.split('T')[1].split(':')[0]
       const timeTo = endAt?.split('T')[1].split(':')[0]
       return yearMonthDay + ' ' + timeFrom + '시~' + timeTo + '시'
+    },
+    handleUpdate() {
+      this.$router.push({
+        name: 'match-update',
+        query: { id: this.matchPost.matchPostId }
+      })
+    },
+    handleDelete() {
+      this.deleteCheck = false
+      axios
+        .delete(
+          axios.defaults.baseURL + '/matchposts/' + this.matchPost.matchPostId
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            alert('삭제되었습니다.')
+            this.$router.replace({ name: 'match-list' })
+          }
+        })
     }
   }
 }
@@ -166,6 +218,13 @@ export default {
 .profile-img {
   width: 40px;
   border-radius: 50%;
+}
+.update-button {
+  margin-right: 5px;
+  width: 50px;
+}
+.delete-button {
+  width: 50px;
 }
 .user-info {
   margin-left: 10px;

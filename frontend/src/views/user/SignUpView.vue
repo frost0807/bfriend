@@ -194,7 +194,7 @@ export default {
   },
   setup() {
     const format = (date) => {
-      const day = date.getDate() + 1
+      const day = date.getDate()
       const month = date.getMonth() + 1
       const year = date.getFullYear()
       return `${year}/${month}/${day}`
@@ -217,7 +217,6 @@ export default {
         },
         name(value) {
           if (value?.length >= 2) return true
-
           return '이름을 입력해주세요'
         },
         phone(value) {
@@ -234,7 +233,6 @@ export default {
           ) {
             return true
           }
-
           return '영어, 숫자, 특수문자를 섞어서 8자 이상 20자 이하'
         },
         passwordCheck(value) {
@@ -245,21 +243,17 @@ export default {
           ) {
             return '영어, 숫자, 특수문자를 섞어서 8자 이상 20자 이하'
           }
-
           if (password.value.value !== value) {
             return '비밀번호가 일치하지 않습니다.'
           }
-
           return true
         },
         sex(value) {
           if (value) return true
-
           return '성별을 선택해주세요'
         },
         region(value) {
           if (value) return true
-
           return '거주지역을 선택해주세요'
         },
         date(value) {
@@ -306,7 +300,9 @@ export default {
         alert('휴대폰 인증을 완료해주세요')
         return
       }
+      values.birthday.setHours(values.birthday.getHours() + 9)
       const userData = JSON.stringify(values, null, 2)
+      console.log(userData)
       axios.post(axios.defaults.baseURL + '/users', userData).then((res) => {
         if (res.status === 200) {
           console.log(values)
