@@ -200,7 +200,7 @@ public class UserService {
         if (!requestDto.checkPassword(encryptionService, user.getPassword())) {
             throw new WrongPasswordException("비밀번호를 잘못 입력하셨습니다.");
         }
-        user.deleteUser();
+        user.delete();
         userRepository.save(user);
     }
 }

@@ -1,5 +1,6 @@
 package com.frost.bfriend.exception;
 
+import com.frost.bfriend.exception.matchpost.ForbiddenMatchPostException;
 import com.frost.bfriend.exception.matchpost.MatchPostNotFoundException;
 import com.frost.bfriend.exception.user.*;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -125,6 +126,13 @@ public class BFriendExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(MatchPostNotFoundException.class)
     public ErrorMsg handleMatchPostNotFoundException(MatchPostNotFoundException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ForbiddenMatchPostException.class)
+    public ErrorMsg handleForbiddenMatchPostException(ForbiddenMatchPostException e) {
         writeErrorLog(e);
         return getErrorMessage(e);
     }

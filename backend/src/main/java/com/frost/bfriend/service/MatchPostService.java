@@ -60,6 +60,8 @@ public class MatchPostService {
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 유저입니다."));
         MatchPost matchPost = requestDto.toEntity(user);
         matchPostRepository.save(matchPost);
+        user.increaseActivityPoint(10);
+        userRepository.save(user);
 
         return matchPost.getId();
     }
