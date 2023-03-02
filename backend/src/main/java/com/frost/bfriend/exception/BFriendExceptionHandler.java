@@ -1,6 +1,9 @@
 package com.frost.bfriend.exception;
 
+import com.frost.bfriend.exception.matchpost.ForbiddenMatchPostException;
+import com.frost.bfriend.exception.matchpost.ForbiddenReplyException;
 import com.frost.bfriend.exception.matchpost.MatchPostNotFoundException;
+import com.frost.bfriend.exception.matchpost.ParentReplyNotFoundException;
 import com.frost.bfriend.exception.user.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
@@ -125,6 +128,27 @@ public class BFriendExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(MatchPostNotFoundException.class)
     public ErrorMsg handleMatchPostNotFoundException(MatchPostNotFoundException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ForbiddenMatchPostException.class)
+    public ErrorMsg handleForbiddenMatchPostException(ForbiddenMatchPostException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(ParentReplyNotFoundException.class)
+    public ErrorMsg handleParentReplyNotFoundException(ParentReplyNotFoundException e) {
+        writeErrorLog(e);
+        return getErrorMessage(e);
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(ForbiddenReplyException.class)
+    public ErrorMsg handleForbiddenReplyException(ForbiddenReplyException e) {
         writeErrorLog(e);
         return getErrorMessage(e);
     }

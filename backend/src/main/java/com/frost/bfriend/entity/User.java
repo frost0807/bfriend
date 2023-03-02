@@ -58,7 +58,11 @@ public class User extends UserBase {
         this.isDeleted = isDeleted;
     }
 
-    public void deleteUser() {
+    public void delete() {
         this.isDeleted = true;
+    }
+
+    public void increaseActivityPoint(int amount) {
+        this.activityPoint += amount;
     }
 }

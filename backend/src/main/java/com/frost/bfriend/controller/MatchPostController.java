@@ -5,6 +5,8 @@ import com.frost.bfriend.common.annotation.LoginUser;
 import com.frost.bfriend.common.constants.Activity;
 import com.frost.bfriend.common.constants.Location;
 import com.frost.bfriend.common.constants.Topic;
+import com.frost.bfriend.dto.ReplyDto;
+import com.frost.bfriend.entity.User;
 import com.frost.bfriend.service.MatchPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.frost.bfriend.dto.MatchPostDto.*;
+import static com.frost.bfriend.dto.ReplyDto.*;
 import static com.frost.bfriend.dto.ReplyDto.ReplyResponse;
 
 @Slf4j
@@ -81,5 +84,14 @@ public class MatchPostController {
             @LoginUser Long userId, @PathVariable Long matchPostId) {
 
         return ResponseEntity.ok(matchPostService.getRepliesByMatchPostId(userId, matchPostId));
+    }
+
+    @CheckUser
+    @PostMapping("/replies")
+    public ResponseEntity<Void> saveReply(
+            @LoginUser Long userId, @RequestBody SaveReplyRequest saveReplyRequest) {
+        matchPostService.saveReply(userId, saveReplyRequest);
+
+        return ResponseEntity.ok().build();
     }
 }

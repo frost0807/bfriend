@@ -82,6 +82,7 @@
   <v-card density="compact" class="text">{{ matchPost.text }}</v-card>
   <ReplyList
     v-if="dataLoaded"
+    :key="componentKey"
     :matchPostId="this.$route.query.id"
     :isMatchPostOfMine="matchPost.matchPostOfMine"
   />
@@ -96,6 +97,7 @@ export default {
   },
   data() {
     return {
+      componentKey: 0,
       deleteCheck: false,
       dataLoaded: false,
       matchPost: {},

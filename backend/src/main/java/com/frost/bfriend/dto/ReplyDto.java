@@ -1,10 +1,13 @@
 package com.frost.bfriend.dto;
 
 import com.frost.bfriend.common.constants.Sex;
+import com.frost.bfriend.entity.MatchPost;
 import com.frost.bfriend.entity.Reply;
 import com.frost.bfriend.entity.User;
-import lombok.Getter;
+import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -83,6 +86,30 @@ public class ReplyDto {
 
         private long calculateMinutesAfterCreate(LocalDateTime createdAt) {
             return ChronoUnit.MINUTES.between(createdAt, LocalDateTime.now());
+        }
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class SaveReplyRequest {
+        @NotNull
+        private Long matchPostId;
+
+        private Long parentReplyId;
+
+        @NotBlank(message = "댓글을 입력해주세요")
+        private String comment;
+
+        public Reply toEntity(MatchPost matchPost, Reply parentReply, User user) {
+            return Reply.builder()
+                    .matchPost(matchPost)
+                    .parentReply(parentReply)
+                    .user(user)
+                    .comment(this.comment)
+                    .isDeleted(false)
+                    .build();
         }
     }
 }
