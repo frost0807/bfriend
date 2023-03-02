@@ -1,10 +1,13 @@
 package com.frost.bfriend.service;
 
+import com.frost.bfriend.dto.ReplyDto;
 import com.frost.bfriend.entity.MatchPost;
 import com.frost.bfriend.entity.Reply;
 import com.frost.bfriend.entity.User;
 import com.frost.bfriend.exception.matchpost.ForbiddenMatchPostException;
+import com.frost.bfriend.exception.matchpost.ForbiddenReplyException;
 import com.frost.bfriend.exception.matchpost.MatchPostNotFoundException;
+import com.frost.bfriend.exception.matchpost.ParentReplyNotFoundException;
 import com.frost.bfriend.exception.user.UserNotFoundException;
 import com.frost.bfriend.repository.matchpost.MatchPostRepository;
 import com.frost.bfriend.repository.reply.ReplyRepository;
@@ -118,5 +121,33 @@ public class MatchPostService {
         Collections.reverse(replyGroupResponses);
 
         return replyGroupResponses;
+    }
+
+    /**
+     * 매칭글 작성자는 본인의 글에 댓글 작성 불가
+     *
+     * 대댓글은 매칭글 작성자 or 댓글을 작성한 당사자만 작성 가능
+     */
+    @Transactional
+    public void saveReply(Long userId, ReplyDto.SaveReplyRequest saveReplyRequest) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
+        MatchPost matchPost = matchPostRepository.findById(saveReplyRequest.getMatchPostId())
+                .orElseThrow(() -> new MatchPostNotFoundException("해당 게시물이 존재하지 않습니다."));
+        Reply parentReply = null;
+
+        if (saveReplyRequest.getParentReplyId() != null) {
+            parentReply = replyRepository.findById(saveReplyRequest.getParentReplyId())
+                    .orElseThrow(() -> new ParentReplyNotFoundException("상위 댓글이 존재하지 않습니다."));
+
+            if (!(matchPost.getWriter().equals(user) || parentReply.getUser().equals(user))) {
+                throw new ForbiddenReplyException("댓글을 작성할 권한이 없습니다.");
+            }
+        } else if (matchPost.getWriter().equals(user)) {
+            throw new ForbiddenReplyException("매칭글 작성자는 대댓글만 작성할 수 있습니다.");
+        }
+
+        Reply reply = saveReplyRequest.toEntity(matchPost, parentReply, user);
+        replyRepository.save(reply);
     }
 }
