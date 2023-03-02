@@ -146,8 +146,10 @@ public class MatchPostService {
         } else if (matchPost.getWriter().equals(user)) {
             throw new ForbiddenReplyException("매칭글 작성자는 대댓글만 작성할 수 있습니다.");
         }
-
+        
         Reply reply = saveReplyRequest.toEntity(matchPost, parentReply, user);
         replyRepository.save(reply);
+        user.increaseActivityPoint(5);
+        userRepository.save(user);
     }
 }
