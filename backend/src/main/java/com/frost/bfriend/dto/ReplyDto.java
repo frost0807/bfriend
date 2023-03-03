@@ -119,8 +119,10 @@ public class ReplyDto {
         }
     }
 
+    @Builder
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class UpdateReplyRequest {
         @NotNull
         private Long replyId;

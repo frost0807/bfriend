@@ -170,7 +170,7 @@ public class MatchPostService {
         Reply parentReply = null;
 
         if (!reply.getUser().equals(user)) {
-            throw new ForbiddenReplyException("본인의 댓글이 아닙니다.");
+            throw new ForbiddenReplyException("본인의 댓글 혹은 대댓글이 아닙니다.");
         }
         if (updateReplyRequest.getParentReplyId() != null) {
             parentReply = replyRepository.findById(updateReplyRequest.getParentReplyId())
@@ -187,7 +187,7 @@ public class MatchPostService {
         Reply reply = replyRepository.findByIdAndIsDeletedFalse(replyId)
                 .orElseThrow(() -> new ReplyNotFoundException("해당 댓글이 존재하지 않습니다."));
         if (!reply.getUser().equals(user)) {
-            throw new ForbiddenReplyException("본인의 댓글이 아닙니다.");
+            throw new ForbiddenReplyException("본인의 댓글 혹은 대댓글이 아닙니다.");
         }
         reply.delete();
         replyRepository.save(reply);
