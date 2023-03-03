@@ -10,7 +10,6 @@ import java.util.List;
 @Builder
 @Getter
 @Entity
-@Where(clause = "is_deleted='0'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Reply extends BaseTimeEntity {
@@ -37,4 +36,8 @@ public class Reply extends BaseTimeEntity {
     private String comment;
 
     private Boolean isDeleted;
+
+    public void delete() {
+        this.isDeleted = true;
+    }
 }

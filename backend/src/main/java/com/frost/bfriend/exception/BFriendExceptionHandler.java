@@ -3,12 +3,11 @@ package com.frost.bfriend.exception;
 import com.frost.bfriend.exception.matchpost.ForbiddenMatchPostException;
 import com.frost.bfriend.exception.matchpost.ForbiddenReplyException;
 import com.frost.bfriend.exception.matchpost.MatchPostNotFoundException;
-import com.frost.bfriend.exception.matchpost.ParentReplyNotFoundException;
+import com.frost.bfriend.exception.matchpost.ReplyNotFoundException;
 import com.frost.bfriend.exception.user.*;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -140,8 +139,8 @@ public class BFriendExceptionHandler {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ParentReplyNotFoundException.class)
-    public ErrorMsg handleParentReplyNotFoundException(ParentReplyNotFoundException e) {
+    @ExceptionHandler(ReplyNotFoundException.class)
+    public ErrorMsg handleParentReplyNotFoundException(ReplyNotFoundException e) {
         writeErrorLog(e);
         return getErrorMessage(e);
     }

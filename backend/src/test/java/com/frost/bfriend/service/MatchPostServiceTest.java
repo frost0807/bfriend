@@ -6,7 +6,7 @@ import com.frost.bfriend.entity.Reply;
 import com.frost.bfriend.entity.User;
 import com.frost.bfriend.exception.matchpost.ForbiddenReplyException;
 import com.frost.bfriend.exception.matchpost.MatchPostNotFoundException;
-import com.frost.bfriend.exception.matchpost.ParentReplyNotFoundException;
+import com.frost.bfriend.exception.matchpost.ReplyNotFoundException;
 import com.frost.bfriend.repository.matchpost.MatchPostRepository;
 import com.frost.bfriend.repository.reply.ReplyRepository;
 import com.frost.bfriend.repository.user.UserRepository;
@@ -127,7 +127,7 @@ public class MatchPostServiceTest {
         given(matchPostRepository.findById(1L)).willReturn(Optional.of(createMatchPost()));
         given(replyRepository.findById(1L)).willReturn(Optional.empty());
 
-        assertThrows(ParentReplyNotFoundException.class,
+        assertThrows(ReplyNotFoundException.class,
                 () -> matchPostService.saveReply(1L, createSaveChildReplyRequest()));
     }
 
