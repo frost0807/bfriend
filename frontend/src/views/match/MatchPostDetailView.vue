@@ -189,13 +189,13 @@ export default {
       })
     },
     handleDelete() {
-      this.deleteCheck = false
       axios
         .delete(
           axios.defaults.baseURL + '/matchposts/' + this.matchPost.matchPostId
         )
         .then((res) => {
           if (res.status === 200) {
+            this.deleteCheck = false
             alert('삭제되었습니다.')
             this.$router.replace({ name: 'match-list' })
           }

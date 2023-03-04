@@ -28,6 +28,8 @@
         :matchPostId="matchPostId"
         :replyGroup="replyGroup"
         @write-event="handleWriteEvent"
+        @delete-event="handleDeleteEvent"
+        @update-event="handleUpdateEvent"
       />
     </div>
   </div>
@@ -94,7 +96,7 @@ export default {
           }
         })
     },
-    handleWriteEvent() {
+    getReplies() {
       axios
         .get(
           axios.defaults.baseURL +
@@ -107,6 +109,15 @@ export default {
             this.replyList = res.data
           }
         })
+    },
+    handleWriteEvent() {
+      this.getReplies()
+    },
+    handleDeleteEvent() {
+      this.getReplies()
+    },
+    handleUpdateEvent() {
+      this.getReplies()
     }
   }
 }

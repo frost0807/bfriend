@@ -132,9 +132,6 @@ public class ReplyDto {
 
         private Long parentReplyId;
 
-        @NotNull
-        private Long writerId;
-
         @NotBlank(message = "댓글을 입력해주세요")
         private String comment;
 
@@ -145,6 +142,7 @@ public class ReplyDto {
                     .parentReply(parentReply)
                     .user(user)
                     .comment(this.comment)
+                    .isDeleted(false)
                     .build();
         }
     }

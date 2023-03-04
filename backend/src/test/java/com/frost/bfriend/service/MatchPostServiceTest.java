@@ -105,7 +105,6 @@ public class MatchPostServiceTest {
         updateParentReplyRequest = UpdateReplyRequest.builder()
                 .replyId(1L)
                 .matchPostId(1L)
-                .writerId(2L)
                 .comment("댓글입니다.")
                 .build();
 
@@ -113,7 +112,6 @@ public class MatchPostServiceTest {
                 .replyId(2L)
                 .parentReplyId(1L)
                 .matchPostId(1L)
-                .writerId(1L)
                 .comment("대댓글입니다.")
                 .build();
     }
