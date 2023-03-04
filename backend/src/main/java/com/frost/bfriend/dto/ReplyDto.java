@@ -38,18 +38,21 @@ public class ReplyDto {
 
         private boolean isReplySecret;
 
+        private boolean isReplyDeleted;
+
         public ReplyResponse(Reply reply, User user) {
             this.replyId = reply.getId();
             this.parentReplyId = getParentReplyId(reply);
             this.username = reply.getUser().getName();
             this.sex = reply.getUser().getSex();
             this.age = calculateAge(reply.getUser().getBirthday());
-            this.comment = hideSecretReply(reply, user);
+            this.comment = handleReplyComment(reply, user);
             this.createdAt = reply.getCreatedAt();
             this.updatedAt = reply.getUpdatedAt();
             this.minutesAfterCreate = calculateMinutesAfterCreate(reply.getCreatedAt());
             this.isReplyOfMine = reply.getUser() == user;
             this.isReplySecret = isReplySecret(reply, user);
+            this.isReplyDeleted = reply.getIsDeleted();
         }
 
         private Long getParentReplyId(Reply reply) {
@@ -57,9 +60,12 @@ public class ReplyDto {
                     null : reply.getParentReply().getId();
         }
 
-        private String hideSecretReply(Reply reply, User user) {
+        private String handleReplyComment(Reply reply, User user) {
             if (isReplySecret(reply, user) == true) {
                 return "비밀 댓글입니다.";
+            }
+            if (reply.getIsDeleted() == true) {
+                return "삭제된 댓글입니다.";
             }
             return reply.getComment();
         }
@@ -104,6 +110,34 @@ public class ReplyDto {
 
         public Reply toEntity(MatchPost matchPost, Reply parentReply, User user) {
             return Reply.builder()
+                    .matchPost(matchPost)
+                    .parentReply(parentReply)
+                    .user(user)
+                    .comment(this.comment)
+                    .isDeleted(false)
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReplyRequest {
+        @NotNull
+        private Long replyId;
+
+        @NotNull
+        private Long matchPostId;
+
+        private Long parentReplyId;
+
+        @NotBlank(message = "댓글을 입력해주세요")
+        private String comment;
+
+        public Reply toEntity(MatchPost matchPost, Reply parentReply, User user) {
+            return Reply.builder()
+                    .id(this.replyId)
                     .matchPost(matchPost)
                     .parentReply(parentReply)
                     .user(user)

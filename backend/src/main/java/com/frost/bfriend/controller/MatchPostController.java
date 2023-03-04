@@ -10,6 +10,7 @@ import com.frost.bfriend.entity.User;
 import com.frost.bfriend.service.MatchPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Check;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -91,6 +92,24 @@ public class MatchPostController {
     public ResponseEntity<Void> saveReply(
             @LoginUser Long userId, @RequestBody SaveReplyRequest saveReplyRequest) {
         matchPostService.saveReply(userId, saveReplyRequest);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @CheckUser
+    @PutMapping("/replies")
+    public ResponseEntity<Void> updateReply(
+            @LoginUser Long userId, @RequestBody UpdateReplyRequest updateReplyRequest) {
+        matchPostService.updateReply(userId, updateReplyRequest);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @CheckUser
+    @DeleteMapping("/replies/{replyId}")
+    public ResponseEntity<Void> deleteReply(
+            @LoginUser Long userId, @PathVariable Long replyId) {
+        matchPostService.deleteReply(userId, replyId);
 
         return ResponseEntity.ok().build();
     }

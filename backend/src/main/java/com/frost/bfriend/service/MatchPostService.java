@@ -7,7 +7,7 @@ import com.frost.bfriend.entity.User;
 import com.frost.bfriend.exception.matchpost.ForbiddenMatchPostException;
 import com.frost.bfriend.exception.matchpost.ForbiddenReplyException;
 import com.frost.bfriend.exception.matchpost.MatchPostNotFoundException;
-import com.frost.bfriend.exception.matchpost.ParentReplyNotFoundException;
+import com.frost.bfriend.exception.matchpost.ReplyNotFoundException;
 import com.frost.bfriend.exception.user.UserNotFoundException;
 import com.frost.bfriend.repository.matchpost.MatchPostRepository;
 import com.frost.bfriend.repository.reply.ReplyRepository;
@@ -102,6 +102,9 @@ public class MatchPostService {
      * <p>
      * 댓글 정렬은 내림차순
      * 대댓글 정렬은 오름차순
+     * <p>
+     * 비밀댓글은 내용에 "비밀 댓글입니다." 출력
+     * 삭제된 댓글은 내용에 "삭제된 댓글입니다."출력
      */
     @Transactional(readOnly = true)
     public List<List<ReplyResponse>> getRepliesByMatchPostId(Long userId, Long matchPostId) {
@@ -117,6 +120,7 @@ public class MatchPostService {
                         replyResponse -> replyResponse.getParentReplyId() == null ?
                                 replyResponse.getReplyId() : replyResponse.getParentReplyId(),
                         LinkedHashMap::new, Collectors.toCollection(ArrayList::new)));
+
         List<List<ReplyResponse>> replyGroupResponses = new ArrayList<>(replyGroupResponseMap.values());
         Collections.reverse(replyGroupResponses);
 
@@ -125,8 +129,10 @@ public class MatchPostService {
 
     /**
      * 매칭글 작성자는 본인의 글에 댓글 작성 불가
-     *
+     * <p>
      * 대댓글은 매칭글 작성자 or 댓글을 작성한 당사자만 작성 가능
+     * <p>
+     * 댓글이 삭제되어도 해당 댓글에 대댓글은 작성 가능
      */
     @Transactional
     public void saveReply(Long userId, ReplyDto.SaveReplyRequest saveReplyRequest) {
@@ -138,7 +144,7 @@ public class MatchPostService {
 
         if (saveReplyRequest.getParentReplyId() != null) {
             parentReply = replyRepository.findById(saveReplyRequest.getParentReplyId())
-                    .orElseThrow(() -> new ParentReplyNotFoundException("상위 댓글이 존재하지 않습니다."));
+                    .orElseThrow(() -> new ReplyNotFoundException("상위 댓글이 존재하지 않습니다."));
 
             if (!(matchPost.getWriter().equals(user) || parentReply.getUser().equals(user))) {
                 throw new ForbiddenReplyException("댓글을 작성할 권한이 없습니다.");
@@ -148,6 +154,42 @@ public class MatchPostService {
         }
 
         Reply reply = saveReplyRequest.toEntity(matchPost, parentReply, user);
+        replyRepository.save(reply);
+        user.increaseActivityPoint(5);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateReply(Long userId, ReplyDto.UpdateReplyRequest updateReplyRequest) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
+        MatchPost matchPost = matchPostRepository.findById(updateReplyRequest.getMatchPostId())
+                .orElseThrow(() -> new MatchPostNotFoundException("해당 게시물이 존재하지 않습니다."));
+        Reply reply = replyRepository.findByIdAndIsDeletedFalse(updateReplyRequest.getReplyId())
+                .orElseThrow(() -> new ReplyNotFoundException("해당 댓글이 존재하지 않습니다."));
+        Reply parentReply = null;
+
+        if (!reply.getUser().equals(user)) {
+            throw new ForbiddenReplyException("본인의 댓글 혹은 대댓글이 아닙니다.");
+        }
+        if (updateReplyRequest.getParentReplyId() != null) {
+            parentReply = replyRepository.findById(updateReplyRequest.getParentReplyId())
+                    .orElseThrow(() -> new ReplyNotFoundException("상위 댓글이 존재하지 않습니다."));
+        }
+        Reply updatedReply = updateReplyRequest.toEntity(matchPost, parentReply, user);
+        replyRepository.save(updatedReply);
+    }
+
+    @Transactional
+    public void deleteReply(Long userId, Long replyId) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
+        Reply reply = replyRepository.findByIdAndIsDeletedFalse(replyId)
+                .orElseThrow(() -> new ReplyNotFoundException("해당 댓글이 존재하지 않습니다."));
+        if (!reply.getUser().equals(user)) {
+            throw new ForbiddenReplyException("본인의 댓글 혹은 대댓글이 아닙니다.");
+        }
+        reply.delete();
         replyRepository.save(reply);
     }
 }

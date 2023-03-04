@@ -1,6 +1,5 @@
 <template>
   <div class="divideLine"></div>
-  {{ replyGroup[0].replyId }}
   <div v-for="(reply, replyIndex) in replyGroup" :key="replyIndex">
     <div v-if="!reply.parentReplyId" class="d-flex flex-no-wrap justify-start">
       <div>
@@ -22,6 +21,41 @@
     <!-- 여기서부터 댓글 그룹에 대한 댓글들 출력 -->
     <!-- 내 댓글일 경우 -->
     <v-card v-if="reply.replyOfMine" color="#CDD7FD" class="reply my-reply">
+      <div v-if="!reply.replyDeleted" class="d-flex flex-no-wrap justify-end">
+        <div v-if="reply.createdAt !== reply.updatedAt" class="updated">
+          (수정됨)
+        </div>
+        <v-dialog v-model="updateCheck" persistent width="auto">
+          <template v-slot:activator="{ props }"
+            ><v-btn
+              @click="selectReplyToUpdate(reply)"
+              v-bind="props"
+              size="20px"
+              class="update-button"
+              ><v-icon icon="mdi-lead-pencil" size="20px"></v-icon></v-btn
+          ></template>
+          <v-card>
+            <textarea
+              class="update-reply-input"
+              rows="3"
+              v-model="replyToUpdate.comment"
+              placeholder="대댓글 쓰기(최대 200자)"
+            ></textarea>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn @click="handleUpdate">수정하기</v-btn>
+              <v-btn @click="updateCheck = false">취소</v-btn>
+            </v-card-actions></v-card
+          >
+        </v-dialog>
+
+        <v-btn
+          @click="handleDelete(reply.replyId)"
+          size="20px"
+          class="delete-button"
+          ><v-icon icon="mdi-delete" size="20px"></v-icon
+        ></v-btn>
+      </div>
       <v-card-text>{{ reply.comment }}</v-card-text>
       <!-- 댓글 그룹의 마지막 댓글 or 대댓글일 경우 -->
       <div
@@ -97,6 +131,7 @@
 import axios from 'axios'
 export default {
   components: {},
+  emits: ['write-event', 'delete-event', 'update-event'],
   props: {
     matchPostId: String,
     replyGroup: Object
@@ -104,6 +139,9 @@ export default {
   data() {
     return {
       childReplyInputToggle: false,
+      updateCheck: false,
+      deleteCheck: false,
+      replyToUpdate: {},
       sex: [
         { title: '남자', value: 'MALE' },
         { title: '여자', value: 'FEMALE' }
@@ -150,6 +188,40 @@ export default {
             this.$emit('write-event')
           }
         })
+    },
+    handleDelete(selectedReplyId) {
+      if (confirm('정말로 삭제하시겠습니까?')) {
+        axios
+          .delete(
+            axios.defaults.baseURL + '/matchposts/replies/' + selectedReplyId
+          )
+          .then((res) => {
+            console.log(res)
+            if (res.status === 200) {
+              this.deleteCheck = false
+              alert('삭제되었습니다.')
+              this.$emit('delete-event')
+            }
+          })
+      }
+    },
+    selectReplyToUpdate(selectedReply) {
+      this.replyToUpdate = JSON.parse(JSON.stringify(selectedReply))
+    },
+    handleUpdate() {
+      this.replyToUpdate.matchPostId = this.matchPostId
+      console.log(this.replyToUpdate)
+      const reply = JSON.stringify(this.replyToUpdate, null, 2)
+      axios
+        .put(axios.defaults.baseURL + '/matchposts/replies', reply)
+        .then((res) => {
+          console.log(res)
+          if (res.status === 200) {
+            this.updateCheck = false
+            alert('댓글이 수정되었습니다.')
+            this.$emit('update-event')
+          }
+        })
     }
   }
 }
@@ -167,6 +239,10 @@ export default {
   margin-top: 10px;
   width: 100%;
   background-color: #cdd7fd;
+}
+.update-reply-input {
+  margin: 5px;
+  width: 300px;
 }
 .reply-submit-button {
   float: right;
@@ -200,5 +276,15 @@ export default {
 }
 div.v-card-text {
   padding: 5px;
+}
+.child-reply-button,
+.update-button,
+.delete-button {
+  margin: 5px;
+}
+.updated {
+  margin: 5px;
+  font-size: 13px;
+  color: gray;
 }
 </style>
