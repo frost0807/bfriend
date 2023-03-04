@@ -10,8 +10,10 @@ import lombok.*;
 import javax.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.frost.bfriend.common.constants.RegexConstants.*;
+import static com.frost.bfriend.dto.QuestionAnswerDto.*;
 
 public class UserDto {
 
@@ -87,6 +89,7 @@ public class UserDto {
                     .birthday(this.birthday)
                     .sex(this.sex)
                     .activityPoint(0)
+                    .view(0)
                     .isSuspended(false)
                     .isDeleted(false)
                     .build();
@@ -183,6 +186,39 @@ public class UserDto {
 
         public boolean checkPassword(EncryptionService encryptionService, String encryptedPassword) {
             return encryptionService.isSamePassword(this.password, encryptedPassword);
+        }
+    }
+
+    @Getter
+    public static class UserResponseForMyPage {
+        private long userId;
+
+        private String name;
+
+        private LocalDate birthDay;
+
+        private Sex sex;
+
+        private int view;
+
+        private int activityPoint;
+
+        private double averageReviewStar;
+
+        List<QuestionAnswerResponseForMyPage> questionAnswers;
+
+        public UserResponseForMyPage(
+                User user,
+                double averageReviewStar,
+                List<QuestionAnswerResponseForMyPage> questionAnswers) {
+            this.userId = user.getId();
+            this.name = user.getName();
+            this.birthDay = user.getBirthday();
+            this.sex = user.getSex();
+            this.view = user.getView();
+            this.activityPoint = user.getActivityPoint();
+            this.averageReviewStar = averageReviewStar;
+            this.questionAnswers = questionAnswers;
         }
     }
 }

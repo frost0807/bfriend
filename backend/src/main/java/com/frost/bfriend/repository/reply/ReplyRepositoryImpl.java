@@ -18,6 +18,7 @@ public class ReplyRepositoryImpl implements ReplyRepositoryCustom {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
+    @Override
     public List<Reply> searchRepliesByMatchPost(MatchPost matchPost) {
         return queryFactory
                 .selectFrom(reply)

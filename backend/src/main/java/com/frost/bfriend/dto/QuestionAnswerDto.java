@@ -70,12 +70,12 @@ public class QuestionAnswerDto {
     }
 
     @Getter
-    public static class ResponseForMyPage {
+    public static class QuestionAnswerResponseForMyPage {
         private String question;
 
         private String answer;
 
-        public ResponseForMyPage(QuestionAnswer questionAnswer) {
+        public QuestionAnswerResponseForMyPage(QuestionAnswer questionAnswer) {
             this.question = questionAnswer.getQuestion().getContent();
             this.answer = questionAnswer.getAnswer();
         }

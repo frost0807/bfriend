@@ -35,6 +35,8 @@ public class User extends UserBase {
 
     private Integer activityPoint;
 
+    private Integer view;
+
     private Boolean isSuspended;
 
     private Boolean isDeleted;
@@ -46,7 +48,7 @@ public class User extends UserBase {
     @Builder
     public User(Long id, String email, String password, UserLevel level, String name,
                 String phone, Region region, Sex sex, LocalDate birthday,
-                Integer activityPoint, Boolean isSuspended, Boolean isDeleted) {
+                Integer activityPoint, Integer view, Boolean isSuspended, Boolean isDeleted) {
         super(id, email, password, level);
         this.name = name;
         this.phone = phone;
@@ -54,6 +56,7 @@ public class User extends UserBase {
         this.sex = sex;
         this.birthday = birthday;
         this.activityPoint = activityPoint;
+        this.view = view;
         this.isSuspended = isSuspended;
         this.isDeleted = isDeleted;
     }

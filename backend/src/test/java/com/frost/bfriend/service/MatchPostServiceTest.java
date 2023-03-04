@@ -1,6 +1,5 @@
 package com.frost.bfriend.service;
 
-import com.frost.bfriend.dto.ReplyDto;
 import com.frost.bfriend.dto.ReplyDto.SaveReplyRequest;
 import com.frost.bfriend.entity.MatchPost;
 import com.frost.bfriend.entity.Reply;
@@ -21,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.frost.bfriend.dto.ReplyDto.*;
+import static com.frost.bfriend.dto.ReplyDto.UpdateReplyRequest;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
