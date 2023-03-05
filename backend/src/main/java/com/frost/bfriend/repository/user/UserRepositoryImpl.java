@@ -24,7 +24,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         Double averageReviewScore = queryFactory
                 .select(review.score.avg())
                 .from(user)
-                .innerJoin(user, review.user)
+                .innerJoin(user.reviewsForMe, review)
                 .where(user.eq(currentUser))
                 .fetchOne();
 

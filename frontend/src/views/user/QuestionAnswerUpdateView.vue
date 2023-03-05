@@ -1,41 +1,65 @@
 //로그인 권한 필요
 
 <template>
-  <div>QNA수정</div>
-  <v-btn @click="addRow">항목 추가</v-btn>
+  <v-img
+    class="logo-img"
+    src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/logo.png"
+  ></v-img>
+  <h2 align="left" class="title">자기소개 수정하기</h2>
   <form @submit.prevent="submit">
-    <div v-for="(item, index) in questionAndAnswer" :key="index">
-      <v-row>
-        <v-col cols="12" sm="3">
-          <v-select
-            v-model="item.categoryId"
-            :items="categories"
-            item-title="name"
-            item-value="questionCategoryId"
-            label="카테고리"
-            :readonly="item.categoryId !== null"
-          >
-          </v-select
-        ></v-col>
-        <v-col cols="12" sm="9">
-          <v-select
-            v-model="item.questionId"
-            :items="questionsByCategoryId(item.categoryId)"
-            item-title="content"
-            item-value="questionId"
-            label="질문"
-          >
-          </v-select
-        ></v-col>
-      </v-row>
+    <div v-for="(item, index) in questionAndAnswer" :key="index" class="item">
+      <div class="d-flex flex-no-wrap">
+        <v-select
+          v-model="item.categoryId"
+          :items="categories"
+          item-title="name"
+          item-value="questionCategoryId"
+          label="카테고리"
+          :readonly="item.categoryId !== null"
+          variant="outlined"
+          density="compact"
+          hide-details
+          class="category"
+        >
+        </v-select>
+        <v-btn @click="deleteRow(index)" size="30px" class="delete-button"
+          ><v-icon icon="mdi-delete" size="25px"></v-icon
+        ></v-btn>
+      </div>
+      <v-select
+        v-model="item.questionId"
+        :items="questionsByCategoryId(item.categoryId)"
+        item-title="content"
+        item-value="questionId"
+        label="질문"
+        variant="outlined"
+        density="compact"
+        hide-details
+        class="question"
+      >
+      </v-select>
       <v-text-field
         v-model="item.answer"
         placeholder="답변을 자유롭게 작성해주세요"
+        variant="outlined"
+        density="compact"
+        hide-details
+        class="answer"
       ></v-text-field>
-      <v-btn @click="deleteRow(index)">항목 제거</v-btn>
       <br />
     </div>
-    <v-btn type="submit">수정완료</v-btn>
+    <v-btn @click="addRow" size="30px"
+      ><v-icon icon="mdi-plus" size="30px"></v-icon
+    ></v-btn>
+    <v-spacer></v-spacer>
+    <v-btn
+      type="submit"
+      height="35px"
+      width="100%"
+      variant="text"
+      class="submit-button"
+      >수정완료</v-btn
+    >
   </form>
 </template>
 <script>
@@ -101,7 +125,7 @@ export default {
         .patch(axios.defaults.baseURL + '/question-answers', questionAnswerData)
         .then((res) => {
           if (res.status === 200) {
-            alert('자문자답 수정이 완료되었습니다.')
+            alert('자기소개 수정이 완료되었습니다.')
             this.$router.replace({ name: 'mypage' })
           }
         })
@@ -109,3 +133,24 @@ export default {
   }
 }
 </script>
+<style scoped>
+.logo-img {
+  width: 100px;
+}
+.title {
+  margin: 0 0 20px 0;
+}
+.cateogry,
+.question,
+.answer {
+  margin: 10px 0 0 0;
+}
+.delete-button {
+  margin: auto 30px;
+}
+.submit-button {
+  margin: 30px 0;
+  border: solid 1px black;
+  border-radius: 20px;
+}
+</style>

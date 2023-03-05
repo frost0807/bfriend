@@ -44,6 +44,12 @@ public class User extends UserBase {
     @OneToMany(mappedBy = "user")
     private List<QuestionAnswer> questionAnswers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviewsForMe = new ArrayList<>();
+
+    @OneToMany(mappedBy = "writer")
+    private List<Review> reviewsByMe = new ArrayList<>();
+
 
     @Builder
     public User(Long id, String email, String password, UserLevel level, String name,

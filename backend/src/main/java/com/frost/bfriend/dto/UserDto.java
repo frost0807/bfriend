@@ -191,8 +191,6 @@ public class UserDto {
 
     @Getter
     public static class UserResponseForMyPage {
-        private long userId;
-
         private String name;
 
         private LocalDate birthDay;
@@ -203,21 +201,19 @@ public class UserDto {
 
         private int activityPoint;
 
-        private double averageReviewStar;
+        private double averageReviewScore;
 
         List<QuestionAnswerResponseForMyPage> questionAnswers;
 
         public UserResponseForMyPage(
-                User user,
-                double averageReviewStar,
+                User user, double averageReviewStar,
                 List<QuestionAnswerResponseForMyPage> questionAnswers) {
-            this.userId = user.getId();
             this.name = user.getName();
             this.birthDay = user.getBirthday();
             this.sex = user.getSex();
             this.view = user.getView();
             this.activityPoint = user.getActivityPoint();
-            this.averageReviewStar = averageReviewStar;
+            this.averageReviewScore = averageReviewStar;
             this.questionAnswers = questionAnswers;
         }
     }
