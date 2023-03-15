@@ -53,7 +53,7 @@ public class QuestionAnswerController {
 
     @CheckUser
     @GetMapping("/mypage")
-    public ResponseEntity<List<ResponseForMyPage>> getQuestionAnswersForMyPage(
+    public ResponseEntity<List<QuestionAnswerResponseForMyPage>> getQuestionAnswersForMyPage(
             @LoginUser Long userId) {
         return ResponseEntity.ok(questionAnswerService.getQuestionAnswersForMyPageByUserId(userId));
     }

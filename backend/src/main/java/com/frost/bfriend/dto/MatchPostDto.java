@@ -21,7 +21,7 @@ public class MatchPostDto {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor
-    public static class ListRequestCondition {
+    public static class MatchPostListCondition {
         private Activity activity;
 
         private Topic topic;
@@ -226,6 +226,39 @@ public class MatchPostDto {
                     .endAt(this.endAt)
                     .isDeleted(false)
                     .build();
+        }
+    }
+
+    @Getter
+    public static class MyMatchPostResponse {
+        private Long matchPostId;
+
+        private Activity activity;
+
+        private Topic topic;
+
+        private Location location;
+
+        private String text;
+
+        private LocalDateTime startAt;
+
+        private LocalDateTime endAt;
+
+
+        private int replyCount;
+
+        @QueryProjection
+        public MyMatchPostResponse(Long matchPostId, Activity activity, Topic topic, Location location,
+                            String text, LocalDateTime startAt, LocalDateTime endAt, int replyCount) {
+            this.matchPostId = matchPostId;
+            this.activity = activity;
+            this.topic = topic;
+            this.location = location;
+            this.text = text;
+            this.startAt = startAt;
+            this.endAt = endAt;
+            this.replyCount = replyCount;
         }
     }
 }

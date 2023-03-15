@@ -137,4 +137,10 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+
+    @CheckUser
+    @GetMapping("/mypage")
+    public ResponseEntity<UserResponseForMyPage> getMyInformation(@LoginUser Long userId) {
+        return ResponseEntity.ok(userService.getMyInformation(userId));
+    }
 }

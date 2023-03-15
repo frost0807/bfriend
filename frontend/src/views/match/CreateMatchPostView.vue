@@ -130,6 +130,10 @@ export default {
   unmounted() {},
   methods: {
     submitMatchPost() {
+      this.matchPostData.startAt.setHours(
+        this.matchPostData.startAt.getHours() + 9
+      )
+      this.matchPostData.endAt.setHours(this.matchPostData.endAt.getHours() + 9)
       const matchPostData = JSON.stringify(this.matchPostData, null, 2)
       axios
         .post(axios.defaults.baseURL + '/matchposts', matchPostData)

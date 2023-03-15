@@ -84,12 +84,12 @@ public class QuestionAnswerService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResponseForMyPage> getQuestionAnswersForMyPageByUserId(Long userId) {
+    public List<QuestionAnswerResponseForMyPage> getQuestionAnswersForMyPageByUserId(Long userId) {
         User user = getUserById(userId);
         List<QuestionAnswer> questionAnswers = questionAnswerRepository.findAllByUser(user);
 
         return questionAnswers.stream()
-                .map(questionAnswer -> new ResponseForMyPage(questionAnswer))
+                .map(questionAnswer -> new QuestionAnswerResponseForMyPage(questionAnswer))
                 .collect(Collectors.toList());
     }
 
