@@ -4,7 +4,9 @@ import com.frost.bfriend.common.constants.Activity;
 import com.frost.bfriend.common.constants.Location;
 import com.frost.bfriend.common.constants.Topic;
 import com.frost.bfriend.dto.QMatchPostDto_ListResponse;
+import com.frost.bfriend.dto.QMatchPostDto_MyMatchPostResponse;
 import com.frost.bfriend.entity.MatchPost;
+import com.frost.bfriend.entity.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -17,8 +19,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-import static com.frost.bfriend.dto.MatchPostDto.ListRequestCondition;
-import static com.frost.bfriend.dto.MatchPostDto.ListResponse;
+import static com.frost.bfriend.dto.MatchPostDto.*;
 import static com.frost.bfriend.entity.QMatchPost.matchPost;
 
 @Slf4j
@@ -32,7 +33,7 @@ public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
 
     @Override
     public Page<ListResponse> searchMatchPostsWithCondition(
-            Pageable pageable, ListRequestCondition condition) {
+            Pageable pageable, MatchPostListCondition condition) {
         List<ListResponse> matchPosts = queryFactory
                 .select(new QMatchPostDto_ListResponse(
                         matchPost.id,
@@ -88,5 +89,32 @@ public class MatchPostRepositoryImpl implements MatchPostRepositoryCustom {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    public Page<MyMatchPostResponse> searchMatchPostsByUser(Pageable pageable, User user) {
+        List<MyMatchPostResponse> matchPosts = queryFactory
+                .select(new QMatchPostDto_MyMatchPostResponse(
+                        matchPost.id,
+                        matchPost.activity,
+                        matchPost.topic,
+                        matchPost.location,
+                        matchPost.text,
+                        matchPost.startAt,
+                        matchPost.endAt,
+                        matchPost.replies.size()
+                ))
+                .from(matchPost)
+                .where(matchPost.writer.eq(user))
+                .orderBy(matchPost.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(matchPost.count())
+                .from(matchPost)
+                .where(matchPost.writer.eq(user));
+
+        return PageableExecutionUtils.getPage(matchPosts, pageable, countQuery::fetchOne);
     }
 }

@@ -5,25 +5,23 @@ import com.frost.bfriend.common.annotation.LoginUser;
 import com.frost.bfriend.common.constants.Activity;
 import com.frost.bfriend.common.constants.Location;
 import com.frost.bfriend.common.constants.Topic;
-import com.frost.bfriend.dto.ReplyDto;
-import com.frost.bfriend.entity.User;
 import com.frost.bfriend.service.MatchPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Check;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static com.frost.bfriend.dto.MatchPostDto.*;
 import static com.frost.bfriend.dto.ReplyDto.*;
-import static com.frost.bfriend.dto.ReplyDto.ReplyResponse;
 
 @Slf4j
 @RestController
@@ -40,12 +38,12 @@ public class MatchPostController {
             @RequestParam(required = false) Optional<Activity> activity,
             @RequestParam(required = false) Optional<Topic> topic,
             @RequestParam(required = false) Optional<Location> location) {
-        ListRequestCondition condition = new ListRequestCondition(
-                activity.orElseGet(() -> null),
-                topic.orElseGet(() -> null),
-                location.orElseGet(() -> null));
+        MatchPostListCondition condition = new MatchPostListCondition(
+                activity.orElse(null),
+                topic.orElse(null),
+                location.orElse(null));
 
-        return ResponseEntity.ok(matchPostService.getMatchPostListAll(pageable, condition));
+        return ResponseEntity.ok(matchPostService.getMatchPostList(pageable, condition));
     }
 
     @CheckUser
@@ -112,5 +110,32 @@ public class MatchPostController {
         matchPostService.deleteReply(userId, replyId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @CheckUser
+    @GetMapping("/my")
+    public ResponseEntity<Page<MyMatchPostResponse>> getMyMatchPostList(
+            @PageableDefault Pageable pageable, @LoginUser Long userId) {
+        return ResponseEntity.ok(matchPostService.getMyMatchPostList(pageable, userId));
+    }
+
+    @CheckUser
+    @GetMapping("/replies/my")
+    public ResponseEntity<Page<MyReplyResponse>> getMyReplyList(
+            @PageableDefault Pageable pageable,
+            @RequestParam(required = false) Optional<Activity> activity,
+            @RequestParam(required = false) Optional<Location> location,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            Optional<LocalDate> fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            Optional<LocalDate> toDate,
+            @LoginUser Long userId) {
+        MatchPostConditionOfReplyList condition = new MatchPostConditionOfReplyList(
+                activity.orElse(null),
+                location.orElse(null),
+                fromDate.orElse(null),
+                toDate.orElse(null));
+
+        return ResponseEntity.ok(matchPostService.getMyReplyList(pageable, condition, userId));
     }
 }

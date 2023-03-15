@@ -5,50 +5,8 @@
         src="https://frost0807.s3.ap-northeast-2.amazonaws.com/static/bfriend/logo.png"
       ></v-img>
     </div>
-    <h2 class="font-weight-bold">매칭</h2>
-    <v-btn to="/match/create" rounded="pill" class="write-button">글쓰기</v-btn>
+    <h2 class="font-weight-bold">작성글 보기</h2>
   </div>
-  <div class="select-box">
-    <v-row>
-      <v-col cols="6">
-        <v-select
-          v-model="filter.activity"
-          :items="activity"
-          label="활동"
-          density="compact"
-          variant="outlined"
-          @change="applyFilter()"
-        ></v-select
-      ></v-col>
-      <v-col cols="6">
-        <v-select
-          v-model="filter.topic"
-          :items="topic"
-          label="주제"
-          density="compact"
-          variant="outlined"
-          @input="applyFilter"
-        ></v-select
-      ></v-col>
-      <v-col cols="8">
-        <v-select
-          v-model="filter.location"
-          :items="location"
-          label="지역"
-          density="compact"
-          variant="outlined"
-          @input="applyFilter"
-        ></v-select
-      ></v-col>
-      <v-btn @click="applyFilter">검색</v-btn>
-      <v-btn
-        @click="resetFilter"
-        icon="mdi-cached"
-        class="reset-button"
-      ></v-btn>
-    </v-row>
-  </div>
-
   <v-card v-for="(item, index) in matchPosts" :key="index">
     <v-row class="card-row" @click="moveToDetails(item.matchPostId)">
       <v-col cols="2" class="card-image">
@@ -72,28 +30,21 @@
               "
               class="card-location-topic"
             ></p>
-            <p
-              v-text="
-                getTitleFromValue(dayOfTheWeek, item.dayOfTheWeek) +
-                (item.daysLeft >= 0
-                  ? '/D -' + item.daysLeft
-                  : '/D +' + -item.daysLeft)
-              "
-              class="card-day-dday"
-            ></p>
-          </div>
-          <div class="d-flex flex-no-wrap justify-space-between">
-            <p v-text="item.timeFromTo" class="card-fromto"></p>
             <div class="card-reply">
               <v-icon icon="mdi-message-processing-outline"></v-icon>
               <span v-text="item.replyCount"></span>
             </div>
           </div>
+          <div class="d-flex flex-no-wrap justify-space-between">
+            <p class="card-datetime">
+              {{ item.startAt.split('T')[0] }} / {{ getTime(item.startAt) }} ~
+              {{ getTime(item.endAt) }}
+            </p>
+          </div>
         </div>
       </v-col>
     </v-row>
   </v-card>
-  <v-btn v-if="!isLast" @click="getNextPage">더 보기</v-btn>
 </template>
 <script>
 import axios from 'axios'
@@ -101,10 +52,8 @@ export default {
   components: {},
   data() {
     return {
-      filter: { activity: '', topic: '', location: '' },
-      pageCondition: { size: 30, page: 0 },
-      isLast: false,
       matchPosts: [],
+      isLast: false,
       activity: [
         { title: '커피', value: 'COFFEE' },
         { title: '산책', value: 'WALK' },
@@ -128,15 +77,6 @@ export default {
         { title: '수도권서부', value: 'CAPITAL_WEST' },
         { title: '수도권남부', value: 'CAPITAL_SOUTH' },
         { title: '수도권북부', value: 'CAPITAL_NORTH' }
-      ],
-      dayOfTheWeek: [
-        { title: '월', value: 'MONDAY' },
-        { title: '화', value: 'TUESDAY' },
-        { title: '수', value: 'WEDNESDAY' },
-        { title: '목', value: 'THURSDAY' },
-        { title: '금', value: 'FRIDAY' },
-        { title: '토', value: 'SATURDAY' },
-        { title: '일', value: 'SUNDAY' }
       ],
       cardImage: [
         {
@@ -171,7 +111,7 @@ export default {
   created() {},
   mounted() {
     axios
-      .get(axios.defaults.baseURL + '/matchposts?size=30&page=0')
+      .get(axios.defaults.baseURL + '/matchposts/my?size=10&page=0')
       .then((res) => {
         console.log(res)
         if (res.status === 200) {
@@ -182,51 +122,19 @@ export default {
   },
   unmounted() {},
   methods: {
-    getPage() {
-      axios
-        .get(
-          axios.defaults.baseURL +
-            '/matchposts?' +
-            'size=' +
-            this.pageCondition.size +
-            '&page=' +
-            this.pageCondition.page +
-            (this.filter.activity ? '&activity=' + this.filter.activity : '') +
-            (this.filter.topic ? '&topic=' + this.filter.topic : '') +
-            (this.filter.location ? '&location=' + this.filter.location : '')
-        )
-        .then((res) => {
-          console.log(res)
-          if (res.status === 200) {
-            this.matchPosts.push(...res.data.content)
-            this.isLast = res.data.last
-          }
-        })
-    },
-    getNextPage() {
-      this.pageCondition.page++
-      this.pageCondition.size = 10
-      this.getPage()
-    },
-    applyFilter() {
-      this.pageCondition.page = 0
-      this.pageCondition.size = 30
-      this.matchPosts = []
-      this.getPage()
-    },
-    resetFilter() {
-      this.filter = { activity: '', topic: '', location: '' }
-      this.pageCondition.page = 0
-      this.pageCondition.size = 30
-      this.matchPosts = []
-      this.getPage()
-    },
     getTitleFromValue(arr, value) {
       for (const item of arr) {
         if (item.value === value) {
           return item.title
         }
       }
+    },
+    getTime(dateTime) {
+      const time = dateTime.split('T')[1]
+      const hour = time.split(':')[0]
+      const min = time.split(':')[1]
+
+      return hour + '시' + min + '분'
     },
     moveToDetails(matchPostId) {
       console.log(matchPostId)
@@ -247,9 +155,6 @@ h2 {
 }
 .logo-img {
   width: 100px;
-}
-.write-button {
-  margin: auto 0 auto auto;
 }
 .card-row {
   padding: 15px 0px;
@@ -279,14 +184,9 @@ h2 {
 .card-location-topic {
   font-size: 15px;
 }
-.card-day-dday {
-  padding-top: 2px;
-  font-size: 12px;
-  font-weight: bold;
-  color: blueviolet;
-}
-.card-fromto {
-  font-size: 12px;
+.card-datetime {
+  margin: auto;
+  font-size: 14px;
   margin-left: 7px;
 }
 .card-reply {

@@ -33,7 +33,7 @@
       <v-btn to="/match/list"
         ><v-icon icon="mdi-home" size="x-large"></v-icon> 홈</v-btn
       >
-      <v-btn><v-icon icon="mdi-chat" size="x-large"></v-icon>채팅</v-btn>
+      <v-btn><v-icon icon="mdi-bell" size="x-large"></v-icon>알림</v-btn>
       <v-btn to="/mypage"
         ><v-icon icon="mdi-tune" size="x-large"></v-icon>마이페이지</v-btn
       >

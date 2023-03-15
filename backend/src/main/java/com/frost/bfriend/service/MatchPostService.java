@@ -1,6 +1,5 @@
 package com.frost.bfriend.service;
 
-import com.frost.bfriend.dto.ReplyDto;
 import com.frost.bfriend.entity.MatchPost;
 import com.frost.bfriend.entity.Reply;
 import com.frost.bfriend.entity.User;
@@ -24,7 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.frost.bfriend.dto.MatchPostDto.*;
-import static com.frost.bfriend.dto.ReplyDto.ReplyResponse;
+import static com.frost.bfriend.dto.ReplyDto.*;
 
 @Slf4j
 @Service
@@ -36,11 +35,11 @@ public class MatchPostService {
     private final ReplyRepository replyRepository;
 
     @Transactional(readOnly = true)
-    public Page<ListResponse> getMatchPostListAll(Pageable pageable, ListRequestCondition condition) {
-        Page<ListResponse> listResponseNotCalculated =
+    public Page<ListResponse> getMatchPostList(Pageable pageable, MatchPostListCondition condition) {
+        Page<ListResponse> listResponsesNotCalculated =
                 matchPostRepository.searchMatchPostsWithCondition(pageable, condition);
-        long totalElements = listResponseNotCalculated.getTotalElements();
-        List<ListResponse> listResponsesCalculated = listResponseNotCalculated.getContent().stream()
+        long totalElements = listResponsesNotCalculated.getTotalElements();
+        List<ListResponse> listResponsesCalculated = listResponsesNotCalculated.getContent().stream()
                 .map(listResponse -> listResponse.calculateDayAndTimes())
                 .collect(Collectors.toList());
 
@@ -135,7 +134,7 @@ public class MatchPostService {
      * 댓글이 삭제되어도 해당 댓글에 대댓글은 작성 가능
      */
     @Transactional
-    public void saveReply(Long userId, ReplyDto.SaveReplyRequest saveReplyRequest) {
+    public void saveReply(Long userId, SaveReplyRequest saveReplyRequest) {
         User user = userRepository.findByIdAndIsDeletedFalse(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
         MatchPost matchPost = matchPostRepository.findById(saveReplyRequest.getMatchPostId())
@@ -160,7 +159,7 @@ public class MatchPostService {
     }
 
     @Transactional
-    public void updateReply(Long userId, ReplyDto.UpdateReplyRequest updateReplyRequest) {
+    public void updateReply(Long userId, UpdateReplyRequest updateReplyRequest) {
         User user = userRepository.findByIdAndIsDeletedFalse(userId)
                 .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
         MatchPost matchPost = matchPostRepository.findById(updateReplyRequest.getMatchPostId())
@@ -191,5 +190,28 @@ public class MatchPostService {
         }
         reply.delete();
         replyRepository.save(reply);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<MyMatchPostResponse> getMyMatchPostList(Pageable pageable, Long userId) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
+        Page<MyMatchPostResponse> myMatchPostResponses =
+                matchPostRepository.searchMatchPostsByUser(pageable, user);
+
+        return myMatchPostResponses;
+    }
+
+    public Page<MyReplyResponse> getMyReplyList(
+            Pageable pageable, MatchPostConditionOfReplyList condition, Long userId) {
+        User user = userRepository.findByIdAndIsDeletedFalse(userId)
+                .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
+        Page<MyReplyResponse> myReplyResponsesNotCalculated = replyRepository.searchRepliesByUser(pageable, condition, user);
+        long totalElements = myReplyResponsesNotCalculated.getTotalElements();
+        List<MyReplyResponse> myReplyResponsesCalculated = myReplyResponsesNotCalculated.getContent().stream()
+                .map(myReplyResponse -> myReplyResponse.calculateDayAndTimes())
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(myReplyResponsesCalculated, pageable, totalElements);
     }
 }

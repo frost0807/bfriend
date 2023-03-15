@@ -1,18 +1,36 @@
 package com.frost.bfriend.dto;
 
+import com.frost.bfriend.common.constants.Activity;
+import com.frost.bfriend.common.constants.Location;
 import com.frost.bfriend.common.constants.Sex;
+import com.frost.bfriend.common.constants.Topic;
 import com.frost.bfriend.entity.MatchPost;
 import com.frost.bfriend.entity.Reply;
 import com.frost.bfriend.entity.User;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class ReplyDto {
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class MatchPostConditionOfReplyList {
+        private Activity activity;
+
+        private Location location;
+
+        private LocalDate fromDate;
+
+        private LocalDate toDate;
+    }
 
     @Getter
     public static class ReplyResponse {
@@ -144,6 +162,63 @@ public class ReplyDto {
                     .comment(this.comment)
                     .isDeleted(false)
                     .build();
+        }
+    }
+
+    @Getter
+    public static class MyReplyResponse {
+
+        private Long matchPostId;
+
+        private Activity activity;
+
+        private Topic topic;
+
+        private Location location;
+
+        private String matchPostText;
+
+        private LocalDateTime startAt;
+
+        private LocalDateTime endAt;
+
+        private DayOfWeek dayOfTheWeek;
+
+        private int daysLeft;
+
+        private String timeFromTo;
+
+        private int replyCount;
+
+        private Long replyId;
+
+        private String comment;
+
+        private LocalDateTime createdAt;
+
+        @QueryProjection
+        public MyReplyResponse(Long matchPostId, Activity activity, Topic topic, Location location,
+                               String matchPostText, LocalDateTime startAt, LocalDateTime endAt,
+                               int replyCount, Long replyId, String comment, LocalDateTime createdAt) {
+            this.matchPostId = matchPostId;
+            this.activity = activity;
+            this.topic = topic;
+            this.location = location;
+            this.matchPostText = matchPostText;
+            this.startAt = startAt;
+            this.endAt = endAt;
+            this.replyCount = replyCount;
+            this.replyId = replyId;
+            this.comment = comment;
+            this.createdAt = createdAt;
+        }
+
+        public MyReplyResponse calculateDayAndTimes() {
+            this.dayOfTheWeek = startAt.getDayOfWeek();
+            this.daysLeft = (int) ChronoUnit.DAYS.between(LocalDateTime.now(), startAt);
+            this.timeFromTo = startAt.getHour() + "시 - " + endAt.getHour() + "시";
+
+            return this;
         }
     }
 }

@@ -14,15 +14,11 @@
     </div>
     <div class="top">
       <div class="d-flex flex-no-wrap justify-space-between">
-        <v-btn
-          to="question-answer-update"
-          variant="text"
-          height="30px"
-          class="view"
+        <v-btn variant="text" height="30px" class="view"
           >방문수 {{ myInformation.view }}</v-btn
         >
         <v-btn
-          to="question-answer-update"
+          to="/question-answer-update"
           variant="text"
           height="30px"
           class="question-answer-update-button"
@@ -77,7 +73,7 @@
     >더보기</v-btn
   >
   <div class="d-flex flex-no-wrap justify-content-center">
-    <div to="/mypage/matchposts" width="27%" class="middle-button">
+    <div @click="moveToMyMatchposts" width="27%" class="middle-button">
       <v-icon
         icon="mdi-pencil-box-multiple-outline"
         class="middle-button-icon"
@@ -85,7 +81,7 @@
       ></v-icon>
       <p>작성글 보기</p>
     </div>
-    <div to="/mypage/replies" width="27%" class="middle-button">
+    <div @click="moveToMyReplies" width="27%" class="middle-button">
       <v-icon
         icon="mdi-email-open-outline"
         class="middle-button-icon"
@@ -93,7 +89,7 @@
       ></v-icon>
       <p>작성 댓글 보기</p>
     </div>
-    <div to="mypage/reviews" width="27%" class="middle-button">
+    <div to="mypage/review-list" width="27%" class="middle-button">
       <v-icon
         icon="mdi-medal-outline"
         class="middle-button-icon"
@@ -103,7 +99,7 @@
     </div>
   </div>
   <v-btn
-    to="update-password"
+    to="/update-password"
     variant="outlined"
     width="100%"
     rounded="lg"
@@ -120,7 +116,7 @@
       >로그아웃</v-btn
     >
     <v-btn
-      to="withdrawal"
+      to="/withdrawal"
       variant="outlined"
       width="49%"
       rounded="lg"
@@ -181,6 +177,12 @@ export default {
     },
     handleSpreadQuestionAnswer() {
       this.spreadQuestionAnswer = !this.spreadQuestionAnswer
+    },
+    moveToMyMatchposts() {
+      this.$router.push({ name: 'match-list-my' })
+    },
+    moveToMyReplies() {
+      this.$router.push({ name: 'match-reply-list-my' })
     }
   }
 }
